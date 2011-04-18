@@ -1,0 +1,8 @@
+TODO:
+Global loggedin
+Global userid
+Check header and footer includes in the mysql error
+Email staff email if MySQL error
+Write user and cost and food objects
+
+Squffy::heal should be updated with personality trait info and payment
