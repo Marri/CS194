@@ -8,11 +8,13 @@ class User {
 	const PRE_ACTIVATED_USER = 6;
 	const RESET_PASSWORD_USER = 7;
 	const FROZEN_USER = 8;
+	const VACATION_USER = 9;
 	const SALT_LEN = 15;
 	
 	private
     	$id,
 		$username,
+		$login,
 		$level,
 		$hash,
 		$salt,
@@ -24,7 +26,8 @@ class User {
 		$info = @mysql_fetch_assoc($result);
 		
 		$this->id = $info['user_id'];
-		$this->username = $info['user_name'];
+		$this->username = $info['username'];
+		$this->login = $info['login'];
 		$this->level = $info['level_id'];
 		$this->hash = $info['hash'];
 		$this->salt = $info['salt'];
@@ -41,15 +44,15 @@ class User {
 	public static function getUserByLogin($login, $password) {
 		$query = "SELECT * FROM `users` WHERE `login` = '$login'";
 		$user = getUser($query);
-		if($user == null) { return null; }
+		if($user == NULL) { return NULL; }
 		$hashed = $user->secure($pass);
 		if($hashed == $user->getHash()) { return $user; }
-		return null;
+		return NULL;
 	}
 	
 	private static function getUser($queryString) {
 		$query = runDBQuery($queryString);
-		if(@mysql_num_rows($query) < 1) { return null; }
+		if(@mysql_num_rows($query) < 1) { return NULL; }
 		return (new User($info));
 	}
 	
@@ -87,7 +90,7 @@ class User {
     public function seenNow() {
 		$queryString = 'UPDATE `users` SET `date_last_seen` = now() where `user_id` = ' . $this->id;
         runDBQuery($queryString);
-    }
+    }	
 	
 	//Private methods
 	private function secure($password) {
