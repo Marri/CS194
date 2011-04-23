@@ -18,7 +18,6 @@ $forum->loadSubForums();
 	$subforum_list_size = count($subforums);		
 	for($i=0;$i<$subforum_list_size; $i++){
 		$curr_subforum = $subforums[$i];
-		
 		echo "<table border='1'><tr><th>".$curr_subforum->getName()."</th> <th>Last Post </th></tr>";
 		$board_list = $curr_subforum->getBoardList();
 		$board_list_size = count($board_list);	
