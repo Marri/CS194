@@ -3,6 +3,21 @@
 class Message {
 	private 
 		$id,	$to_id, $from_id, $message_type, $subject,message, $time_sent, $is_read,$in_inbox, $in_outbox;
+	public function GetID(){
+		return $this->id;
+	}
+	public function GetToID(){
+		return $this->to_id;
+	}
+	public function GetFromID(){
+		return $this->from_id;
+	}
+	public function GetSubject(){
+		return $this->subject;
+	}
+	public function GetTimeSent(){
+		return $this->time_sent;
+	}
 	public static function CreateMessage($id,	$to_id, $from_id, $message_type, $subject,message, $time_sent, $is_read,$in_inbox, $in_outbox){
 		$curr_message = new Message();
 		$curr_message->id = $id;
