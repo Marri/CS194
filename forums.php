@@ -7,8 +7,6 @@ $id = $_GET['id'];
 $forum = new Forum();
 $forum->loadSubForums();
 ?>
-<html>
-<body>
 
 <h1>Squffy Forums</h1>
 
@@ -31,8 +29,6 @@ $forum->loadSubForums();
 	}
 ?>
 
-</body>
-</html>
 <?php
 
 include('./includes/footer.php');
