@@ -12,6 +12,9 @@ while($messages = mysql_fetch_assoc($results)) {
 	array_push($message_list, $curr_message);
 }
 
+for($i = 0; $i < count($message_list); $i++){
+	echo $message_list[$i];
+}
 
 ?>
 <h1> Message View</h1>

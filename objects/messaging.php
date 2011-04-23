@@ -3,6 +3,9 @@
 class Message {
 	private 
 		$id,	$to_id, $from_id, $message_type, $subject,message, $time_sent, $is_read,$in_inbox, $in_outbox;
+	public function __ToString(){
+		return "from: ".$this->from_id." subject: ".$this->subject." Sent: ".$this->time_sent.".";
+	}
 	public function GetID(){
 		return $this->id;
 	}
