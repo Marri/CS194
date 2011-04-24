@@ -1,10 +1,10 @@
 <?php
 include("./includes/header.php");
-include("./objects/forums.php");
+include("./objects/messaging.php");
 $userid = "1"; //$_S
 $message_list = array();
 
-$query = "SELECT * FROM messages WHERE to_id = '".$userid."';"
+$query = "SELECT * FROM messages WHERE to_id = '".$userid."';";
 $results = runDBQuery($query);
 
 while($messages = mysql_fetch_assoc($results)) {

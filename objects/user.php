@@ -42,10 +42,10 @@ class User {
 	}
 	
 	public static function getUserByLogin($login, $password) {
-		$query = "SELECT * FROM `users` WHERE `login` = '$login'";
+		$query = "SELECT * FROM `users` WHERE `login` = '".$login."'";
 		$user = getUser($query);
 		if($user == NULL) { return NULL; }
-		$hashed = $user->secure($pass);
+		$hashed = $user->secure($password);
 		if($hashed == $user->getHash()) { return $user; }
 		return NULL;
 	}

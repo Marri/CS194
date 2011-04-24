@@ -3,14 +3,14 @@ include("./includes/header.php");
 include("./objects/forums.php");
 
 
-$id = $_GET['id'];
+//$id = $_GET['id'];
 $forum = new Forum();
 $forum->loadSubForums();
 ?>
 
 <h1>Squffy Forums</h1>
 
-<p>Welcome to the Squffy online forum!</p>
+<p>Welcome to the Squffy online forums!</p>
 
 
 <?php
