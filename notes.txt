@@ -6,3 +6,21 @@ Email staff email if MySQL error
 Write user and cost and food objects
 
 Squffy::heal should be updated with personality trait info and payment
+
+Traits:
+Soothing presence (better at doctor and midwife)
+Nature lover (better at farming)
+Graceful (agile)
+Precise (good at cooking/baking)
+Energetic (gets tired less quickly)
+Optimistic (gets sad less quickly)
+Nuturing (good at nursemaid and teaching)
+
+Negative traits:
+Abrasive (worse at doctor/midwife)
+Stays indoors (
+Clumsy
+Imprecise
+Lazy
+Pessimistic
+Neglectful

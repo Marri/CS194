@@ -2,6 +2,7 @@
 $loggedin = false;
 $user = NULL;
 $userid = NULL;
+session_start();
 
 //Log out
 if(isset($_POST['logging_out'])) {
