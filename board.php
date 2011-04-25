@@ -17,6 +17,7 @@ $threads = $board->getThreads();
 	}
 ?>
 
+
 <form action="createThread.php" method="get">
 <br>Thread Title: <input type="text" name="thread_name" /></br>
 <br>First Post: </br><br><textarea name="thread_text" rows="10" cols="40"></textarea></br>
@@ -30,3 +31,7 @@ $threads = $board->getThreads();
 <input type="hidden" name="board_id" value="<?php echo $board_id;?>"/>
 <br><input type="submit" /></br>
 </form>
+
+<?php 
+include("./includes/footer.php");
+?>

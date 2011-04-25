@@ -87,8 +87,12 @@ class User {
         runDBQuery($queryString);
     }	
 	
+	public static function createNewUser($username, $password){
+		//TODO: write function that updates table with new user
+	}
+	
 	//Private methods
-	public static function secure($password, $salt) {
+	private static function secure($password, $salt) {
 		$hash = sha1($password . $salt);
 		for($i = 0; $i < self::SALT_LEN; $i++) {
 			$hash = sha1($hash);

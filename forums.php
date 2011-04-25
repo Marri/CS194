@@ -3,16 +3,14 @@ include("./includes/header.php");
 include("./objects/forums.php");
 
 
-$id = $_GET['id'];
+//$id = $_GET['id'];
 $forum = new Forum();
 $forum->loadSubForums();
 ?>
-<html>
-<body>
 
 <h1>Squffy Forums</h1>
 
-<p>Welcome to the Squffy online forum!</p>
+<p>Welcome to the Squffy online forums!</p>
 
 
 <?php
@@ -20,7 +18,6 @@ $forum->loadSubForums();
 	$subforum_list_size = count($subforums);		
 	for($i=0;$i<$subforum_list_size; $i++){
 		$curr_subforum = $subforums[$i];
-		
 		echo "<table border='1'><tr><th>".$curr_subforum->getName()."</th> <th>Last Post </th></tr>";
 		$board_list = $curr_subforum->getBoardList();
 		$board_list_size = count($board_list);	
@@ -31,8 +28,6 @@ $forum->loadSubForums();
 	}
 ?>
 
-</body>
-</html>
 <?php
 
 include('./includes/footer.php');
