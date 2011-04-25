@@ -214,20 +214,23 @@ CREATE TABLE news_comments (
 	date_posted datetime
 );
 
-//For jobs
-//Marketplace
-//Tournaments
-//Notifications
-//News and comments
-//Bug reports
-//Eggs and pregnancies
-//Vacations
-//Weather
-//Badges
-//Payments
-//Referrals
-//Newbie stuff
-//Random events
+CREATE TABLE weather (
+	day enum('Today','Tomorrow'),
+	temperature tinyint,
+	type enum('Sunny', 'Partly Cloudy', 'Mostly Cloudy', 'Overcast', 'Light Rain', 'Heavy Rain', 'Snow')
+);
+
+CREATE TABLE badges (
+	badge_id tinyint unsigned primary key auto_increment,
+	badge_name varchar(100),
+	badge_description text,
+	num_awarded mediumint unsigned default '0'
+);
+
+CREATE TABLE user_badges (
+	user_id mediumint unsigned,
+	badge_id tinyint unsigned
+);
 
 CREATE TABLE user_login (
 	login_name varchar(50) primary key,
@@ -235,3 +238,71 @@ CREATE TABLE user_login (
 	hash varchar(40),
 	salt varchar(30)
 );
+
+CREATE TABLE news (
+	news_id mediumint unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	time_posted datetime,
+	subject varchar(100),
+	content text,
+	content_type tinyint unsigned,
+	deleted enum('true', 'false') default 'false'
+);
+
+CREATE TABLE news_categories (
+	type_id tinyint unsigned,
+	type_name varchar(100)
+);
+
+CREATE TABLE news_comments (
+	comment_id mediumint unsigned primary key auto_increment,
+	news_id mediumint unsigned,
+	user_id mediumint unsigned,
+	time_posted datetime,
+	content text,
+	deleted enum('true', 'false') default 'false'
+);
+
+CREATE TABLE pregnancies (
+	pregnancy_id int unsigned primary key auto_increment,
+	mother_id int unsigned,
+	father_id int unsigned,
+	user_id mediumint unsigned,
+	date_birth datetime
+);
+
+CREATE TABLE vacations (
+	user_id mediumint unsigned,
+	date_return datetime,
+	old_level tinyint unsigned
+);
+
+CREATE TABLE referrals (
+	referral_id int unsigned primary key auto_increment,
+	refer_id mediumint unsigned,
+	email varchar(255),
+	date_sent datetime
+);
+
+CREATE TABLE accepted_referrals (
+	accept_id int unsigned primary key auto_increment,
+	referral_id int unsigned,
+	accept_id mediumint unsigned,
+	date_joined datetime
+);
+
+CREATE TABLE newbie_packs (
+	pack_id mediumint unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	species enum('Unchosen', 'Tree', 'Ground') default 'Unchosen',
+	items_claimed enum('true', 'false') default 'false',
+	squffy_made enum('true', 'false') default 'false',
+);
+
+//Tables for all jobs that need them
+//Marketplace
+//Tournaments
+//Notifications
+//Payments
+//Random events
+//Bug reports: categories or enum?

@@ -1,11 +1,11 @@
 TODO:
-Global loggedin
-Global userid
 Check header and footer includes in the mysql error
 Email staff email if MySQL error
 Write user and cost and food objects
 
 Squffy::heal should be updated with personality trait info and payment
+Squffy::createChild($mom, $dad, $owner) needs to be written
+User::setLevel($levelID) needs to be written
 
 Traits:
 Soothing presence (better at doctor and midwife)
