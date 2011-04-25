@@ -19,6 +19,7 @@ class User {
 		$hash,
 		$salt,
 		$last_seen,
+		$layout_id,
 		$inventory;
 		
 	//Constructors
@@ -31,7 +32,8 @@ class User {
 		$this->level = $info['level_id'];
 		$this->hash = $info['hash'];
 		$this->salt = $info['salt'];
-		$this->lastSeen = $info['date_last_seen'];
+		$this->last_seen = $info['date_last_seen'];
+		$this->layout_id = $info['default_layout_id'];
 		
 		$this->inventory = NULL;
 	}
@@ -66,6 +68,7 @@ class User {
 		if($this->inventory == NULL) { $this->fetchInventory(); }
 		else { $this->checkCacheUpdate(); }
 	}
+	public function getLayout() { return $this->layout_id; }
 	
 	//Predicates
 	public function canAfford($cost) {

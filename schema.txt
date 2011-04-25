@@ -169,7 +169,8 @@ CREATE TABLE users (
 	hash varchar(40),
 	salt varchar(30),
 	level_id tinyint unsigned,
-	date_last_seen datetime
+	date_last_seen datetime,
+	default_layout_id tinyint unsigned
 );
 
 CREATE TABLE inventory (
