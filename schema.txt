@@ -165,9 +165,6 @@ CREATE TABLE layouts (
 CREATE TABLE users (
 	user_id mediumint unsigned primary key auto_increment,
 	username varchar(50),
-	login varchar(50),
-	hash varchar(40),
-	salt varchar(30),
 	level_id tinyint unsigned,
 	date_last_seen datetime,
 	default_layout_id tinyint unsigned
@@ -231,3 +228,10 @@ CREATE TABLE news_comments (
 //Referrals
 //Newbie stuff
 //Random events
+
+CREATE TABLE user_login (
+	login_name varchar(50) primary key,
+	user_id mediumint unsigned,
+	hash varchar(40),
+	salt varchar(30)
+);

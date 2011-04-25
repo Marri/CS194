@@ -32,7 +32,7 @@ function throwMySQLError($errorMessage, $queryString) {
 			There was a database error! A notification has been sent to our coder, Marri, and she will look into it.
 			</div>';
 	include('./includes/footer.php');
-	echo $errorMessage;
+	echo $errorMessage . "<br>" . $queryString;
 	
 //	$id = $loggedin ? $userid : NULL;
 //	$queryString = "INSERT INTO `log_mysql_errors` (user_id, error_time, error_text, query_string) VALUES ($id, now(), '$errorMessage', '$queryString');";

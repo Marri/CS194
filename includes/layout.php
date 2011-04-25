@@ -29,10 +29,10 @@
                 	<?php if(!$loggedin) { ?>
                 	<form action="" method="post">
 						<label for="uname">Login Name:</label>
-    						<input id="uname" type="text" name="loginname" size="10" maxlength="50" />
+    						<input type="text" name="login_name" size="10" maxlength="50" />
 						<label for="pword">Password: </label>
-							<input id="pword" type="password" name="password" size="10" maxlength="20" />
-						<input type="submit" class="submit-input" value="Login" name="login" />
+							<input  type="password" name="password" size="10" maxlength="20" />
+						<input type="submit" class="submit-input" value="Login" name="logging_in" />
 					</form>
 					<form action="./register.php" method="get">
 						<input type="submit" class="submit-input" value="Register" />

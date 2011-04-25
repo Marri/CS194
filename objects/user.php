@@ -14,10 +14,7 @@ class User {
 	private
     	$id,
 		$username,
-		$login,
 		$level,
-		$hash,
-		$salt,
 		$last_seen,
 		$layout_id,
 		$inventory;
@@ -28,10 +25,7 @@ class User {
 		
 		$this->id = $info['user_id'];
 		$this->username = $info['username'];
-		$this->login = $info['login'];
 		$this->level = $info['level_id'];
-		$this->hash = $info['hash'];
-		$this->salt = $info['salt'];
 		$this->last_seen = $info['date_last_seen'];
 		$this->layout_id = $info['default_layout_id'];
 		
@@ -39,23 +33,21 @@ class User {
 	}
 	
 	public static function getUserByID($id) {
-		$query = "SELECT * FROM `users` WHERE `user_id` = $id";
-		return getUser($query);
-	}
-	
-	public static function getUserByLogin($login, $password) {
-		$query = "SELECT * FROM `users` WHERE `login` = '$login'";
-		$user = getUser($query);
-		if($user == NULL) { return NULL; }
-		$hashed = $user->secure($pass);
-		if($hashed == $user->getHash()) { return $user; }
-		return NULL;
-	}
-	
-	private static function getUser($queryString) {
+		$queryString = "SELECT * FROM `users` WHERE `user_id` = $id";
 		$query = runDBQuery($queryString);
 		if(@mysql_num_rows($query) < 1) { return NULL; }
-		return (new User($info));
+		return (new User($query));
+	}
+	
+	public static function getUserByLogin($login_name, $password) {
+		$query = "SELECT * FROM `user_login` WHERE `login_name` = '$login_name'";
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		$info = @mysql_fetch_assoc($result);
+		$hashed = self::secure($password, $info['salt']);
+		if($info['hash'] != $hashed) { return NULL; }
+		$id = $info['user_id'];
+		return self::getUserByID($id);
 	}
 	
 	//Getters and setters
@@ -96,8 +88,8 @@ class User {
     }	
 	
 	//Private methods
-	private function secure($password) {
-		$hash = sha1($password . $this->salt);
+	public static function secure($password, $salt) {
+		$hash = sha1($password . $salt);
 		for($i = 0; $i < self::SALT_LEN; $i++) {
 			$hash = sha1($hash);
 		}

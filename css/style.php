@@ -2,6 +2,7 @@
 header("Content-type: text/css");
 
 include('../objects/user.php');
+include('../includes/connect.php');	
 include('../scripts/account.php');
 
 //Retrieve layout information from session or database
@@ -9,7 +10,6 @@ $layout = NULL;
 if(isset($_SESSION['layout'])) {
 	$layout = $_SESSION['layout'];
 } else {
-	include('../includes/connect.php');	
 	$query = "SELECT * FROM `layouts` WHERE `is_default` = 'true'";
 	if($loggedin && $user->getLayout() != NULL) { $query = 'SELECT * FROM `layouts` WHERE `layout_id` = ' . $user->getLayout();	}
 	$result = runDBQuery($query);
