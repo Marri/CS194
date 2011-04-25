@@ -50,6 +50,9 @@ class User {
 		return NULL;
 	}
 	
+	public static function createNewUser($username, $password){
+		
+	}
 	private static function getUser($queryString) {
 		$query = runDBQuery($queryString);
 		if(@mysql_num_rows($query) < 1) { return NULL; }

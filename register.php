@@ -15,6 +15,6 @@ include("./includes/header.php");
 		echo "logged in";
 		session_start();
 	}
-include('./includes/footer.php');
+	
 	
 ?>
