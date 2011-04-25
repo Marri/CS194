@@ -7,9 +7,9 @@
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
     
     <link rel="shortcut icon" href="./images/icons/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="./css/style.php" type="text/css" />
-    <script type="text/javascript" src="./includes/include.php?file=jquerymin&amp;type=js"></script>
-    <script type="text/javascript" src="./includes/include.php?file=menu&amp;type=js"></script>
+    <link rel="stylesheet" href="./includes/include.php?file=style&type=php&folder=css" type="text/css" />
+    <script type="text/javascript" src="./includes/include.php?file=jquerymin&type=js"></script>
+    <script type="text/javascript" src="./includes/include.php?file=menu&type=js"></script>
     <?php 
 	if(isset($js)) {
 		foreach($js as $file) { echo '<script type="text/javascript" src="./includes/include.php?file=' . $file . '&amp;type=js"></script>'; }
@@ -52,6 +52,7 @@
             <div id='right-column'>
             	<div id='menu'>
                 	<?php
+					if(!isset($selected)) { $selected = "home"; }
                 	echo '<a href="./"';
 					if($selected == "home") { echo ' class="active"'; }
 					echo '>Home</a><a href="#"';

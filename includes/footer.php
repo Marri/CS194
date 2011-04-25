@@ -19,6 +19,6 @@
 
 <?php
 	mysql_close($con);
+	print_gzipped_page();
 	//if(isset($mobile_browser) && $mobile_browser > 0) { ob_end_flush(); }
-	//print_gzipped_page();
 ?>
