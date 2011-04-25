@@ -184,7 +184,6 @@ CREATE TABLE messages (
 	message_id int unsigned primary key auto_increment,
 	to_id mediumint unsigned,
 	from_id mediumint unsigned,
-	message_type tinyint unsigned,
 	subject varchar(127),
 	message text,
 	time_sent datetime,
