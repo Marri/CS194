@@ -53,7 +53,7 @@ class User {
 	}
 	
 	public static function createNewUser($username, $password){
-		
+		//TODO: write function that updates table with new user
 	}
 	private static function getUser($queryString) {
 		$query = runDBQuery($queryString);
