@@ -14,8 +14,8 @@ $confirm_error = "";
 if(isset($_POST['register'])){
 	$username = mysql_real_escape_string($_POST['username']);
 	$loginname = mysql_real_escape_string($_POST['login']);
-	$password = mysql_real_escape_string( $_POST['password']);
-	$confirm_pass = mysql_real_escape_string( $_POST['confirm']);
+	$password = $_POST['password'];
+	$confirm_pass = $_POST['confirm'];
 	
 	$canRegister = true;
 	if(User::usernameTaken($username)){ 
