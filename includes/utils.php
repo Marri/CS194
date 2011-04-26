@@ -20,7 +20,7 @@ function getString($varName, $default = NULL) {
 
 function randomString($len) {
 	$newString = "";
-	$for($i = 0; $i < $len; $i++) {
+	for($i = 0; $i < $len; $i++) {
 		$which = mt_rand(1, 3);
 		if($which == 1) { $let = mt_rand(48, 57); }
 		if($which == 2) { $let = mt_rand(65, 90); }

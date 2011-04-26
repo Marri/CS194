@@ -2,7 +2,7 @@
 
 class Message {
 	private 
-		$id,	$to_id, $from_id, $message_type, $subject,message, $time_sent, $is_read,$in_inbox, $in_outbox;
+		$id,	$to_id, $from_id, $message_type, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox;
 	public function __ToString(){
 		return "from: ".$this->from_id." subject: ".$this->subject." Sent: ".$this->time_sent.".";
 	}
@@ -21,7 +21,7 @@ class Message {
 	public function GetTimeSent(){
 		return $this->time_sent;
 	}
-	public static function CreateMessage($id,	$to_id, $from_id, $message_type, $subject,message, $time_sent, $is_read,$in_inbox, $in_outbox){
+	public static function CreateMessage($id, $to_id, $from_id, $message_type, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox){
 		$curr_message = new Message();
 		$curr_message->id = $id;
 		$curr_message->to_id = $messages['to_id'];
@@ -36,11 +36,24 @@ class Message {
 		return $curr_message;
 	}
 	public static function GetMessageFromID($id){
-		$query = "SELECT * FROM messages WHERE message_id='".$id."';"
+		$query = "SELECT * FROM messages WHERE message_id='".$id."';";
 		$results = runDBQuery($query);
 		while($messages = mysql_fetch_assoc($results)) {
 			return Message::CreateMessage($id, $messages['to_id'],$messages['from_id'], $messages['message_type'], $messages['subject'], $message['message'], $message['time_sent'],  $message['is_read'], $message['in_inbox'],  $message['in_outbox']);
 		}
+	}
+	
+	private static function getIDFromUsername($username){
+		$query = "SELECT user_id FROM users WHERE username='".$username."';";
+		$results = runDBQuery($query);
+		$user_ids = mysql_fetch_assoc($results);
+		return $user_ids['user_id'];
+	}
+	
+	public static function SendMessage($from_id, $to_username, $subject, $message, $message_type){
+		$curr_date = date("Y/m/d H:i:s");
+		$to_id = getIDFromUsername($to_username);
+		$query = "INSERT INTO messages ('from_id', 'to_id', 'subject', 'message', 'message_type', 'time_sent') VALUES ('".$from_id."', '".$to_id."', '".$subject."', '".$message."', '".$message_type."', '".$curr_date."');";
 	}
 }
 ?>

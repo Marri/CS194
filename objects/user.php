@@ -87,8 +87,37 @@ class User {
         runDBQuery($queryString);
     }	
 	
-	public static function createNewUser($username, $password){
-		//TODO: write function that updates table with new user
+	public static function loginNameTaken($login_name){
+		if($login_name == "") return true;
+		$queryString = "SELECT login_name FROM user_login WHERE login_name='".$login_name."';";
+		$result = runDBQuery($queryString);
+		if(@mysql_num_rows($result) > 0) {
+			return true;
+		}
+		return false;
+	}
+	/*
+	* returns an error message depending on what's wrong with the password.
+	*/
+	public static function passwordValid($password){
+		if($password == "") return "password field empty";
+		return "";
+	}
+	public static function usernameTaken($username){
+		if($username == "") return true;
+		$queryString = "SELECT username FROM users WHERE username='".$username."';";
+		$result = runDBQuery($queryString);
+		if(@mysql_num_rows($result) > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static function createNewUser($username, $password, $login_name){
+		$salt =  randomString(self::SALT_LEN);
+		$hash = self::secure($password, $salt);
+		$user_id = self::InsertIntoUserTable($username);
+		return self::InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash);
 	}
 	
 	//Private methods
@@ -98,6 +127,22 @@ class User {
 			$hash = sha1($hash);
 		}
 		return $hash;
+	}
+	/*
+	* function to insert new user into users table
+	*/
+	private static function InsertIntoUserTable($username){
+		$queryString = "INSERT INTO users (username, level_id, default_layout_id) VALUES ('".$username."', '0', '0');";
+		$result = runDBQuery($queryString);
+		return mysql_insert_id();
+	}
+	/*
+	* function to insert new user date into user_login table
+	*/
+	private static function InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash){
+		$queryString = "INSERT INTO user_login (user_id, login_name, salt, hash) VALUES ('".$user_id."', '".$login_name."', '".$salt."','".$hash."');";
+		$result = runDBQuery($queryString);
+		return $result;
 	}
 }
 ?>

@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set("America/Los_Angeles");
+include('./includes/utils.php');
 include('./includes/gzip.php'); //Compresss files
 include('./includes/connect.php'); //Connect to the database
 include('./objects/user.php'); //Class defining the object representing the current user
