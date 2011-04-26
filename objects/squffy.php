@@ -10,6 +10,8 @@ class Squffy {
 	const FETCH_DEGREE = 4;
 	const FETCH_FAMILY = 5;
 	const FETCH_SPECIES = 7;
+	
+	const HEALING_TRAIT = 6;
   
 	private
 		$id,
@@ -76,6 +78,7 @@ class Squffy {
 		$this->is_in_market = $info['is_in_market'];
 		$this->degree_type = $info['degree_type'];
 		$this->degree_id = $info['squffy_degree'];
+		$this->mate_id = $info['mate_id'];
 		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
@@ -144,6 +147,7 @@ class Squffy {
 	public function getDegreeName() { return $this->degree_name; }
 	public function getDegreeType() { return $this->degree_type; }
 	public function getOwnerID() { return $this->owner_id; }
+	public function getMateID() { return $this->mate_id; }
 	public function getAppearanceTraits() { return $this->appearance_traits; }
 	public function getPersonalityTraits() { return $this->personality_traits; }
 	public function getItems() { return $this->items; }
@@ -165,6 +169,14 @@ class Squffy {
 	public function isInMarket() { return $this->is_in_market; }
 	public function isStudent() { return $this->getDegreeType() == 'Apprentice'; }
 	
+	public function hasMate() { return $this->mate_id > 0; }
+	public function hasStrength($trait) { 
+		return $this->personality_traits['strength1'] == $trait || $this->personality_traits['strength2'] == $trait;
+	}
+	public function hasWeakness($trait) { 
+		return $this->personality_traits['weakness1'] == $trait || $this->personality_traits['weakness2'] == $trait;
+	}
+	
 	public function isAbleToWork($user) {
 		if($this->isPregnant()) { return false; }
 		if($this->isSick()) { return false; }
@@ -176,7 +188,15 @@ class Squffy {
 		return true;
 	}
 	
-	//Public methods
+	//Public methods	
+	public function setMate($mate) {		
+		$query = "UPDATE `squffies` 
+		SET `mate_id` = " . $mate->getID() . "
+		WHERE `squffy_id` = " . $this->id;
+		runDBQuery($query);
+		$this->mate_id = $mate->getID();
+	}
+	
 	public function startDegree($degree) {
 		$this->degree_type = 'Apprentice';
 		$this->degree_id = $degree;
@@ -187,6 +207,8 @@ class Squffy {
 		runDBQuery($query);
 		
 		$date = time() + 60 * 60 * 24 * 5;
+		if($this->hasStrength(Personality::SCHOOL_TRAIT)) { $date += Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
+		if($this->hasWeakness(Personality::SCHOOL_TRAIT)) { $date -= Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
 		$query = 'INSERT INTO `degree_progress` (squffy_id, date_finished) VALUES (' . $this->id . ', ' . date("Y-m-d h:m:s",$date) . ')';
 		runDBQuery($query);
 	}
@@ -203,10 +225,14 @@ class Squffy {
 		if($this->hunger < 1 && $this->$chromosome > 99) { return; }
 		
 		$chromosomeIncrease = $food->getChromosomeIncrease();
+		if($this->hasStrength(Personality::CHROMOSOME_TRAIT)) { $chromosomeIncrease += Personality::CHROMOSOME_CHANGE; }
+		if($this->hasWeakness(Personality::CHROMOSOME_TRAIT)) { $chromosomeIncrease -= Personality::CHROMOSOME_CHANGE; }
 		$this->$chromosome += $chromosomeIncrease;
 		if($this->$chromosome > 100) { $this->$chromosome = 100; }
 		
 		$hungerDecrease = $food->getHungerDecrease();
+		if($this->hasStrength(Personality::HUNGER_TRAIT)) { $hungerDecrease += Personality::HUNGER_CHANGE; }
+		if($this->hasWeakness(Personality::HUNGER_TRAIT)) { $hungerDecrease -= Personality::HUNGER_CHANGE; }
 		$this->hunger -= $hungerDecrease;
 		if($this->hunger < 0) { $this->hunger = 0; }
 		
@@ -218,6 +244,8 @@ class Squffy {
 	
 	public function heal($doctor) {
 		$this->health += mt_rand(10, 20);
+		if($doctor->hasStrength(Personality::HEAL_TRAIT)) { $this->health += Personality::HEALING_CHANGE; }
+		if($doctor->hasWeakness(Personality::HEAL_TRAIT)) { $this->health -= Personality::HEALING_CHANGE; }
 		if($this->health > 100) { $this->health = 100; }
 		$query = 'UPDATE `squffies` SET `health` = ' . $this->health . ' WHERE `squffy_id` = ' . $this->id;
 		runDBQuery($query);

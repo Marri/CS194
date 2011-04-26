@@ -29,4 +29,11 @@ function randomString($len) {
 	}
 	return $newString;
 }
+
+function displayErrors($errors) {
+	if(sizeof($errors) < 1) { return; }
+	echo '<div class="errors">';
+	foreach($errors as $error) { echo $error . '<br />'; }
+	echo '</div>';
+}
 ?>
