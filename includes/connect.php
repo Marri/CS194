@@ -28,11 +28,11 @@ function runDBQuery($queryString) {
 //Handle database errors
 function throwMySQLError($errorMessage, $queryString) {
 	include_once('./includes/header.php');
-	echo '<div class="errors">
+	echo '<div class="errors">	'. $errorMessage . "<br>" . $queryString.'
 			There was a database error! A notification has been sent to our coder, Marri, and she will look into it.
 			</div>';
 	include('./includes/footer.php');
-	echo $errorMessage . "<br>" . $queryString;
+
 	
 //	$id = $loggedin ? $userid : NULL;
 //	$queryString = "INSERT INTO `log_mysql_errors` (user_id, error_time, error_text, query_string) VALUES ($id, now(), '$errorMessage', '$queryString');";
