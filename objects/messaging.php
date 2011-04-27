@@ -2,7 +2,7 @@
 
 class Message {
 	private 
-		$id,	$to_id, $from_id, $message_type, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox;
+		$id,	$to_id, $from_id, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox;
 	public function __ToString(){
 		return "from: ".$this->from_id." subject: ".$this->subject." Sent: ".$this->time_sent.".";
 	}
@@ -21,18 +21,17 @@ class Message {
 	public function GetTimeSent(){
 		return $this->time_sent;
 	}
-	public static function CreateMessage($id, $to_id, $from_id, $message_type, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox){
+	public static function GetMessage($id, $to_id, $from_id, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox){
 		$curr_message = new Message();
 		$curr_message->id = $id;
-		$curr_message->to_id = $messages['to_id'];
-		$curr_message->from_id = $messages['from_id'];
-		$curr_message->message_type = $messages['message_type'];
-		$curr_message->subject = $messages['subject'];
-		$curr_message->message = $message['message'];
-		$curr_message->time_sent = $message['time_sent'];
-		$curr_message->is_sent = $message['is_read'];
-		$curr_message->in_inbox = $message['in_inbox'];
-		$curr_message->in_outbox = $message['in_outbox'];
+		$curr_message->to_id = $to_id;
+		$curr_message->from_id = $from_id;
+		$curr_message->subject = $subject;
+		$curr_message->message = $message;
+		$curr_message->time_sent = $time_sent;
+		$curr_message->is_sent = $is_read;
+		$curr_message->in_inbox = $in_inbox;
+		$curr_message->in_outbox = $in_outbox;
 		return $curr_message;
 	}
 	public static function GetMessageFromID($id){
@@ -50,10 +49,15 @@ class Message {
 		return $user_ids['user_id'];
 	}
 	
-	public static function SendMessage($from_id, $to_username, $subject, $message, $message_type){
+	public static function SendMessage($from_id, $to_username, $subject, $message){
 		$curr_date = date("Y/m/d H:i:s");
-		$to_id = getIDFromUsername($to_username);
-		$query = "INSERT INTO messages ('from_id', 'to_id', 'subject', 'message', 'message_type', 'time_sent') VALUES ('".$from_id."', '".$to_id."', '".$subject."', '".$message."', '".$message_type."', '".$curr_date."');";
+		$to_id = self::getIDFromUsername($to_username);
+		if($to_id > 0){
+			$query = "INSERT INTO messages (from_id, to_id, subject, message, time_sent) VALUES ('".$from_id."', '".$to_id."', '".$subject."', '".$message."', '".$curr_date."');";
+			runDBQuery($query);
+			return "message sent";
+		}
+		return "username invalid";
 	}
 }
 ?>

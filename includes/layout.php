@@ -27,7 +27,7 @@
             <div id='left-column'>
             	<div id='side-menu'>
                 	<?php if(!$loggedin) { ?>
-                	<form action="" method="post">
+                	<form action="index.php" method="post">
 						<label for="uname">Login Name:</label>
     						<input type="text" name="login_name" size="10" maxlength="50" />
 						<label for="pword">Password: </label>
@@ -39,7 +39,7 @@
 					</form>
                     <?php } else { ?>
                     <form action="" method="post">
-						<input type="submit" name="logout" class="submit-input" value="Logout" />
+						<input type="submit" name="logging_out" class="submit-input" value="Logout" />
 					</form>
                     <?php } ?>
                 </div>
