@@ -41,6 +41,7 @@
                     <form action="" method="post">
 						<input type="submit" name="logging_out" class="submit-input" value="Logout" />
 					</form>
+                    <a href="sitemap.php">Sitemap</a>
                     <?php } ?>
                 </div>
                 <div id='time'>

@@ -37,6 +37,11 @@ if(isset($_POST['breed'])) {
 		$valid = false;
 	}
 	
+	if($squffy->getMateID() != $mate_id) {
+		$errors[] = "Mated squffies can only breed to their mate.";
+		$valid = false;
+	}
+	
 	$male = NULL;
 	$female = NULL;
 	if($squffy->getGender() == 'M') {

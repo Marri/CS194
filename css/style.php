@@ -54,6 +54,7 @@ body, html {
 .width200 { width: 200px; }
 .width300 { width: 300px; }
 .width400 { width: 400px; }
+.width450 { width: 450px; }
 
 .div-center { margin: 0px auto; }
 .float-left { float: left; }
@@ -346,4 +347,36 @@ body > #left-column {
 #footer a:visited {
 	color: #000099;
     font-weight: normal;
+}
+
+/* Content displaying stuff. TEMP */
+.content-table {
+	border: 0px;
+    width: 100%;
+}
+
+.content-header {
+	height: 30px;
+    font-size: 18px;
+    padding: 0px;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    border: 2px #000000 solid;
+    margin: 0px;
+    color: #000000;
+    font-weight: bold;
+    background-image: url(../images/layouts/<?php echo $layout['folder']; ?>/titleback.png); 
+    background-repeat: repeat-x;
+}
+
+.content-subheader {
+	height: 30px;
+    background-image: url(../images/layouts/<?php echo $layout['folder']; ?>/titleback.png); 
+    background-repeat: repeat-x;
+    text-transform: uppercase;
+    text-align: center;
+    border: 2px #000000 solid;
+    margin: 0px;
+    padding: 0px;
 }

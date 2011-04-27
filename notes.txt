@@ -6,6 +6,7 @@ Write user and cost and food objects
 Squffy::heal should be updated with payment
 Squffy::createChild($mom, $dad, $owner) needs to be written
 User::setLevel($levelID) needs to be written
+Add badges to copiable
 
 Traits:
 Soothing presence (better at doctor and midwife)

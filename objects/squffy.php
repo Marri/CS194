@@ -63,9 +63,8 @@ class Squffy {
 		$hire_price; //what it costs for non-owners to hire		
 		
 	//Constructors
-	public function __construct($result) {
+	public function __construct($info) {
 		//Fill in all data from the database result
-		$info = @mysql_fetch_assoc($result);
 		$this->id = $info['squffy_id'];
 		$this->owner_id = $info['squffy_owner'];		
 		$this->name = $info['squffy_name'];
@@ -117,11 +116,21 @@ class Squffy {
 		}
 	}
 	
+	public static function getSquffies($query) {
+		$result = runDBQuery($query);
+		$results = array();
+		while($info = @mysql_fetch_assoc($result)) {
+			$results[] = new Squffy($info);
+		}
+		return $results;
+	}
+	
 	public static function getSquffyByID($id) {
 		$queryString = 'SELECT * FROM `squffies` WHERE squffies.`squffy_id` = ' . $id;
 		$result = runDBQuery($queryString);
 		if(@mysql_num_rows($result) < 1) { return NULL; }
-		return new Squffy($result);
+		$info = @mysql_fetch_assoc($result);
+		return new Squffy($info);
 	}
 	
 	public static function getSquffyByIDExtended($id, array $options) {
@@ -131,7 +140,8 @@ class Squffy {
 		if(in_array(self::FETCH_DEGREE, $options)) { $queryString .= ' LEFT JOIN degrees ON degrees.degree_id = squffies.squffy_degree'; }
 		$queryString .= ' WHERE squffies.`squffy_id` = ' . $id;
 		$result = runDBQuery($queryString);
-		$squffy = new Squffy($result);
+		$info = @mysql_fetch_assoc($result);
+		$squffy = new Squffy($info);
 		
 		if(in_array(self::FETCH_FULL_APPEARANCE, $options)) { $squffy->fetchFullAppearance(); }
 		else if(in_array(self::FETCH_APPEARANCE, $options)) { $squffy->fetchAppearance(); }
@@ -168,14 +178,14 @@ class Squffy {
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
 	
 	//Predicates
-	public function isPregnant() { return $this->is_pregnant; }
+	public function isPregnant() { return $this->is_pregnant == "true"; }
 	public function isSick() { return $this->health < self::SICK; }
 	public function isHungry() { return $this->hunger > self::HUNGRY; }
-	public function isWorking() { return $this->is_working; }
-	public function isHireable() { return $this->is_hireable; }
-	public function isBreedable() { return $this->is_breedable; }	
-	public function isCustom() { return $this->is_custom; }
-	public function isInMarket() { return $this->is_in_market; }
+	public function isWorking() { return $this->is_working == "true"; }
+	public function isHireable() { return $this->is_hireable == "true"; }
+	public function isBreedable() { return $this->is_breedable == "true"; }	
+	public function isCustom() { return $this->is_custom == "true"; }
+	public function isInMarket() { return $this->is_in_market == "true"; }
 	public function isStudent() { return $this->getDegreeType() == 'Apprentice'; }
 	
 	public function hasMate() { return $this->mate_id > 0; }

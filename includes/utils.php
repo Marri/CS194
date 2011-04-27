@@ -5,7 +5,7 @@ function pluralize($string) {
 	return $string . "'s";
 }
 
-function getID($varName, $curUser = 0, $error = "This ID does not exist") {
+function getID($varName, $curUser = 0) {
 	$id = 0;
 	if(isset($_GET[$varName])) { $id = $_GET[$varName]; }
 	if($id == 0 && $curUser > 0) { $id = $curUser; }
