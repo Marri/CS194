@@ -1,8 +1,10 @@
 <?php
 
+
+//Forum classes
 class Post{
 	private
-		$id, $thread_id, $board_id, $poster_id, $poster_name, $post_time,$edit_time, $post_text, $deleted;
+		$id, $thread_id, $board_id, $poster_id, $poster_name, $post_time,$edit_time, $post_text;
 	//private static function Update
 	public static function UpdatePostText($post_id, $updated_text){
 		$query = "UPDATE post_text SET post_text='".$updated_text."' WHERE post_id = '".$post_id."';";
@@ -13,7 +15,17 @@ class Post{
 		$query = "UPDATE posts SET edit_time='".$curr_date."' WHERE post_id = '".$post_id."';";
 		$result = runDBQuery($query);
 	}
-	public static function CreatePostFromAttributes($id, $thread_id, $board_id, $poster_id, $poster_name, $post_time,$edit_time, $post_text, $deleted){
+	public static function getLastTenPosts($user_id){
+		$query = "SELECT posts.post_id, posts.thread_id, posts.board_id, posts.poster_id, posts.poster_name, posts.post_time, posts.edit_time, post_text.post_text FROM posts INNER JOIN post_text ON posts.post_id=post_text.post_id WHERE posts.poster_id = '".$user_id."' LIMIT 0 , 10;";
+		$results = runDBQuery($query);
+		$post_array = array();
+		while($posts = mysql_fetch_assoc($results)) {
+			$curr_post = Post::CreatePostFromAttributes($posts['post_id'],$posts['thread_id'],$posts['board_id'], $posts['poster_id'], $posts['poster_name'],$posts['post_time'], $posts['edit_time'], $posts['post_text']);
+			$post_array[] = $curr_post;
+		}
+		return $post_array;
+	}
+	public static function CreatePostFromAttributes($id, $thread_id, $board_id, $poster_id, $poster_name, $post_time,$edit_time, $post_text){
 		$post = new Post();
 		$post->id = $id;
 		$post->thread_id = $thread_id;
@@ -22,27 +34,25 @@ class Post{
 		$post->poster_name = $poster_name;
 		$post->post_time = $post_time;
 		$post->edit_time = $edit_time;
-		$post->post_id = $post_id;
 		$post->post_text = $post_text;
-		$post->deleted = $deleted;
-		
+				
 		return $post;
 	}
 	public static function GetPostFromID($post_id){
-		$query = "SELECT posts.post_id, posts.thread_id, posts.board_id, posts.poster_id, posts.poster_name, posts.post_time, posts.edit_time, posts.deleted, post_text.post_text FROM posts INNER JOIN post_text ON posts.post_id=post_text.post_id WHERE posts.post_id = '".$post_id."'";
+		$query = "SELECT posts.post_id, posts.thread_id, posts.board_id, posts.poster_id, posts.poster_name, posts.post_time, posts.edit_time, post_text.post_text FROM posts INNER JOIN post_text ON posts.post_id=post_text.post_id WHERE posts.post_id = '".$post_id."'";
 		$results = runDBQuery($query);
 		while($posts = mysql_fetch_assoc($results)) {
-			$curr_post = Post::CreatePostFromAttributes($posts['post_id'],$posts['thread_id'],$posts['board_id'], $posts['poster_id'], $posts['poster_name'],$posts['post_time'], $posts['edit_time'], $posts['post_text'], $posts['deleted']);
+			$curr_post = Post::CreatePostFromAttributes($posts['post_id'],$posts['thread_id'],$posts['board_id'], $posts['poster_id'], $posts['poster_name'],$posts['post_time'], $posts['edit_time'], $posts['post_text']);
 			return $curr_post;
 		}
 	}
 	public static function DeletePost($post_id){
 		$query = "UPDATE posts SET deleted = 'true' WHERE post_id = '".$post_id."';";
-		echo $query;
+		
 		$result = runDBQuery($query);
 	}
 	public function __toString(){
-		return $this->id.'  "'.$this->post_text.'" posted by '.$this->poster_name.' on '.$this->post_time.'. It is '.$this->deleted.' that this is deleted and was lasted edited on '.$this->edit_time;
+		return $this->id.'  "'.$this->post_text.'" posted by '.$this->poster_name.' on '.$this->post_time.'.  last edited on '.$this->edit_time;
 	}
 	public function GetID(){
 		return $this->id;
@@ -71,7 +81,7 @@ class Post{
 	public static function CreatePost($poster_id, $poster_name, $board_id, $thread_id, $post_text){
 		$curr_date = date("Y/m/d H:i:s");
 		
-		$query = "INSERT INTO posts (thread_id, board_id, poster_name, poster_id, post_time, edit_time, deleted) VALUES ('".$thread_id."','".$board_id."','".$poster_name."', '".$poster_id."', '".$curr_date."', '".$curr_date."', 'false');";
+		$query = "INSERT INTO posts (thread_id, board_id, poster_name, poster_id, post_time, edit_time) VALUES ('".$thread_id."','".$board_id."','".$poster_name."', '".$poster_id."', '".$curr_date."', '".$curr_date."');";
 		//echo $query;
 		$result = runDBQuery($query);
 		$post_id =  mysql_insert_id();
@@ -80,6 +90,8 @@ class Post{
 		$query = "INSERT INTO post_text (post_text, post_id) VALUES ('".$post_text."', '".$post_id."');";
 		$result = runDBQuery($query);
 		
+		$query = "UPDATE boards JOIN threads ON threads.board_id=boards.board_id SET boards.last_post_id='".$poster_id."', threads.time_updated='".$curr_date."' WHERE threads.thread_id='".$thread_id."';";
+		$result = runDBQuery($query);
 	}
 	
 }
@@ -90,10 +102,10 @@ class Thread{
 		return $this->post_list;
 	}
 	public function LoadPosts(){
-		$query = "SELECT posts.post_id, posts.thread_id, posts.board_id, posts.poster_id, posts.poster_name, posts.post_time, posts.edit_time, posts.deleted, post_text.post_text FROM posts INNER JOIN post_text ON posts.post_id=post_text.post_id WHERE thread_id = '".$this->id."' ORDER BY posts.post_time";
+		$query = "SELECT posts.post_id, posts.thread_id, posts.board_id, posts.poster_id, posts.poster_name, posts.post_time, posts.edit_time, post_text.post_text FROM posts INNER JOIN post_text ON posts.post_id=post_text.post_id WHERE thread_id = '".$this->id."' ORDER BY posts.post_time";
 		$results = runDBQuery($query);
 		while($posts = mysql_fetch_assoc($results)) {
-			$curr_post = Post::CreatePostFromAttributes($posts['post_id'],$posts['thread_id'],$posts['board_id'], $posts['poster_id'], $posts['poster_name'],$posts['post_time'], $posts['edit_time'], $posts['post_text'], $posts['deleted']);
+			$curr_post = Post::CreatePostFromAttributes($posts['post_id'],$posts['thread_id'],$posts['board_id'], $posts['poster_id'], $posts['poster_name'],$posts['post_time'], $posts['edit_time'], $posts['post_text']);
 			array_push($this->post_list, $curr_post);
 		}
 	}
@@ -124,6 +136,9 @@ class Thread{
 		$curr_date = date("Y/m/d H:i:s");
 		$query = "INSERT INTO threads (board_id, thread_name, poster_id, thread_text, num_replies, sticky, time_posted, time_updated) VALUES ('".$board_id."','".$thread_name."', '".$poster_id."', '".$thread_text."', 0,".$sticky.", '".$curr_date."', '".$curr_date."');";
 		$result = runDBQuery($query);
+		$thread_id =  mysql_insert_id();
+		$poster = User::getUserByID($poster_id);
+		Post::CreatePost($poster_id, $poster->getUsername(), $board_id, $thread_id, $thread_text);
 	}
 	/*
 	* This sets the delete column for the given thread to true
@@ -249,7 +264,7 @@ class Board{
 			$curr_board->setNumThreads($boards['num_threads']);
 			$curr_board->setNumPosts($boards['num_posts']);
 			$curr_board->setAuthView($boards['auth_view']);
-			$curr_board->setAnonPost($boards['anonynous_post']);
+			$curr_board->setAnonPost($boards['anonymous_posting']);
 		}
 		return $curr_board;
 	}
@@ -345,7 +360,7 @@ class SubForum {
 			$curr_board->setNumThreads($boards['num_threads']);
 			$curr_board->setNumPosts($boards['num_posts']);
 			$curr_board->setAuthView($boards['auth_view']);
-			$curr_board->setAnonPost($boards['anonynous_post']);
+			$curr_board->setAnonPost($boards['anonymous_posting']);
 			array_push($this->board_list, $curr_board);
 		}
 	}
@@ -372,5 +387,6 @@ class Forum{
 	public function getSubForums(){
 		return $this->subforum_list;
 	}
+	
 }
 ?>

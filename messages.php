@@ -3,6 +3,7 @@ include("./includes/header.php");
 include("./objects/messaging.php");
 ?>
 <h1> Messages</h1>
+
 <?php
 if($loggedin){
 	if(isset($_POST['send'])){
@@ -12,25 +13,59 @@ if($loggedin){
 		$message_text = mysql_real_escape_string($_POST['message_text']);
 		echo Message::SendMessage($userid, $to_username, $subject, $message_text);
 	}
-	$message_list = array();
+	$message_list = Message::GetUserMessages($userid);
 	
-	$query = "SELECT * FROM messages WHERE to_id = '".$userid."';";
-	$results = runDBQuery($query);
-	
-	while($messages = mysql_fetch_assoc($results)) {
-		$curr_message = Message::GetMessage($userid, $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
-		array_push($message_list, $curr_message);
-	}
-	
-	for($i = 0; $i < count($message_list); $i++){
-		echo $message_list[$i];
-	}
+	echo "<table border='1'><tr><th>Subject </th><th>From </th><th> Sent </th></tr>";
+	for($i = 0; $i < sizeof($message_list); $i++){
+		$curr_message = $message_list[$i];
+		$sender = User::getUserByID($curr_message->GetFromID());
 
+		?>
+		
+		<tr>
+			<td><?php echo $curr_message->GetSubject();?></td>
+			<td><?php echo $sender->getUsername()?></td>
+			<td><?php echo $curr_message->GetTimeSent()?></td>
+		</tr>
 
+		
+		<?php 
+	}
+	echo "</table>";
+	
 ?>
+	<h2>Sent Messages</h2>
+<?php
+	$sent_list = Message::GetUserSentMessages($userid);
 	
+	echo "<table border='1'><tr><th>Subject </th><th>To </th><th> Sent </th></tr>";
+	for($i = 0; $i < sizeof($sent_list); $i++){
+		$curr_message = $sent_list[$i];
+		$sender = User::getUserByID($curr_message->GetToID());
+
+		?>
+		
+		<tr>
+			<td><?php echo $curr_message->GetSubject();?></td>
+			<td><?php echo $sender->getUsername()?></td>
+			<td><?php echo $curr_message->GetTimeSent()?></td>
+			<td>
+				<form action="reply.php" method="post">
+					<input type="hidden" name="to_id" value="<?php echo $curr_message->GetFromID(); ?>">
+					<input type="hidden" name="to_username" value="<?php echo $sender->getUsername(); ?>">
+					<input name="subject" type="hidden" value="<?php echo $curr_message->GetSubject(); ?>"/>
+					<input name="reply" type="submit" value="Reply">
+				</form>
+			</td>
+		</tr>
+
+		
+		<?php 
+	}
+	echo "</table>";	
+?>
 	<h2> Create New Message</h2>
-	<form action="messages.php" method="post">
+	<form action="" method="post">
 		<br><label id="toLabel">To: </label><input name="to_username" type="text"/></br>
 		<br><label id="subjectLabel">Subject: </label><input name="subject" type="text"/></br>
 		<br><label id="messageLabel">Message: </label></br>

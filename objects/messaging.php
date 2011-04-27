@@ -59,5 +59,29 @@ class Message {
 		}
 		return "username invalid";
 	}
+	public static function GetUserMessages($userid){
+		$message_list = array();
+		$query = "SELECT * FROM messages WHERE to_id = '".$userid."';";
+		$results = runDBQuery($query);
+		
+		while($messages = mysql_fetch_assoc($results)) {
+			$curr_message = self::GetMessage($userid, $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
+			array_push($message_list, $curr_message);
+		}
+		return $message_list;
+	}
+	public static function GetUserSentMessages($userid){
+		$message_list = array();
+		$query = "SELECT * FROM messages WHERE from_id = '".$userid."';";
+		$results = runDBQuery($query);
+		
+		while($messages = mysql_fetch_assoc($results)) {
+			$curr_message = self::GetMessage($userid, $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
+			array_push($message_list, $curr_message);
+		}
+		return $message_list;
+	}
+
+
 }
 ?>
