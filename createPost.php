@@ -4,13 +4,7 @@
 	
 	
 
-	$post_text = $_GET["post_text"];
-	$board_id = $_GET["board_id"];
-	$poster_id = $_GET["poster_id"];
-	$thread_id = $_GET["thread_id"];
 	
-		//echo $poster_id;
-		$post = Post::CreatePost($poster_id, "Mr Dev Man", $board_id, $thread_id, $post_text);
 	
 ?>
 

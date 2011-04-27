@@ -58,6 +58,7 @@ class User {
 		else { $this->checkCacheUpdate(); }
 	}
 	public function getLayout() { return $this->layout_id; }
+	public function getUsername(){ return $this->username; }
 	
 	//Predicates
 	public function canAfford($cost) {
