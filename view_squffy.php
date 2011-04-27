@@ -3,47 +3,71 @@ $selected = "squffies";
 include("./includes/header.php");
 include('./objects/squffy.php');
 
-$errors = array();
 $id = $_GET['id'];
-$squffy = Squffy::getSquffyByIDExtended($id, 
-array(
-Squffy::FETCH_FAMILY, 
-Squffy::FETCH_FULL_APPEARANCE, 
-Squffy::FETCH_PERSONALITY, 
-Squffy::FETCH_SPECIES, 
-Squffy::FETCH_ITEMS, 
-Squffy::FETCH_DEGREE));
+$squffy = Squffy::getSquffyByIDExtended
+	($id, 
+	array(
+		Squffy::FETCH_FAMILY, 
+		Squffy::FETCH_FULL_APPEARANCE, 
+		Squffy::FETCH_PERSONALITY, 
+		Squffy::FETCH_SPECIES, 
+		Squffy::FETCH_ITEMS, 
+		Squffy::FETCH_DEGREE
+	)
+);
 
-if(isset($_POST['set_mate'])) {
-	$valid = true;
-	if($squffy->hasMate()) { 
-		$errors[] = $squffy->getName() . " already has a mate."; 
-		$valid = false;
-	}
-	$mate_id = $_POST['mate_id'];
-	$mate = Squffy::getSquffyByID($mate_id);
-	if($mate->hasMate()) { 
-		$errors[] = $mate->getName() . " already has a mate.";
-		$valid = false;
-	}
-	if($valid) {
-		$mate->setMate($squffy);
-		$squffy->setMate($mate);
-	}
-}
-
+$errors = array();
+$notices = array();
+include('./scripts/squffy_actions.php');
 displayErrors($errors);
+displayNotices($notices);
 
-echo '<h1>' . $squffy->getName() . '</h1>';
+echo '<a href="http://127.0.0.1/view_squffy.php?id=112"><h1>' . $squffy->getName() . '</h1></a>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+ID: <input type="text" name="mate_id" length="10" />
+<input type="submit" name="breed" value="Breed to" />
+</form>';
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="mate_id" length="10" />
 <input type="submit" name="set_mate" value="Set mate" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+ID: <input type="text" name="doctor_id" length="10" />
+<input type="submit" name="heal" value="Get healed by" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="farming" value="Set as farmer" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="foresting" value="Set as forester" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="teaching" value="Set as teacher" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="nursemaiding" value="Set as nursemaid" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="doctoring" value="Set as doctor" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="midwifeing" value="Set as midwife" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="cooking" value="Set as cook" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="baking" value="Set as baker" />
+</form>';
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+<input type="submit" name="building" value="Set as builder" />
 </form>';
 
 //Debug
 echo '<br><br>';
 echo '<br><br>';
 echo 'id '. $squffy->getID() . '<br>';
+echo 'health '. $squffy->getHealth() . '<br>';
 echo 'mate '. $squffy->getMateID() . '<br>';
 echo 'age '. $squffy->getAge() . '<br>';
 echo 'species id '. $squffy->getSpeciesID() . '<br>';

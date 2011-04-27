@@ -36,4 +36,11 @@ function displayErrors($errors) {
 	foreach($errors as $error) { echo $error . '<br />'; }
 	echo '</div>';
 }
+
+function displayNotices($notices) {
+	if(sizeof($notices) < 1) { return; }
+	echo '<div class="success">';
+	foreach($notices as $notice) { echo $notice . '<br />'; }
+	echo '</div>';
+}
 ?>

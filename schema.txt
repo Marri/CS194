@@ -149,11 +149,6 @@ CREATE TABLE degrees (
 	degree_name varchar(50)
 );
 
-CREATE TABLE degree_progress (
-	squffy_id int unsigned,
-	date_finished datetime
-);
-
 CREATE TABLE layouts (
 	layout_id tinyint unsigned primary key auto_increment,
 	layout_name varchar(50),
@@ -296,6 +291,35 @@ CREATE TABLE newbie_packs (
 	species enum('Unchosen', 'Tree', 'Ground') default 'Unchosen',
 	items_claimed enum('true', 'false') default 'false',
 	squffy_made enum('true', 'false') default 'false',
+);
+
+CREATE TABLE degree_progress (
+	squffy_id int unsigned,
+	teacher_id int unsigned,
+	date_finished datetime
+);
+
+CREATE TABLE jobs_doctor (
+	patient_id int unsigned,
+	doctor_id int unsigned,
+	date_finished datetime
+);
+
+CREATE TABLE jobs_farming (
+	farmer_id int unsigned,
+	farm_id int unsigned,
+	chore_type enum('Plow', 'Fertilize', 'Plant', 'Water', 'Weed', 'Harvest', 'Clear'),
+	date_finished datetime
+);
+
+CREATE TABLE farms (
+	farm_id int unsigned primary key auto_increment,
+	farm_name varchar(50),
+	user_id mediumint unsigned,
+	food_id smallint unsigned,
+	cur_state enum('Empty', 'Plowed', 'Fertilized', 'Planted', 'Grown', 'Dead'),
+	dryness tinyint unsigned default '0',
+	weeds tinyint unsigned default '0'
 );
 
 //Tables for all jobs that need them

@@ -1,7 +1,10 @@
 <?php
+include('./objects/personality.php');
+
 class Squffy {
 	const SICK = 50;
 	const HUNGRY = 50;
+	const DAYS_PREG = 5;
 	
 	const FETCH_APPEARANCE = 1;
 	const FETCH_FULL_APPEARANCE = 6;
@@ -30,13 +33,18 @@ class Squffy {
 		$personality_traits,
 		$family_tree, //More info required from other tables		
 		$species_id,
-		
 		$species,
+		$degree_id,
+		$degree_type,
+		$degree_name,
+		$mate_id,		
 		$hunger,
 		$health,
 		$energy,
 		$happiness,
 		$luck,
+		$items,
+		
 		$c1,
 		$c2,
 		$c3,
@@ -48,26 +56,20 @@ class Squffy {
 		$base_color,
 		$eye_color,
 		$foot_color,
-		$mate_id,
 		$breeding_rights, //user id of user with breeding rights
 		$rights_revert, //date and time breeding rights revert to owner
 		$num_items,		
 		$breed_price, //what it costs for non-owners to breed
-		$hire_price, //what it costs for non-owners to hire		
-		$items,
-		$degree_id,
-		$degree_type,
-		$degree_name;
+		$hire_price; //what it costs for non-owners to hire		
 		
 	//Constructors
 	public function __construct($result) {
 		//Fill in all data from the database result
 		$info = @mysql_fetch_assoc($result);
 		$this->id = $info['squffy_id'];
-		$this->owner_id = $info['squffy_owner'];
+		$this->owner_id = $info['squffy_owner'];		
 		$this->name = $info['squffy_name'];
 		$this->gender = $info['squffy_gender'];
-		$this->species_id = $info['squffy_species'];
 		$this->birthday = $info['squffy_birthday'];
 		$this->age = floor((time() - strtotime($this->birthday)) / (24 * 3600));
 		$this->is_pregnant = $info['is_pregnant'];
@@ -75,10 +77,16 @@ class Squffy {
 		$this->is_breedable = $info['is_breedable'];
 		$this->is_hireable = $info['is_hireable'];
 		$this->is_working = $info['is_working'];
-		$this->is_in_market = $info['is_in_market'];
+		$this->is_in_market = $info['is_in_market'];		
+		$this->species_id = $info['squffy_species'];		
 		$this->degree_type = $info['degree_type'];
 		$this->degree_id = $info['squffy_degree'];
 		$this->mate_id = $info['mate_id'];
+		$this->hunger = $info['hunger'];
+		$this->health = $info['health'];
+		$this->energy = $info['energy'];
+		$this->happiness = $info['happiness'];
+		$this->luck = $info['luck'];
 		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
@@ -110,14 +118,15 @@ class Squffy {
 	}
 	
 	public static function getSquffyByID($id) {
-		$queryString = 'SELECT * FROM `squffies` WHERE `squffy_id` = ' . $id;
+		$queryString = 'SELECT * FROM `squffies` WHERE squffies.`squffy_id` = ' . $id;
 		$result = runDBQuery($queryString);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
 		return new Squffy($result);
 	}
 	
 	public static function getSquffyByIDExtended($id, array $options) {
-		$queryString = 'SELECT * FROM `squffies`';
-		if(in_array(self::FETCH_FAMILY, $options)) { $queryString .= ' JOIN squffy_family ON squffy_family.squffy_id = ' . $id; }
+		$queryString = 'SELECT *, squffies.squffy_id as squffy_id FROM `squffies`';
+		if(in_array(self::FETCH_FAMILY, $options)) { $queryString .= ' LEFT JOIN squffy_family ON squffy_family.squffy_id = ' . $id; }
 		if(in_array(self::FETCH_SPECIES, $options)) { $queryString .= ' JOIN species ON species.species_id = squffies.squffy_species'; }
 		if(in_array(self::FETCH_DEGREE, $options)) { $queryString .= ' LEFT JOIN degrees ON degrees.degree_id = squffies.squffy_degree'; }
 		$queryString .= ' WHERE squffies.`squffy_id` = ' . $id;
@@ -189,6 +198,17 @@ class Squffy {
 	}
 	
 	//Public methods	
+	public function breedTo($male, $userid) {
+		$dateOfBirth = time() + 60 * 60 * 24 * self::DAYS_PREG;
+		$query = 
+			"INSERT INTO `pregnancies` (mother_id, father_id, user_id, date_birth)
+			VALUES (" . $this->id . ", " . $male->getID() . ", $userid, '$dateOfBirth')";
+		runDBQuery($query);
+		
+		$query = "UPDATE `squffies` SET `is_pregnant` = 'true' WHERE `squffy_id` = " . $this->id;
+		runDBQuery($query);
+	}
+	
 	public function setMate($mate) {		
 		$query = "UPDATE `squffies` 
 		SET `mate_id` = " . $mate->getID() . "
@@ -220,6 +240,13 @@ class Squffy {
 		runDBQuery($query);
 	}
 	
+	public function finishJob() {
+		$query = "UPDATE `squffies` 
+		SET `is_working` = 'false'
+		WHERE `squffy_id` = " . $this->id;
+		runDBQuery($query);
+	}
+	
 	public function feed($food) {
 		$chromosome = $food->getChromosome();
 		if($this->hunger < 1 && $this->$chromosome > 99) { return; }
@@ -242,10 +269,12 @@ class Squffy {
 		runDBQuery($query);
 	}
 	
-	public function heal($doctor) {
+	public function heal($doctor = NULL) {
 		$this->health += mt_rand(10, 20);
-		if($doctor->hasStrength(Personality::HEAL_TRAIT)) { $this->health += Personality::HEALING_CHANGE; }
-		if($doctor->hasWeakness(Personality::HEAL_TRAIT)) { $this->health -= Personality::HEALING_CHANGE; }
+		if($doctor != NULL) {
+			if($doctor->hasStrength(Personality::HEAL_TRAIT)) { $this->health += Personality::HEALING_CHANGE; }
+			if($doctor->hasWeakness(Personality::HEAL_TRAIT)) { $this->health -= Personality::HEALING_CHANGE; }
+		}
 		if($this->health > 100) { $this->health = 100; }
 		$query = 'UPDATE `squffies` SET `health` = ' . $this->health . ' WHERE `squffy_id` = ' . $this->id;
 		runDBQuery($query);

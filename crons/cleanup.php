@@ -6,6 +6,6 @@ $query = "DELETE FROM `newbie_packs` WHERE `items_claimed` = 'true' AND `squffy_
 runDBQuery($query);
 
 //Optimize tables with lots of deletions
-$query = "OPTIMIZE TABLE `newbie_packs`, `vacations`, `degree_progress`, `pregnancies`";
+$query = "OPTIMIZE TABLE `newbie_packs`, `vacations`, `degree_progress`, `pregnancies`, `jobs_doctor`";
 runDBQuery($query);
 ?>
