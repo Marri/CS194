@@ -1,0 +1,456 @@
+DROP TABLE IF EXISTS subforums;
+CREATE TABLE IF NOT EXISTS subforums (
+	subforum_id tinyint unsigned primary key auto_increment,
+	subforum_name varchar(100),
+	subforum_order tinyint unsigned
+);
+
+DROP TABLE IF EXISTS boards;
+CREATE TABLE IF NOT EXISTS boards (
+	board_id tinyint unsigned primary key auto_increment,
+	subforum_id tinyint unsigned,
+	board_name varchar(100),
+	board_description text,
+	board_order tinyint unsigned,
+	last_post_id mediumint unsigned NULL,
+	num_threads mediumint unsigned default '0',
+	num_posts mediumint unsigned default '0',
+	auth_view tinyint unsigned default '5',
+	anonymous_posting enum('true','false') default 'false'
+);
+
+DROP TABLE IF EXISTS threads;
+CREATE TABLE IF NOT EXISTS threads (
+	thread_id mediumint unsigned primary key auto_increment,
+	board_id tinyint unsigned,
+	thread_name varchar(100),
+	poster_id mediumint unsigned,
+	thread_text text,
+	time_posted datetime,
+	time_updated datetime,
+	num_replies smallint unsigned default '0',
+	locked enum('true','false') default 'false',
+	sticky enum('true','false') default 'false',
+	deleted enum('true','false') default 'false'
+);
+
+DROP TABLE IF EXISTS posts;
+CREATE TABLE IF NOT EXISTS posts (
+	post_id mediumint unsigned primary key auto_increment,
+	thread_id mediumint unsigned,
+	board_id tinyint unsigned,
+	poster_id mediumint unsigned,
+	poster_name varchar(100),
+	post_time datetime,
+	edit_time datetime
+);
+
+DROP TABLE IF EXISTS post_text;
+CREATE TABLE IF NOT EXISTS post_text (
+	post_id mediumint unsigned,
+	post_text text
+);
+
+DROP TABLE IF EXISTS squffies;
+CREATE TABLE IF NOT EXISTS squffies (
+	squffy_id int unsigned primary key auto_increment,
+	squffy_owner mediumint unsigned,
+	squffy_name varchar(100),
+	squffy_gender enum('M', 'F') default 'M',
+	squffy_birthday datetime,
+	squffy_species tinyint unsigned,
+	squffy_degree tinyint unsigned,
+	degree_type enum('Apprentice', 'Master'),
+	hunger tinyint unsigned default '0',
+	health tinyint unsigned default '100',
+	energy tinyint unsigned default '100',
+	happiness tinyint unsigned default '100',
+	luck tinyint unsigned default '0',
+	c1 tinyint unsigned default '0',
+	c2 tinyint unsigned default '0',
+	c3 tinyint unsigned default '0',
+	c4 tinyint unsigned default '0',
+	c5 tinyint unsigned default '0',
+	c6 tinyint unsigned default '0',
+	c7 tinyint unsigned default '0',
+	c8 tinyint unsigned default '0',
+	base_color char(6),
+	eye_color char(6),
+	foot_color char(6),
+	is_custom enum('true', 'false') default 'false',
+	is_pregnant enum('true', 'false') default 'false',
+	is_in_market enum('true', 'false') default 'false',
+	is_hireable enum('true', 'false') default 'false',
+	is_working enum('true', 'false') default 'false',
+	is_breedable enum('true', 'false') default 'false',
+	strength1_id tinyint unsigned,
+	strength2_id tinyint unsigned,
+	weakness1_id tinyint unsigned,
+	weakness2_id tinyint unsigned,
+	mate_id int unsigned,
+	breeding_rights mediumint unsigned,
+	rights_revert datetime,
+	num_items tinyint unsigned default '0'
+);	
+
+DROP TABLE IF EXISTS squffy_items;
+CREATE TABLE IF NOT EXISTS squffy_items (
+	squffy_id int unsigned,
+	item_id smallint unsigned,
+	item_name varchar(100),
+	item_order tinyint unsigned default '0'
+);
+
+DROP TABLE IF EXISTS squffy_family;
+CREATE TABLE IF NOT EXISTS squffy_family (
+	squffy_id int unsigned,
+	mother_id int unsigned,
+	father_id int unsigned,
+	mother_mother_id int unsigned,
+	mother_father_id int unsigned,
+	father_mother_id int unsigned,
+	father_father_id int unsigned
+);
+
+DROP TABLE IF EXISTS squffy_appearance;
+CREATE TABLE IF NOT EXISTS squffy_appearance (
+	squffy_id mediumint unsigned,
+	trait_id tinyint unsigned,
+	trait_square enum('S','C','D') default 'C',
+	trait_color varchar(6),
+	trait_order tinyint unsigned default '1'
+);
+
+DROP TABLE IF EXISTS appearance_traits;
+CREATE TABLE IF NOT EXISTS appearance_traits (
+	trait_id tinyint unsigned primary key auto_increment,
+	trait_name varchar(255),
+	trait_title varchar(255),
+	trait_type enum('1','2') default '1',
+	design_activated enum('true','false') default 'false',
+	activated enum('true','false') default 'false'
+);
+
+DROP TABLE IF EXISTS personality_traits;
+CREATE TABLE IF NOT EXISTS personality_traits (
+	trait_id tinyint unsigned primary key auto_increment,
+	trait_good_name varchar(100),
+	trait_bad_name varchar(100),
+	trait_good_desc text,
+	trait_bad_desc text
+);
+
+DROP TABLE IF EXISTS species;
+CREATE TABLE IF NOT EXISTS species (
+	species_id tinyint unsigned auto_increment,
+	species_name varchar(255),
+	design_activated enum('true','false') default 'false',
+	activated enum('true','false') default 'false',
+	primary key (species_id)
+);
+
+DROP TABLE IF EXISTS cache_changed;
+CREATE TABLE IF NOT EXISTS cache_changed (
+	user_id mediumint unsigned
+);
+
+DROP TABLE IF EXISTS degrees;
+CREATE TABLE IF NOT EXISTS degrees (
+	degree_id tinyint unsigned primary key auto_increment,
+	degree_name varchar(50)
+);
+
+DROP TABLE IF EXISTS layouts;
+CREATE TABLE IF NOT EXISTS layouts (
+	layout_id tinyint unsigned primary key auto_increment,
+	layout_name varchar(50),
+	is_default enum('true','false') default 'false',
+	background_color char(6),
+	level_id tinyint unsigned
+);
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE IF NOT EXISTS users (
+	user_id mediumint unsigned primary key auto_increment,
+	username varchar(50),
+	level_id tinyint unsigned,
+	date_last_seen datetime,
+	default_layout_id tinyint unsigned
+);
+
+DROP TABLE IF EXISTS inventory;
+CREATE TABLE IF NOT EXISTS inventory (
+	user_id mediumint unsigned,
+	cashew smallint unsigned
+);
+
+DROP TABLE IF EXISTS pantry;
+CREATE TABLE IF NOT EXISTS pantry (
+	user_id mediumint unsigned,
+	cashew smallint unsigned
+);
+
+DROP TABLE IF EXISTS messages;
+CREATE TABLE IF NOT EXISTS messages (
+	message_id int unsigned primary key auto_increment,
+	to_id mediumint unsigned,
+	from_id mediumint unsigned,
+	subject varchar(127),
+	message text,
+	time_sent datetime,
+	is_read enum('true','false') default 'false',
+	in_inbox enum('true','false') default 'true',
+	in_outbox enum('true','false') default 'true'
+);
+
+DROP TABLE IF EXISTS weather;
+CREATE TABLE IF NOT EXISTS weather (
+	day enum('Today','Tomorrow'),
+	temperature tinyint,
+	type enum('Sunny', 'Partly Cloudy', 'Mostly Cloudy', 'Overcast', 'Light Rain', 'Heavy Rain', 'Snow')
+);
+
+DROP TABLE IF EXISTS badges;
+CREATE TABLE IF NOT EXISTS badges (
+	badge_id tinyint unsigned primary key auto_increment,
+	badge_name varchar(100),
+	badge_description text,
+	num_awarded mediumint unsigned default '0'
+);
+
+DROP TABLE IF EXISTS user_badges;
+CREATE TABLE IF NOT EXISTS user_badges (
+	user_id mediumint unsigned,
+	badge_id tinyint unsigned
+);
+
+DROP TABLE IF EXISTS user_login;
+CREATE TABLE IF NOT EXISTS user_login (
+	login_name varchar(50) primary key,
+	user_id mediumint unsigned,
+	hash varchar(40),
+	salt varchar(30)
+);
+
+DROP TABLE IF EXISTS news;
+CREATE TABLE IF NOT EXISTS news (
+	news_id mediumint unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	time_posted datetime,
+	subject varchar(100),
+	content text,
+	content_type tinyint unsigned,
+	deleted enum('true', 'false') default 'false'
+);
+
+DROP TABLE IF EXISTS news_categories;
+CREATE TABLE IF NOT EXISTS news_categories (
+	type_id tinyint unsigned,
+	type_name varchar(100)
+);
+
+DROP TABLE IF EXISTS news_comments;
+CREATE TABLE IF NOT EXISTS news_comments (
+	comment_id mediumint unsigned primary key auto_increment,
+	news_id mediumint unsigned,
+	user_id mediumint unsigned,
+	time_posted datetime,
+	content text,
+	deleted enum('true', 'false') default 'false'
+);
+
+DROP TABLE IF EXISTS pregnancies;
+CREATE TABLE IF NOT EXISTS pregnancies (
+	pregnancy_id int unsigned primary key auto_increment,
+	mother_id int unsigned,
+	father_id int unsigned,
+	user_id mediumint unsigned,
+	date_birth datetime
+);
+
+DROP TABLE IF EXISTS vacations;
+CREATE TABLE IF NOT EXISTS vacations (
+	user_id mediumint unsigned,
+	date_return datetime,
+	old_level tinyint unsigned
+);
+
+DROP TABLE IF EXISTS referrals;
+CREATE TABLE IF NOT EXISTS referrals (
+	referral_id int unsigned primary key auto_increment,
+	refer_id mediumint unsigned,
+	email varchar(255),
+	date_sent datetime
+);
+
+DROP TABLE IF EXISTS accepted_referrals;
+CREATE TABLE IF NOT EXISTS accepted_referrals (
+	accepted_id int unsigned primary key auto_increment,
+	referral_id int unsigned,
+	accept_id mediumint unsigned,
+	date_joined datetime
+);
+
+DROP TABLE IF EXISTS newbie_packs;
+CREATE TABLE IF NOT EXISTS newbie_packs (
+	pack_id mediumint unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	species enum('Unchosen', 'Tree', 'Ground') default 'Unchosen',
+	items_claimed enum('true', 'false') default 'false',
+	squffy_made enum('true', 'false') default 'false'
+);
+
+DROP TABLE IF EXISTS degree_progress;
+CREATE TABLE IF NOT EXISTS degree_progress (
+	squffy_id int unsigned,
+	teacher_id int unsigned,
+	date_finished datetime
+);
+
+DROP TABLE IF EXISTS jobs_doctor;
+CREATE TABLE IF NOT EXISTS jobs_doctor (
+	patient_id int unsigned,
+	doctor_id int unsigned,
+	date_finished datetime
+);
+
+DROP TABLE IF EXISTS jobs_farming;
+CREATE TABLE IF NOT EXISTS jobs_farming (
+	farmer_id int unsigned,
+	farm_id int unsigned,
+	chore_type enum('Plow', 'Fertilize', 'Plant', 'Water', 'Weed', 'Harvest', 'Clear'),
+	date_finished datetime
+);
+
+DROP TABLE IF EXISTS farms;
+CREATE TABLE IF NOT EXISTS farms (
+	farm_id int unsigned primary key auto_increment,
+	farm_name varchar(50),
+	user_id mediumint unsigned,
+	food_id smallint unsigned,
+	cur_state enum('Empty', 'Plowed', 'Fertilized', 'Planted', 'Grown', 'Dead'),
+	dryness tinyint unsigned default '0',
+	weeds tinyint unsigned default '0'
+);
+
+INSERT INTO `appearance_traits` 
+	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
+VALUES
+	(1, 'kirin', 'Kirin Horn', '2', 'true', 'true'),
+	(2, 'henna', 'Henna', '1', 'true', 'true'),
+	(3, 'wolf', 'Wolf', '1', 'true', 'true'),
+	(4, 'weave', 'Weave', '1', 'true', 'true'),
+	(5, 'vines', 'Vines', '1', 'true', 'true'),
+	(6, 'tattoo', 'Tattoo', '1', 'true', 'true'),
+	(7, 'swirl', 'Swirl', '1', 'true', 'true'),
+	(8, 'sun', 'Sun', '1', 'true', 'true'),
+	(9, 'stripes', 'Tiger Stripes', '1', 'true', 'true'),
+	(10, 'socks', 'Socks', '1', 'true', 'true'),
+	(11, 'skunk', 'Skunk', '1', 'true', 'true'),
+	(12, 'antenna', 'Antenna', '2', 'true', 'true'),
+	(13, 'antler', 'Antlers', '2', 'true', 'true'),
+	(14, 'beard', 'Beard', '2', 'true', 'true'),
+	(15, 'birdwing', 'Bird Wings', '2', 'true', 'true'),
+	(16, 'claw', 'Claws', '2', 'true', 'true'),
+	(17, 'horns', 'Ghoat Horns', '2', 'true', 'true'),
+	(18, 'mane', 'Lion Mane', '2', 'true', 'true'),
+	(19, 'pixie', 'Pixie Wings', '2', 'true', 'true'),
+	(20, 'whisker', 'Chin Whiskers', '2', 'true', 'true'),
+	(21, 'belly', 'Belly', '1', 'true', 'true'),
+	(22, 'burn', 'Burn', '1', 'true', 'true'),
+	(23, 'cheetah', 'Cheetah Spots', '1', 'true', 'true'),
+	(24, 'eartips', 'Eartips', '1', 'true', 'true'),
+	(25, 'freckles', 'Freckles', '1', 'true', 'true'),
+	(26, 'giraffe', 'Giraffe', '1', 'true', 'true'),
+	(27, 'harlequin', 'Harlequin', '1', 'true', 'true'),
+	(28, 'hood', 'Hood', '1', 'true', 'true'),
+	(29, 'lemur', 'Lemur', '1', 'true', 'true'),
+	(30, 'leopard', 'Leopard Spots', '1', 'true', 'true'),
+	(31, 'line', 'Lines', '1', 'true', 'true'),
+	(32, 'marble', 'Marble', '1', 'true', 'true'),
+	(33, 'paint', 'Paint', '1', 'true', 'true'),
+	(34, 'patches', 'Patches', '1', 'true', 'true'),
+	(35, 'mask', 'Raccoon Mask', '1', 'true', 'true'),
+	(36, 'rain', 'Rain', '1', 'true', 'true'),
+	(37, 'roots', 'Roots', '1', 'true', 'true'),
+	(38, 'siamese', 'Siamese', '1', 'true', 'true'),
+	(39, 'penguin', 'Penguin', '1', 'false', 'false'),
+	(40, 'poison', 'Poison', '1', 'true', 'false'),
+	(41, 'thorns', 'Thorns', '1', 'true', 'false'),
+	(42, 'cuscus', 'Cuscus', '1', 'true', 'false'),
+	(43, 'wave', 'Wave', '1', 'true', 'false'),
+	(44, 'spots', 'Spots', '1', 'true', 'false');
+	
+INSERT INTO `degrees` 
+	(`degree_id`, `degree_name`) 
+VALUES
+	(1, 'Teacher'),
+	(2, 'Medic'),
+	(3, 'Midwife'),
+	(4, 'Cook'),
+	(5, 'Baker'),
+	(6, 'Carpenter'),
+	(7, 'Farmer'),
+	(8, 'Nursemaid'),
+	(9, 'Forester');
+	
+INSERT INTO `layouts`
+	(`layout_id`, `layout_name`, `is_default`, `background_color`, `level_id`)
+VALUES
+	(1, 'Fall', 'true', 'E98430', 10);
+	
+INSERT INTO `personality_traits`
+	(`trait_id`, `trait_good_name`, `trait_bad_name`)
+VALUES
+	(1, 'Graceful', 'Clumsy'),
+	(2, 'Soothing', 'Abrasive'),
+	(3, 'Nuturing', 'Neglectful'),
+	(4, 'Energetic', 'Lazy'),
+	(5, 'Optimistic', 'Pessimistic'),
+	(6, 'Choosy', 'Indiscriminate'),
+	(7, 'Appreciative', 'Ungrateful'),
+	(8, 'Studious', 'Slacker'),
+	(9, 'Hyper', 'Placid');
+	
+INSERT INTO `species` 
+	(`species_id`, `species_name`, `design_activated`, `activated`) 
+VALUES
+	(1, 'Tree', 'true', 'true'),
+	(2, 'Ground', 'true', 'true'),
+	(3, 'Sand', 'true', 'true'),
+	(4, 'Lihtan', 'true', 'true'),
+	(5, 'Fey', 'true', 'true');
+
+INSERT INTO `users` 
+	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`) 
+VALUES
+	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL);
+	
+INSERT INTO `user_login` 
+	(`login_name`, `user_id`, `hash`, `salt`) 
+VALUES
+	('Marri', 1, 'e442e614cac529f9312ebd0b53dbeecf5d619393', 'MT3erI09wCNtbtlkh0X3NvWndGMqV');
+	
+INSERT INTO `inventory`
+	(`user_id`, `cashew`)
+VALUES
+	(1, 1);
+	
+INSERT INTO `pantry`
+	(`user_id`, `cashew`)
+VALUES
+	(1, 1);
+
+INSERT INTO `squffies` 
+	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+VALUES
+	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 2, 3, 'Master', 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
+	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 1, 0, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0);
+	
+INSERT INTO `squffy_appearance` 
+	(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
+VALUES
+	(112, 23, 'S', 'FFF6D4', 1),
+	(112, 33, 'S', '907F66', 2),
+	(112, 17, 'S', 'EEE5D4', 3),
+	(112, 15, 'C', 'FFFFFF', 0);
