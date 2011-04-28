@@ -5,6 +5,7 @@ class Squffy {
 	const SICK = 50;
 	const HUNGRY = 50;
 	const DAYS_PREG = 5;
+	const ADULT = 20;
 	
 	const FETCH_APPEARANCE = 1;
 	const FETCH_FULL_APPEARANCE = 6;
@@ -70,7 +71,6 @@ class Squffy {
 		$this->name = $info['squffy_name'];
 		$this->gender = $info['squffy_gender'];
 		$this->birthday = $info['squffy_birthday'];
-		$this->age = floor((time() - strtotime($this->birthday)) / (24 * 3600));
 		$this->is_pregnant = $info['is_pregnant'];
 		$this->is_custom = $info['is_custom'];
 		$this->is_breedable = $info['is_breedable'];
@@ -114,6 +114,10 @@ class Squffy {
 		if(array_key_exists('degree_name', $info)) {
 			$this->degree_name = $info['degree_name'];
 		}
+		
+		//Calculate age
+		$this->age = floor((time() - strtotime($this->birthday)) / (24 * 3600));
+		if($this->isCustom()) { $this->age += 20; }
 	}
 	
 	public static function getSquffies($query) {
@@ -187,6 +191,7 @@ class Squffy {
 	public function isCustom() { return $this->is_custom == "true"; }
 	public function isInMarket() { return $this->is_in_market == "true"; }
 	public function isStudent() { return $this->getDegreeType() == 'Apprentice'; }
+	public function isAdult() { return $this->getAge() >= self::ADULT; }
 	
 	public function hasMate() { return $this->mate_id > 0; }
 	public function hasStrength($trait) { 

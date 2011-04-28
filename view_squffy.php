@@ -35,6 +35,7 @@ echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="doctor_id" length="10" />
 <input type="submit" name="heal" value="Get healed by" />
 </form>';
+/*
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 <input type="submit" name="farming" value="Set as farmer" />
 </form>';
@@ -61,11 +62,11 @@ echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 </form>';
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 <input type="submit" name="building" value="Set as builder" />
-</form>';
+</form>';*/
 
 //Debug
 echo '<br><br>';
-echo '<br><br>';
+echo '<br><h1>Info</h1>';
 echo 'id '. $squffy->getID() . '<br>';
 echo 'health '. $squffy->getHealth() . '<br>';
 echo 'mate '. $squffy->getMateID() . '<br>';

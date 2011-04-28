@@ -5,10 +5,11 @@ function pluralize($string) {
 	return $string . "'s";
 }
 
-function getID($varName, $curUser = 0) {
+function getID($varName, $defaultID = 0) {
 	$id = 0;
 	if(isset($_GET[$varName])) { $id = $_GET[$varName]; }
-	if($id == 0 && $curUser > 0) { $id = $curUser; }
+	elseif(isset($_POST[$varName])) { $id = $_POST[$varName]; }
+	if($id == 0 && $defaultID > 0) { $id = $defaultID; }
 	if(!is_numeric($id) || $id < 1) { return 0; }
 	return $id;
 }
