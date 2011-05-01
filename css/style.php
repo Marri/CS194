@@ -78,6 +78,13 @@ body, html {
     margin-bottom: 3px;
 }
 
+.npc {
+	width: 300px;
+    height: 300px;
+    border: 2px #000000 solid;
+    margin: 0px auto 10px;
+}
+
 input, select, textarea { 
 	border: 1px #000000 solid; 
 }

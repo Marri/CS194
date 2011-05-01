@@ -1,11 +1,11 @@
 <?php
-include('./objects/personality.php');
 
 class Squffy {
 	const SICK = 50;
 	const HUNGRY = 50;
 	const DAYS_PREG = 5;
 	const ADULT = 20;
+	const TEEN = 15;
 	
 	const FETCH_APPEARANCE = 1;
 	const FETCH_FULL_APPEARANCE = 6;
@@ -192,6 +192,7 @@ class Squffy {
 	public function isInMarket() { return $this->is_in_market == "true"; }
 	public function isStudent() { return $this->getDegreeType() == 'Apprentice'; }
 	public function isAdult() { return $this->getAge() >= self::ADULT; }
+	public function isTeenager() { return $this->getAge() >= self::TEEN && !$this->isAdult(); }
 	
 	public function hasMate() { return $this->mate_id > 0; }
 	public function hasStrength($trait) { 
@@ -210,6 +211,15 @@ class Squffy {
 		if($this->getOwnerID() != $user->getID() && !$this->isHireable()) { return false; }
 		if($this->getOwnerID() != $user->getID() && !$user->canAfford($this->hire_price)) { return false; }
 		return true;
+	}
+	
+	public function isAbleToLearn() {
+		if($this->isPregnant()) { return false; }
+		if($this->isSick()) { return false; }
+		if($this->isWorking()) { return false; }
+		if($this->isHungry()) { return false; }
+		if($this->isStudent()) { return false; }
+		if(!$this->isTeenager() && !$this->isAdult()) { return false; }
 	}
 	
 	//Public methods	
@@ -232,7 +242,7 @@ class Squffy {
 		$this->mate_id = $mate->getID();
 	}
 	
-	public function startDegree($degree) {
+	public function startDegree($degree, $days) {
 		$this->degree_type = 'Apprentice';
 		$this->degree_id = $degree;
 		
@@ -241,10 +251,10 @@ class Squffy {
 		WHERE `squffy_id` = " . $this->id;
 		runDBQuery($query);
 		
-		$date = time() + 60 * 60 * 24 * 5;
+		$date = time() + 60 * 60 * 24 * $days;
 		if($this->hasStrength(Personality::SCHOOL_TRAIT)) { $date += Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
 		if($this->hasWeakness(Personality::SCHOOL_TRAIT)) { $date -= Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
-		$query = 'INSERT INTO `degree_progress` (squffy_id, date_finished) VALUES (' . $this->id . ', ' . date("Y-m-d h:m:s",$date) . ')';
+		$query = 'INSERT INTO `degree_progress` (squffy_id, date_finished) VALUES (' . $this->id . ', \'' . date("Y-m-d h:m:s",$date) . '\')';
 		runDBQuery($query);
 	}
 	

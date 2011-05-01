@@ -334,6 +334,12 @@ CREATE TABLE IF NOT EXISTS farms (
 	weeds tinyint unsigned default '0'
 );
 
+DROP TABLE IF EXISTS user_activation;
+CREATE TABLE IF NOT EXISTS user_activation (
+	user_id mediumint unsigned,
+	activate varchar(30)
+);
+
 INSERT INTO `appearance_traits` 
 	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
 VALUES

@@ -1,6 +1,7 @@
 <?php
 $selected = "squffies";
 include("./includes/header.php");
+include('./objects/personality.php');
 include('./objects/squffy.php');
 
 $id = $_GET['id'];
@@ -35,6 +36,17 @@ echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="doctor_id" length="10" />
 <input type="submit" name="heal" value="Get healed by" />
 </form>';
+
+echo '<form action="view_squffy.php?id=' . $id . '" method="post">
+Teacher ID: <input type="text" name="teacher_id" length="10" />
+Degree: <select size="1" name="degree_id">';
+$query = "SELECT * FROM degrees";
+$result = runDBQuery($query);
+while($d = mysql_fetch_assoc($result)) {
+	echo '<option value="' . $d['degree_id'] . '">' . $d['degree_name'] . '</option>';
+}
+echo '</select>
+<input type="submit" name="taught" value="Start degree with teacher" /></form>';
 /*
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 <input type="submit" name="farming" value="Set as farmer" />

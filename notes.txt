@@ -1,5 +1,6 @@
 TODO:
 Check header and footer includes in the mysql error
+Background should extend on F11
 Email staff email if MySQL error
 Write user and cost and food objects
 

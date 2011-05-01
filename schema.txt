@@ -159,6 +159,7 @@ CREATE TABLE IF NOT EXISTS layouts (
 CREATE TABLE IF NOT EXISTS users (
 	user_id mediumint unsigned primary key auto_increment,
 	username varchar(50),
+	email varchar(50),
 	level_id tinyint unsigned,
 	date_last_seen datetime,
 	default_layout_id tinyint unsigned
@@ -323,3 +324,8 @@ CREATE TABLE IF NOT EXISTS farms (
 //Payments
 //Random events
 //Bug reports: categories or enum?
+
+CREATE TABLE IF NOT EXISTS user_activation (
+	user_id mediumint unsigned,
+	activate varchar(30)
+);
