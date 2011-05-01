@@ -175,7 +175,8 @@ CREATE TABLE IF NOT EXISTS users (
 	username varchar(50),
 	level_id tinyint unsigned,
 	date_last_seen datetime,
-	default_layout_id tinyint unsigned
+	default_layout_id tinyint unsigned,
+	email_address varchar(100)
 );
 
 DROP TABLE IF EXISTS inventory;
