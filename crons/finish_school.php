@@ -1,5 +1,6 @@
 <?php
 include('../includes/connect.php');
+include('../objects/personality.php');
 include('../objects/squffy.php');
 
 $query = 'SELECT * FROM `degree_progress` WHERE TO_DAYS(now()) - TO_DAYS(date_finished) >= 0';

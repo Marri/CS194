@@ -163,7 +163,7 @@ function generateImage() {
 	}
 	
 	if($url != "") { $url = '?' . substr($url, 1); }
-	echo "<img class='bordered' alt='Preview Design' src='./scripts/generate_squffy_design.php$url' />";
+	echo "<img alt='Preview Design' src='./scripts/generate_squffy_design.php$url' />";
 };
 
 function displayColors() {

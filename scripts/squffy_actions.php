@@ -11,6 +11,12 @@ if(isset($_POST['breed'])) {
 	include('./scripts/squffy_breed.php'); 
 }
 
+//Learn from school
+if(isset($_POST['taught'])) {
+	$days = 4;
+	include('./scripts/squffy_learn.php'); 
+}
+
 //Heal
 if(isset($_POST['heal'])) {
 	$original = $squffy->getHealth();
