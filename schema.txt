@@ -329,3 +329,10 @@ CREATE TABLE IF NOT EXISTS user_activation (
 	user_id mediumint unsigned,
 	activate varchar(30)
 );
+
+CREATE TABLE IF NOT EXISTS design_traits (
+	design_id int unsigned,
+	trait_id tinyint unsigned,
+	trait_color varchar(6),
+	trait_order tinyint unsigned default '1'
+);

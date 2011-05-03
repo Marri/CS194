@@ -180,6 +180,7 @@ class Squffy {
 	public function getMotherFatherID() { return $this->family_tree['father']; }
 	public function getFatherMotherID() { return $this->family_tree['father_mother']; }
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
+	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
 	
 	//Predicates
 	public function isPregnant() { return $this->is_pregnant == "true"; }

@@ -339,6 +339,24 @@ CREATE TABLE IF NOT EXISTS user_activation (
 	activate varchar(30)
 );
 
+DROP TABLE IF EXISTS design_traits;
+CREATE TABLE IF NOT EXISTS design_traits (
+	design_id int unsigned,
+	trait_id tinyint unsigned,
+	trait_color varchar(6),
+	trait_order tinyint unsigned default '1'
+);
+
+DROP TABLE IF EXISTS designs;
+CREATE TABLE IF NOT EXISTS designs (
+	design_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	base_color varchar(6),
+	eye_color varchar(6),
+	foot_color varchar(6),
+	num_traits tinyint unsigned default '0'
+);
+
 INSERT INTO `appearance_traits` 
 	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
 VALUES

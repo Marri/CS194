@@ -23,7 +23,7 @@ include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
 
-echo '<a href="http://127.0.0.1/view_squffy.php?id=112"><h1>' . $squffy->getName() . '</h1></a>';
+echo '<h1>' . $squffy->getLink() . '</h1>';
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="mate_id" length="10" />
 <input type="submit" name="breed" value="Breed to" />
@@ -81,7 +81,9 @@ echo '<br><br>';
 echo '<br><h1>Info</h1>';
 echo 'id '. $squffy->getID() . '<br>';
 echo 'health '. $squffy->getHealth() . '<br>';
-echo 'mate '. $squffy->getMateID() . '<br>';
+echo 'mate ';
+$mate = Squffy::getSquffyByID($squffy->getMateID());
+echo $mate->getLink() . '<br>';
 echo 'age '. $squffy->getAge() . '<br>';
 echo 'species id '. $squffy->getSpeciesID() . '<br>';
 echo 'species '. $squffy->getSpecies() . '<br>';
