@@ -5,6 +5,11 @@ function pluralize($string) {
 	return $string . "'s";
 }
 
+function inventoryItem($item) {
+	$name = ucfirst(str_replace("_", " ", $item));
+	return $name;
+}
+
 function getID($varName, $defaultID = 0) {
 	$id = 0;
 	if(isset($_GET[$varName])) { $id = $_GET[$varName]; }

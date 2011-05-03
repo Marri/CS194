@@ -182,7 +182,8 @@ CREATE TABLE IF NOT EXISTS users (
 DROP TABLE IF EXISTS inventory;
 CREATE TABLE IF NOT EXISTS inventory (
 	user_id mediumint unsigned,
-	cashew smallint unsigned
+	cashew smallint unsigned,
+	squffy_dollar smallint unsigned
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -340,6 +341,32 @@ CREATE TABLE IF NOT EXISTS user_activation (
 	activate varchar(30)
 );
 
+DROP TABLE IF EXISTS design_traits;
+CREATE TABLE IF NOT EXISTS design_traits (
+	design_id int unsigned,
+	trait_id tinyint unsigned,
+	trait_color varchar(6),
+	trait_order tinyint unsigned default '1'
+);
+
+DROP TABLE IF EXISTS designs;
+CREATE TABLE IF NOT EXISTS designs (
+	design_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	base_color varchar(6),
+	eye_color varchar(6),
+	foot_color varchar(6),
+	num_traits tinyint unsigned default '0'
+);
+
+DROP TABLE IF EXISTS items;
+CREATE TABLE IF NOT EXISTS items (
+	item_id smallint unsigned primary key auto_increment,
+	item_name varchar(100),
+	item_type tinyint unsigned,
+	item_description text
+);
+
 INSERT INTO `appearance_traits` 
 	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
 VALUES
@@ -439,9 +466,9 @@ VALUES
 	('Marri', 1, 'e442e614cac529f9312ebd0b53dbeecf5d619393', 'MT3erI09wCNtbtlkh0X3NvWndGMqV');
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`)
+	(`user_id`, `cashew`, `squffy_dollar`)
 VALUES
-	(1, 1);
+	(1, 100, 100);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -461,3 +488,9 @@ VALUES
 	(112, 33, 'S', '907F66', 2),
 	(112, 17, 'S', 'EEE5D4', 3),
 	(112, 15, 'C', 'FFFFFF', 0);
+	
+INSERT INTO `items`
+	(`item_id`, `item_name`, `item_type`, `item_description`)
+VALUES
+	(1, 'Cashew', 1, 'A cashew.'),
+	(2, 'Squffy Dollar', 2, 'Money.');

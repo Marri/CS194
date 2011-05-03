@@ -144,6 +144,7 @@ class Squffy {
 		if(in_array(self::FETCH_DEGREE, $options)) { $queryString .= ' LEFT JOIN degrees ON degrees.degree_id = squffies.squffy_degree'; }
 		$queryString .= ' WHERE squffies.`squffy_id` = ' . $id;
 		$result = runDBQuery($queryString);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
 		$info = @mysql_fetch_assoc($result);
 		$squffy = new Squffy($info);
 		
@@ -180,6 +181,7 @@ class Squffy {
 	public function getMotherFatherID() { return $this->family_tree['father']; }
 	public function getFatherMotherID() { return $this->family_tree['father_mother']; }
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
+	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
 	
 	//Predicates
 	public function isPregnant() { return $this->is_pregnant == "true"; }
@@ -209,7 +211,6 @@ class Squffy {
 		if($this->isHungry()) { return false; }
 		if($this->isStudent()) { return false; }
 		if($this->getOwnerID() != $user->getID() && !$this->isHireable()) { return false; }
-		if($this->getOwnerID() != $user->getID() && !$user->canAfford($this->hire_price)) { return false; }
 		return true;
 	}
 	
