@@ -336,3 +336,10 @@ CREATE TABLE IF NOT EXISTS design_traits (
 	trait_color varchar(6),
 	trait_order tinyint unsigned default '1'
 );
+
+CREATE TABLE IF NOT EXISTS items (
+	item_id smallint unsigned primary key auto_increment,
+	item_name varchar(100),
+	item_type tinyint unsigned, //Food, tools, accessory, that sort of thing
+	item_description text
+);

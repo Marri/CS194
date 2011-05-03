@@ -55,14 +55,21 @@ class User {
 	public function getHash() { return $this->hash; }
 	public function getInventory() {
 		if($this->inventory == NULL) { $this->fetchInventory(); }
-		else { $this->checkCacheUpdate(); }
+		return $this->inventory;
 	}
 	public function getLayout() { return $this->layout_id; }
 	public function getUsername(){ return $this->username; }
 	
 	//Predicates
-	public function canAfford($cost) {
-		return true;
+	public function canAffordSD($cost) {
+		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
+		return false;
+	}
+	
+	public function canAffordItem($cost) {
+		$itemName = $cost->getItemName();
+		if($this->inventory["$itemName"] >= $cost->getItemPrice()) { return true; }
+		return false;
 	}
 	
 	//Public methods
