@@ -17,13 +17,11 @@ $squffy = Squffy::getSquffyByIDExtended
 	)
 );
 
-$errors = array();
-$notices = array();
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
 
-echo '<h1>' . $squffy->getLink() . '</h1>';/*
+echo '<h1>' . $squffy->getLink() . '</h1>';
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="mate_id" length="10" />
 <input type="submit" name="breed" value="Breed to" />
@@ -77,7 +75,7 @@ echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 </form>';*/
 
 //Debug
-//echo '<br><br><br>';
+echo '<br><br><br>';
 echo '<h1>Info</h1>';
 echo 'id '. $squffy->getID() . '<br>';
 echo 'health '. $squffy->getHealth() . '<br>';

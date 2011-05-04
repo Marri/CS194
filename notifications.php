@@ -1,13 +1,9 @@
 <?php
 $selected = "home";
 include("./includes/header.php");
-include("./objects/notification.php");
+//include("./objects/notification.php");
 
-$user = NULL;
 $notifications = NULL;
-if(isset($_SESSION['user'])){
-	$user = $_SESSION['user'];
-}
 if($user != NULL){
 	$notifications = $user->getNotifications();
 }
@@ -18,7 +14,6 @@ if($user != NULL){
 <table>
 	<tr><th>Notification Type</th><th>unread</th></tr>
 	<?php
-	echo count($notifications);
 	for($i = 0; $i < count($notifications); $i++){
 	
 		$curr_note = $notifications[$i];

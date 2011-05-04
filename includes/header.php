@@ -1,5 +1,8 @@
 <?php
 date_default_timezone_set("America/Los_Angeles");
+$errors = array();
+$notices = array();
+
 include('./includes/utils.php');
 include('./includes/gzip.php'); //Compresss files
 include('./includes/connect.php'); //Connect to the database

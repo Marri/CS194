@@ -28,8 +28,6 @@ $breedable = $squffy->isBreedable();
 $hireable = $squffy->isHireable();
 //$hireSD = $squffy->getHireSD();
 
-$errors = array();
-$notices = array();
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
