@@ -1,3 +1,4 @@
+				<h1><?php echo $global_error; ?></h1>
 				</div>
             </div>  
             <div class='clear'></div>  

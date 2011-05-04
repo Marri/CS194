@@ -1,7 +1,9 @@
 <?php
 $loggedin = false;
+$activated = false;
 $user = NULL;
 $userid = NULL;
+$global_error = "";
 session_start();
 
 //Log out
@@ -20,6 +22,10 @@ else if(isset($_POST['logging_in'])) {
 	$login = $_POST['login_name'];
 	$pass = $_POST['password'];
 	$user = User::getUserByLogin($login, $pass);
+	if($user != NULL && $user->isActivated() == 'false') { 
+		$global_error = $global_error." Please Activate Your Account ";
+		$user = NULL; }
+	else { $activated = true; }
 	if($user != NULL) { $user->fetchInventory(); }
 }
 

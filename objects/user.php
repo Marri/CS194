@@ -17,7 +17,9 @@ class User {
 		$level,
 		$last_seen,
 		$layout_id,
-		$inventory;
+		$inventory,
+		$email_addr,
+		$activated;
 		
 	//Constructors
 	public function __construct($result) {
@@ -28,6 +30,8 @@ class User {
 		$this->level = $info['level_id'];
 		$this->last_seen = $info['date_last_seen'];
 		$this->layout_id = $info['default_layout_id'];
+		$this->email_addr = $info['email_address'];
+		$this->activated = $info['activated'];
 		
 		$this->inventory = NULL;
 	}
@@ -59,7 +63,8 @@ class User {
 	}
 	public function getLayout() { return $this->layout_id; }
 	public function getUsername(){ return $this->username; }
-	
+	public function getEmail(){ return $this->email_addr; }
+	public function isActivated(){	return $this->activated; }
 	//Predicates
 	public function canAffordSD($cost) {
 		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
@@ -121,13 +126,39 @@ class User {
 		return false;
 	}
 
-	public static function createNewUser($username, $password, $login_name){
+	public static function createNewUser($username, $password, $login_name, $email){
 		$salt =  randomString(self::SALT_LEN);
 		$hash = self::secure($password, $salt);
-		$user_id = self::InsertIntoUserTable($username);
-		return self::InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash);
+		$user_id = self::InsertIntoUserTable($username, $email);
+		self::InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash);
+		return $user_id;
 	}
-	
+	/*
+	* code copy/paste from http://www.totallyphp.co.uk/code/validate_an_email_address_using_regular_expressions.htmhttp://www.totallyphp.co.uk/code/validate_an_email_address_using_regular_expressions.htm"
+	*/
+	public static function emailAddressInvalid($email){
+		return !eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email); //needs to be upgrade to preg_match(), but I don't get regexes
+	}
+	public static function sendActivationKey($user_id, $email){
+		$act_key = self::generateActivationKey($user_id);
+		$to = $email;
+		$subject = "Squffy Activation Key";
+		$message = "Hi Welcome to Squffies! Here's your activation key: ".$act_key;
+		$from = "Marri@squffy.com";
+		$headers = "From:" . $from;
+		mail($to,$subject,$message,$headers);
+	}
+	public static function activateUser($user, $given_key){
+		$curr_id = $user->getID();
+		$actual_key = self::getUserActivationKey($curr_id);
+		if($actual_key == $given_key){
+			$queryString = "UPDATE users SET activated='true' WHERE user_id = '".$curr_id."';";
+			runDBQuery($queryString);
+			return "";
+		}else{
+			return "Wrong activation key";
+		}
+	}
 	//Private methods
 	private static function secure($password, $salt) {
 		$hash = sha1($password . $salt);
@@ -139,8 +170,8 @@ class User {
 	/*
 	* function to insert new user into users table
 	*/
-	private static function InsertIntoUserTable($username){
-		$queryString = "INSERT INTO users (username, level_id, default_layout_id) VALUES ('".$username."', '0', '0');";
+	private static function InsertIntoUserTable($username, $email){
+		$queryString = "INSERT INTO users (username, level_id, default_layout_id, email_address) VALUES ('".$username."', '0', '0', '".$email."');";
 		$result = runDBQuery($queryString);
 		return mysql_insert_id();
 	}
@@ -151,6 +182,21 @@ class User {
 		$queryString = "INSERT INTO user_login (user_id, login_name, salt, hash) VALUES ('".$user_id."', '".$login_name."', '".$salt."','".$hash."');";
 		$result = runDBQuery($queryString);
 		return $result;
+	}
+	private static function generateActivationKey($user_id){
+		$rand_num = rand(1000000,999999);
+		$act_key =  sha1($rand_num);
+		
+		$queryString = "INSERT INTO user_activation (user_id, activate) VALUES ('".$user_id."', '".$act_key."')";
+		runDBQuery($queryString);
+		
+		return $act_key;
+	}
+	private static function getUserActivationKey($user_id){
+		$queryString = "SELECT activate FROM user_activation WHERE user_id = '".$user_id."';";
+		$query = runDBQuery($queryString);
+		$info = @mysql_fetch_assoc($query);
+		return $info['activate'];
 	}
 }
 ?>

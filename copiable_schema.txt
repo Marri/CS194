@@ -176,7 +176,8 @@ CREATE TABLE IF NOT EXISTS users (
 	level_id tinyint unsigned,
 	date_last_seen datetime,
 	default_layout_id tinyint unsigned,
-	email_address varchar(100)
+	email_address varchar(100),
+	activated enum('true','false') default 'false'
 );
 
 DROP TABLE IF EXISTS inventory;
@@ -456,14 +457,26 @@ VALUES
 	(5, 'Fey', 'true', 'true');
 
 INSERT INTO `users` 
-	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`) 
+	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `activated`) 
 VALUES
-	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL);
-	
+	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL, 'true');
+
+INSERT INTO `users` 
+	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `activated`) 
+VALUES
+	(2, 'dagclo', 1, '2011-04-26 20:57:38', NULL, 'true');
+
+
 INSERT INTO `user_login` 
 	(`login_name`, `user_id`, `hash`, `salt`) 
 VALUES
 	('Marri', 1, 'e442e614cac529f9312ebd0b53dbeecf5d619393', 'MT3erI09wCNtbtlkh0X3NvWndGMqV');
+	
+INSERT INTO `user_login` 
+	(`login_name`, `user_id`, `hash`, `salt`) 
+VALUES
+	('dagclo', 2, 'c7197f6ead8d1c3955113ba6c6f504fc51f5435c', 'AL6sUrvu3wTlHkN');
+
 	
 INSERT INTO `inventory`
 	(`user_id`, `cashew`, `squffy_dollar`)
