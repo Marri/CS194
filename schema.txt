@@ -320,8 +320,6 @@ CREATE TABLE IF NOT EXISTS farms (
 //Tables for all jobs that need them
 //Marketplace
 //Tournaments
-//Notifications
-//Payments
 //Random events
 //Bug reports: categories or enum?
 
@@ -342,4 +340,19 @@ CREATE TABLE IF NOT EXISTS items (
 	item_name varchar(100),
 	item_type tinyint unsigned, //Food, tools, accessory, that sort of thing
 	item_description text
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+	notification_id int unsigned primary key auto_increment,
+	notification_type tinyint unsigned,
+	user_id mediumint unsigned,
+	unread enum('true', 'false') default 'false'
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+	payment_id smallint unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	amount tinyint unsigned,
+	date_purchased datetime,
+	auth_code varchar(31)
 );
