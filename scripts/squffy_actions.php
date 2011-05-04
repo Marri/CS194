@@ -1,6 +1,11 @@
 <?php
 if(!isset($squffy)) { die(); }
 
+//Update information
+if(isset($_POST['update_squffy'])) {
+	include('./scripts/squffy_update.php'); 
+}
+
 //Set mate
 if(isset($_POST['set_mate'])) { 
 	include('./scripts/squffy_mate.php'); 
@@ -11,7 +16,7 @@ if(isset($_POST['breed'])) {
 	include('./scripts/squffy_breed.php'); 
 }
 
-//Learn from school
+//Learn from teacher
 if(isset($_POST['taught'])) {
 	$days = 4;
 	include('./scripts/squffy_learn.php'); 

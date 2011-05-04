@@ -12,7 +12,7 @@
     <script type="text/javascript" src="./includes/include.php?file=menu&type=js"></script>
     <?php 
 	if(isset($js)) {
-		foreach($js as $file) { echo '<script type="text/javascript" src="./includes/include.php?file=' . $file . '&amp;type=js"></script>'; }
+		foreach($js as $file) { echo '<script type="text/javascript" src="./includes/include.php?file=' . $file . '&type=js"></script>'; }
 	} 
 	if(isset($css)) {
 		foreach($css as $file) { echo '<link rel="stylesheet" href="./css/' . $file . '.css" type="text/css" />'; }
