@@ -1,7 +1,7 @@
 <?php
 $selected = "home";
 include("./includes/header.php");
-//include("./objects/notification.php");
+include("./objects/notification.php");
 
 $notifications = NULL;
 if($user != NULL){

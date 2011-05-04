@@ -14,7 +14,7 @@ $query = "SELECT * FROM `squffies` WHERE `squffy_owner` = $id";
 $squffies = Squffy::getSquffies($query);
 
 foreach($squffies as $squffy) {
-echo $squffy->getName() . "<br>";
+echo $squffy->getLink() . "<br>";
 }
 
 include('./includes/footer.php');
