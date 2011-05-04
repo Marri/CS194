@@ -89,17 +89,30 @@ class User {
 	public function fetchInventory() {
 		$queryString = 'SELECT * FROM `inventory` WHERE `user_id` = ' . $this->id;
         $query = runDBQuery($queryString);
-		$this->inventory = @mysql_fetch_assoc($query);
-		
-		$queryString = 'DELETE FROM `cache_changed` WHERE `user_id` = ' . $this->id;
-        runDBQuery($queryString);
+        if(@mysql_num_rows($query) <= 0){
+        	self::createEmptyInventory($this->id);
+        	self::fetchInventory();
+        }else{
+			$this->inventory = @mysql_fetch_assoc($query);
+			$queryString = 'DELETE FROM `cache_changed` WHERE `user_id` = ' . $this->id;
+        	runDBQuery($queryString);
+		}
 	}	
 		
     public function seenNow() {
 		$queryString = 'UPDATE `users` SET `date_last_seen` = now() where `user_id` = ' . $this->id;
         runDBQuery($queryString);
     }	
-	
+	public function getNotifications(){
+		$notification_list = array();		
+		$queryString = "SELECT * FROM notifications WHERE user_id = '".$this->id."';";
+		$results = runDBQuery($queryString);
+		while($notes = @mysql_fetch_assoc($results)){
+			$note = new Notification(notes);
+			array_push($notification_list, $note);
+		}
+		return $notification_list;
+	}
 	public static function loginNameTaken($login_name){
 		if($login_name == "") return true;
 		$queryString = "SELECT login_name FROM user_login WHERE login_name='".$login_name."';";
@@ -200,6 +213,10 @@ class User {
 		}else{
 			return NULL;
 		}
+	}
+	private static function createEmptyInventory($user_id){
+		$queryString = "INSERT INTO inventory (user_id, cashew, squffy_dollar) VALUES ('".$user_id."', '0', '0');";
+		$query = runDBQuery($queryString);
 	}
 }
 ?>
