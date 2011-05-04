@@ -2,12 +2,7 @@
 $selected = "home";
 include("./includes/header.php");
 include("./objects/notification.php");
-
-$user = NULL;
 $notifications = NULL;
-if(isset($_SESSION['user'])){
-	$user = $_SESSION['user'];
-}
 if($user != NULL){
 	$notifications = $user->getNotifications();
 }
