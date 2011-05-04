@@ -18,7 +18,6 @@ if($user != NULL){
 <table>
 	<tr><th>Notification Type</th><th>unread</th></tr>
 	<?php
-	echo count($notifications);
 	for($i = 0; $i < count($notifications); $i++){
 	
 		$curr_note = $notifications[$i];
