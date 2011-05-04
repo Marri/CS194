@@ -108,7 +108,7 @@ class User {
 		$queryString = "SELECT * FROM notifications WHERE user_id = '".$this->id."';";
 		$results = runDBQuery($queryString);
 		while($notes = @mysql_fetch_assoc($results)){
-			$note = new Notification(notes);
+			$note = new Notification($notes);
 			array_push($notification_list, $note);
 		}
 		return $notification_list;
