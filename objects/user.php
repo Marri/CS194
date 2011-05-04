@@ -143,15 +143,14 @@ class User {
 		$act_key = self::generateActivationKey($user_id);
 		$to = $email;
 		$subject = "Squffy Activation Key";
-		$message = "Hi Welcome to Squffies! Here's your activation key: ".$act_key;
+		$message = "Hi Welcome to Squffies! Here's your activation link: http://squffies.com/activate?act_key=".$act_key;
 		$from = "Marri@squffy.com";
 		$headers = "From:" . $from;
 		mail($to,$subject,$message,$headers);
 	}
-	public static function activateUser($user, $given_key){
-		$curr_id = $user->getID();
-		$actual_key = self::getUserActivationKey($curr_id);
-		if($actual_key == $given_key){
+	public static function activateUser($given_key){
+		$curr_id = self::getUserIDFromActivationKey($given_key);
+		if($curr_id != NULL){
 			$queryString = "UPDATE users SET activated='true' WHERE user_id = '".$curr_id."';";
 			runDBQuery($queryString);
 			return "";
@@ -192,11 +191,15 @@ class User {
 		
 		return $act_key;
 	}
-	private static function getUserActivationKey($user_id){
-		$queryString = "SELECT activate FROM user_activation WHERE user_id = '".$user_id."';";
+	private static function getUserIDFromActivationKey($given_key){
+		$queryString = "SELECT user_id FROM user_activation WHERE activate = '".$given_key."';";
 		$query = runDBQuery($queryString);
-		$info = @mysql_fetch_assoc($query);
-		return $info['activate'];
+		if(@mysql_num_rows($query) == 1){
+			$info = @mysql_fetch_assoc($query);
+			return $info['user_id'];
+		}else{
+			return NULL;
+		}
 	}
 }
 ?>
