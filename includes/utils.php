@@ -10,6 +10,14 @@ function inventoryItem($item) {
 	return $name;
 }
 
+function checked($bool) {
+	if($bool) echo ' checked';
+}
+
+function selected($bool) {
+	if($bool) echo ' selected';
+}
+
 function getID($varName, $defaultID = 0) {
 	$id = 0;
 	if(isset($_GET[$varName])) { $id = $_GET[$varName]; }
