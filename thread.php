@@ -8,12 +8,11 @@ if(isset($_GET["thread_id"])){
 }else{
 	$thread_id = mysql_real_escape_string($_POST["thread_id"]);
 }	
-
+$thread = Thread::getThreadFromID($thread_id);
 if(isset($_POST['newPost'])){
 	$post_text = mysql_real_escape_string($_POST["post_text"]);
 	$board_id = mysql_real_escape_string($_POST["board_id"]);
-	$poster = User::getUserByID($userid);
-	Post::CreatePost($poster_id, $poster->getUsername(), $board_id, $thread_id, $post_text);
+	Post::CreatePost($userid, $user->getUsername(), $board_id, $thread, $post_text);
 }
 if(isset($_POST['editPost'])){
 	$post_id = mysql_real_escape_string($_POST["post_id"]);
@@ -21,7 +20,7 @@ if(isset($_POST['editPost'])){
 	Post::UpdatePostText($post_id, $edited_text);
 }
 
-$thread = Thread::getThreadFromID($thread_id);
+
 
 $thread->LoadPosts();
 $posts = $thread->GetPostList();
@@ -34,12 +33,15 @@ for($i=0;$i<$post_list_size; $i++){
 		<td><?php echo $curr_post->GetPostText();?></td>
 		<td><?php echo $curr_post->GetPosterName()?></td>
 		<td><?php echo $curr_post->GetEditTime()?></td>
-		<td>
-			<form action="editPost.php" method="post">
-				<input type="hidden" name="post_id" value="<?php echo $curr_post->GetID(); ?>"/>
-				<input type="hidden" name="thread_id" value="<?php echo $thread->GetID(); ?>"/>
-				<input type="submit" value="Edit" name="editPost"/>
-			</form>
+		<td><?php
+			if($curr_post->GetPosterID() == $userid){ ?>			
+				<form action="editPost.php" method="post">
+					<input type="hidden" name="post_id" value="<?php echo $curr_post->GetID(); ?>"/>
+					<input type="hidden" name="thread_id" value="<?php echo $thread->GetID(); ?>"/>
+					<input type="hidden" name="poster_id" value="<?php echo $user->getID(); ?>"/>
+					<input type="submit" value="Edit" name="editPost"/>
+				</form>
+			<?php } ?>
 		</td>
 	</tr>
 <?php

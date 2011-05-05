@@ -78,10 +78,10 @@ class Post{
 	public function GetPostText(){
 		return $this->post_text;
 	}
-	public static function CreatePost($poster_id, $poster_name, $board_id, $thread_id, $post_text){
+	public static function CreatePost($poster_id, $poster_name, $board_id, $parent_thread, $post_text){
 		$curr_date = date("Y/m/d H:i:s");
 		
-		$query = "INSERT INTO posts (thread_id, board_id, poster_name, poster_id, post_time, edit_time) VALUES ('".$thread_id."','".$board_id."','".$poster_name."', '".$poster_id."', '".$curr_date."', '".$curr_date."');";
+		$query = "INSERT INTO posts (thread_id, board_id, poster_name, poster_id, post_time, edit_time) VALUES ('".$parent_thread->GetID()."','".$board_id."','".$poster_name."', '".$poster_id."', '".$curr_date."', '".$curr_date."');";
 		//echo $query;
 		$result = runDBQuery($query);
 		$post_id =  mysql_insert_id();
@@ -90,7 +90,8 @@ class Post{
 		$query = "INSERT INTO post_text (post_text, post_id) VALUES ('".$post_text."', '".$post_id."');";
 		$result = runDBQuery($query);
 		
-		$query = "UPDATE boards JOIN threads ON threads.board_id=boards.board_id SET boards.last_post_id='".$poster_id."', threads.time_updated='".$curr_date."' WHERE threads.thread_id='".$thread_id."';";
+		$numReplies = $parent_thread->GetNumReplies() + 1;
+		$query = "UPDATE boards JOIN threads ON threads.board_id=boards.board_id SET boards.last_post_id='".$poster_id."', threads.time_updated='".$curr_date."', threads.num_replies='".$numReplies."' WHERE threads.thread_id='".$parent_thread->GetID()."';";
 		$result = runDBQuery($query);
 	}
 	

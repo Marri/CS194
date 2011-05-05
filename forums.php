@@ -24,7 +24,9 @@ $forum->loadSubForums();
 		for($c=0;$c<$board_list_size; $c++){
 			$curr_board = $board_list[$c];
 			$poster = User::getUserByID($curr_board->getLastPostID());
-			echo "<tr><td><a href='./board.php?board_id=".$curr_board->getID()."'>".$curr_board->getName()."</a></td> <td>".$curr_board->getDescription()."</td><td>".$poster->getUsername()."</td></tr>";
+			$poster_name = "";
+			if($poster != NULL) $poster_name = $poster->getUsername(); 
+			echo "<tr><td><a href='./board.php?board_id=".$curr_board->getID()."'>".$curr_board->getName()."</a></td> <td>".$curr_board->getDescription()."</td><td>".$poster_name."</td></tr>";
 		}
 		echo "</table>";
 	}
