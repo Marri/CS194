@@ -17,8 +17,6 @@ $squffy = Squffy::getSquffyByIDExtended
 	)
 );
 
-$errors = array();
-$notices = array();
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
@@ -77,8 +75,8 @@ echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 </form>';*/
 
 //Debug
-echo '<br><br>';
-echo '<br><h1>Info</h1>';
+echo '<br><br><br>';
+echo '<h1>Info</h1>';
 echo 'id '. $squffy->getID() . '<br>';
 echo 'health '. $squffy->getHealth() . '<br>';
 echo 'mate ';

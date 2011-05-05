@@ -44,7 +44,6 @@ if(isset($_POST['teacher_id'])) {
 				$errors[] = "That teacher cannot work for you right now.";
 				$valid = false;		
 			}
-			echo '<br>Degree: "'.$teacher->getDegreeName().'"<br>';
 			if($teacher->getDegreeName() != "Teacher") {
 				$errors[] = "That squffy is not qualified as a teacher.";
 				$valid = false;		
@@ -71,6 +70,7 @@ if(isset($_POST['learn'])) {
 if($valid) {
 	$days = -1; //TODO change to actual values but testing is cool
 	$squffy->startDegree($degree, $days);
+	$notices[] = $squffy->getName() . " has been sent to school.";
 	if($teacher != NULL) {
 		//TODO set as working
 	}

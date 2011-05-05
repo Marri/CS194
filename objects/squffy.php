@@ -193,6 +193,7 @@ class Squffy {
 	public function isCustom() { return $this->is_custom == "true"; }
 	public function isInMarket() { return $this->is_in_market == "true"; }
 	public function isStudent() { return $this->getDegreeType() == 'Apprentice'; }
+	public function isTaught() { return $this->degree_name != NULL && !$this->isStudent(); }
 	public function isAdult() { return $this->getAge() >= self::ADULT; }
 	public function isTeenager() { return $this->getAge() >= self::TEEN && !$this->isAdult(); }
 	

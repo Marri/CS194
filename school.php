@@ -1,5 +1,5 @@
 <?php
-$selected = "home";
+$selected = "squffies";
 include("./includes/header.php");
 include('./objects/personality.php');
 include('./objects/squffy.php');
@@ -8,6 +8,8 @@ if(isset($_POST['learn'])) {
 	$days = 5;
 	include('./scripts/squffy_learn.php');
 }
+displayErrors($errors);
+displayNotices($notices);
 ?>
 
 <div class='npc'>Teacher squffy</div>
