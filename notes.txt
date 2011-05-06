@@ -20,9 +20,22 @@ Nuturing (good at nursemaid and teaching)
 
 Negative traits:
 Abrasive (worse at doctor/midwife)
-Stays indoors (
+Avoids nature (
 Clumsy
 Imprecise
 Lazy
 Pessimistic
 Neglectful
+
+Amanda!
+**Finish database schema
+Update all current features to Look Pretty with layout
+Extend layout background properly
+*Finish edit_squffy page
+***Write breeding scripts
+***Write custom creation scripts
+
+*** Current week
+**  Old todo for current week
+*   Old todo
+    Low priority old todo

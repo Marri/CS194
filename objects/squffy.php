@@ -226,10 +226,12 @@ class Squffy {
 	
 	//Public methods	
 	public function breedTo($male, $userid) {
+		if(!$this->getGender() == 'F') { return; }
 		$dateOfBirth = time() + 60 * 60 * 24 * self::DAYS_PREG;
+		$date = date("Y-m-d h:m:s",$dateOfBirth);
 		$query = 
 			"INSERT INTO `pregnancies` (mother_id, father_id, user_id, date_birth)
-			VALUES (" . $this->id . ", " . $male->getID() . ", $userid, '$dateOfBirth')";
+			VALUES (" . $this->id . ", " . $male->getID() . ", $userid, '$date')";
 		runDBQuery($query);
 		
 		$query = "UPDATE `squffies` SET `is_pregnant` = 'true' WHERE `squffy_id` = " . $this->id;
@@ -371,6 +373,11 @@ class Squffy {
 		while($info = @mysql_fetch_assoc($result)) {
 			$this->items[] = $info;
 		}		
+	}
+	
+	//Static methods
+	public static function createChild($mother, $father, $owner) {
+		$personality = Personality::GenerateTraits($mother, $father);
 	}
 }
 ?>

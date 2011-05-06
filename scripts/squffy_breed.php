@@ -91,7 +91,7 @@ if($mate_id == 0) {
 //TODO: user has permission for breeding for both squffies
 //TODO: if necessary, user can afford breeding
 if($valid) {
-	//$female->breedTo($male, $userid);
-	echo 'Breeding';
+	$female->breedTo($male, $userid);
+	$notices[] = "Congratulations! " . $male->getName() . " and " . $female->getName() . " are about to be parents.";
 }	
 ?>

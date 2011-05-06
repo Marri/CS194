@@ -9,10 +9,49 @@ class Personality {
 	const ENERGY_TRAIT = 4; //More energetic
 	const HAPPY_TRAIT = 5; //Happier
 	const SPEED_TRAIT = 9; //Faster
+	const FARM_TRAIT = 10; //Better farmer/forester	
+	const BAKE_TRAIT = 11; //Better cook/baker
 	
 	const CHROMOSOME_CHANGE = 1;
 	const HUNGER_CHANGE = 1;
 	const HEALING_CHANGE = 3;
 	const SCHOOL_CHANGE = 1;
+	
+	const NUM_TRAITS = 11;
+	
+	public static function GenerateTraits($mom, $dad) {
+		$options = array();	
+		$strengths = array();	
+		$weaknesses = array();	
+		
+		$mom_personality = $mom->getPersonalityTraits();
+		$dad_personality = $dad->getPersonalityTraits();	
+		
+		array_push($strengths, $mom_personality['strength1']);
+		array_push($strengths, $mom_personality['strength2']);
+		array_push($strengths, $dad_personality['strength1']);
+		array_push($strengths, $dad_personality['strength2']);
+		array_push($weaknesses, $mom_personality['weakness1']);
+		array_push($weaknesses, $mom_personality['weakness2']);
+		array_push($weaknesses, $dad_personality['weakness1']);
+		array_push($weaknesses, $dad_personality['weakness2']);
+			
+		for($i = 1; $i <= Personality::NUM_TRAITS + 4; $i++) { array_push($options, $i); }
+		
+		$traits = array_rand($options, 4);
+		$personality = array();
+		$personality['strength1'] = self::GetTrait($traits[0], $strengths);
+		$personality['strength2'] = self::GetTrait($traits[1], $strengths);
+		$personality['weakness1'] = self::GetTrait($traits[2], $weaknesses);
+		$personality['weakness2'] = self::GetTrait($traits[3], $weaknesses);
+		
+		return $personality;
+	}
+	
+	private static function GetTrait($id, $replace) {
+		if($id <= self::NUM_TRAITS) { return $id; }
+		$id -= self::NUM_TRAITS;
+		return $replace[$id - 1];
+	}
 }
 ?>
