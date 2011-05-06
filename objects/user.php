@@ -37,7 +37,7 @@ class User {
 	}
 	
 	public static function getUserByID($id) {
-		$queryString = "SELECT * FROM `users` WHERE `user_id` = $id";
+		$queryString = "SELECT * FROM `users` WHERE `user_id` = '".$id."';";
 		$query = runDBQuery($queryString);
 		if(@mysql_num_rows($query) < 1) { return NULL; }
 		return (new User($query));

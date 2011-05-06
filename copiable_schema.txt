@@ -524,3 +524,18 @@ INSERT INTO `items`
 VALUES
 	(1, 'Cashew', 1, 'A cashew.'),
 	(2, 'Squffy Dollar', 2, 'Money.');
+	
+INSERT into `subforums`
+	(`subforum_id`, `subforum_name`, `subforum_order`)
+VALUES
+	(1, 'Example Subforum', 1);
+	
+INSERT INTO `boards` 
+	(`board_id`, `subforum_id`, `board_name`, `board_description`, `board_order`, `last_post_id`, `num_threads`, `num_posts`, `auth_view`, `anonymous_posting`) 
+VALUES 
+	('1', '1', 'First Board', 'board to demonstrate what boards can do', '1', '1', '1', '4', '5', 'false');
+
+INSERT INTO `threads`
+	(`thread_id`, `board_id`, `thread_name`, `poster_id`, `thread_text`, `time_posted`, `time_updated`, `num_replies`)
+VALUES
+	('1', '1', 'first thread', '1', 'first thread of threads', '2011-05-05 08:35:45', '2011-05-05 09:13:31', '0')

@@ -1,12 +1,10 @@
 <?php
-$selected = "home";
+
 include("./includes/header.php");
 include("./objects/notification.php");
 
-$notifications = NULL;
-if($user != NULL){
-	$notifications = $user->getNotifications();
-}
+$notifications = $user->getNotifications();
+
 ?>
 
 <div class='text-center width100p'><h1>Notifications</h1></div>
