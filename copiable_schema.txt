@@ -411,6 +411,8 @@ DROP TABLE IF EXISTS lot_items;
 CREATE TABLE IF NOT EXISTS lot_items (
 	lot_item_id int unsigned primary key auto_increment,
 	lot_id int unsigned,
+	item_type enum('Item', 'Squffy') default 'Item',
+	squffy_id int unsigned,
 	item_id smallint unsigned,
 	amount smallint unsigned
 );	
