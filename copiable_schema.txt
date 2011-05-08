@@ -388,6 +388,7 @@ CREATE TABLE IF NOT EXISTS payments (
 DROP TABLE IF EXISTS lots;
 CREATE TABLE IF NOT EXISTS lots (
 	lot_id int unsigned primary key auto_increment,
+	lot_name varchar(100),
 	user_id mediumint unsigned,
 	lot_type enum('Sale', 'Trade', 'Auction') default 'Sale',
 	is_finished enum('true', 'false') default 'false',
