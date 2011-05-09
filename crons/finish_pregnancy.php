@@ -2,6 +2,7 @@
 include('../includes/connect.php');
 include('../objects/squffy.php');
 include('../objects/personality.php');
+include('../objects/appearance.php');
 
 $query = 'SELECT * FROM `pregnancies` WHERE TO_DAYS(now()) - TO_DAYS(date_birth) >= 0';
 $result = runDBQuery($query);
@@ -18,12 +19,12 @@ while($info = @mysql_fetch_assoc($result)) {
 }
 
 $query = 'DELETE FROM `pregnancies` WHERE TO_DAYS(now()) - TO_DAYS(date_birth) >= 0';
-echo $query."<br>";
-//runDBQuery($query);
+//echo $query."<br>";
+runDBQuery($query);
 
 if(strlen($mothers) > 0) {
 	$query = "UPDATE `squffies` SET `is_pregnant` = 'false' WHERE `squffy_id` IN (" . substr($mothers, 2) . ')';
-	echo $query;
-	//runDBQuery($query);
+	//echo $query;
+	runDBQuery($query);
 }
 ?>

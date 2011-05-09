@@ -45,6 +45,9 @@ class Squffy {
 		$happiness,
 		$luck,
 		$items,
+		$base_color,
+		$eye_color,
+		$foot_color,
 		
 		$c1,
 		$c2,
@@ -54,9 +57,6 @@ class Squffy {
 		$c6,
 		$c7,
 		$c8,
-		$base_color,
-		$eye_color,
-		$foot_color,
 		$breeding_rights, //user id of user with breeding rights
 		$rights_revert, //date and time breeding rights revert to owner
 		$num_items,		
@@ -86,6 +86,9 @@ class Squffy {
 		$this->energy = $info['energy'];
 		$this->happiness = $info['happiness'];
 		$this->luck = $info['luck'];
+		$this->base_color = $info['base_color'];
+		$this->eye_color = $info['eye_color'];
+		$this->foot_color = $info['foot_color'];
 		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
@@ -172,6 +175,9 @@ class Squffy {
 	public function getDegreeType() { return $this->degree_type; }
 	public function getOwnerID() { return $this->owner_id; }
 	public function getMateID() { return $this->mate_id; }
+	public function getBaseColor() { return $this->base_color; }
+	public function getEyeColor() { return $this->eye_color; }
+	public function getFootColor() { return $this->foot_color; }
 	public function getAppearanceTraits() { return $this->appearance_traits; }
 	public function getPersonalityTraits() { return $this->personality_traits; }
 	public function getItems() { return $this->items; }
@@ -318,13 +324,14 @@ class Squffy {
 	//Staff carpenter's shop (builder)
 	
 	//Private methods
-	private function fetchAppearance() {
+	public function fetchAppearance() {
 		if($this->appearance_traits != NULL) return;
 		$query = 'SELECT * FROM `squffy_appearance` WHERE `squffy_id` = ' . $this->id;
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
-			$this->appearance_traits[] = $trait;
+			$trait = new Appearance($trait);
+			$this->appearance_traits[$trait->getID()] = $trait;
 		}		
 	}
 	
@@ -335,7 +342,8 @@ class Squffy {
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
-			$this->appearance_traits[] = $trait;
+			$trait = new Appearance($trait);
+			$this->appearance_traits[$trait->getID()] = $trait;
 		}		
 	}
 	
@@ -378,6 +386,33 @@ class Squffy {
 	//Static methods
 	public static function createChild($mother, $father, $owner) {
 		$personality = Personality::GenerateTraits($mother, $father);
+		$appearance = Appearance::GenerateTraits($mother, $father);
+		$name = $mother->getName() . ' x ' . $father->getName();
+		$gender = 'M';
+		if(mt_rand(0, 3) == 1) { $gender = 'F'; }
+		$species = $mother->getSpeciesID();
+		$base = Appearance::GetTraitColor($mother->getBaseColor(), $father->getBaseColor());
+		$eye = Appearance::GetTraitColor($mother->getEyeColor(), $father->getEyeColor());
+		$foot = Appearance::GetTraitColor($mother->getFootColor(), $father->getFootColor());
+		
+		$query = "
+		INSERT INTO `squffies` 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+		VALUES
+			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'false', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
+		runDBQuery($query);
+		$id = mysql_insert_id();
+
+		$i = 0;
+		foreach($appearance as $trait) {
+			$query = "
+			INSERT INTO `squffy_appearance` 
+				(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
+			VALUES
+				($id, " . $trait->getID() . ", '" . $trait->getSquare() . "', '" . $trait->getColor() . "', $i)";
+			runDBQuery($query);
+			$i++;
+		}
 	}
 }
 ?>

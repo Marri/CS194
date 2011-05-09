@@ -2,6 +2,7 @@
 $selected = "squffies";
 include("./includes/header.php");
 include('./objects/personality.php');
+include('./objects/appearance.php');
 include('./objects/squffy.php');
 
 $id = $_GET['id'];
@@ -79,9 +80,11 @@ echo '<br><br><br>';
 echo '<h1>Info</h1>';
 echo 'id '. $squffy->getID() . '<br>';
 echo 'health '. $squffy->getHealth() . '<br>';
+if($squffy->getMateID()) {
 echo 'mate ';
 $mate = Squffy::getSquffyByID($squffy->getMateID());
 echo $mate->getLink() . '<br>';
+}
 echo 'age '. $squffy->getAge() . '<br>';
 echo 'species id '. $squffy->getSpeciesID() . '<br>';
 echo 'species '. $squffy->getSpecies() . '<br>';
