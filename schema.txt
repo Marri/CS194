@@ -356,3 +356,49 @@ CREATE TABLE IF NOT EXISTS payments (
 	date_purchased datetime,
 	auth_code varchar(31)
 );
+
+CREATE TABLE IF NOT EXISTS lots (
+	lot_id int unsigned primary key auto_increment,
+	lot_name varchar(100),
+	user_id mediumint unsigned,
+	lot_type enum('Sale', 'Trade', 'Auction') default 'Sale',
+	is_finished enum('true', 'false') default 'false',
+	sale_price_item_id smallint unsigned,
+	sale_price_amount smallint unsigned,
+	auction_ends datetime,
+	auction_item_id smallint unsigned
+);
+
+CREATE TABLE IF NOT EXISTS lot_auctions (
+	lot_auction_id int unsigned primary key auto_increment,
+	lot_id int unsigned,
+	user_id mediumint unsigned,
+	amount smallint unsigned,
+	date_offered datetime
+);
+
+CREATE TABLE IF NOT EXISTS lot_trades (
+	lot_trade_id int unsigned primary key auto_increment,
+	lot_id int unsigned,
+	user_id mediumint unsigned,
+	is_finished enum('true', 'false') default 'false',
+	note text
+);
+
+CREATE TABLE IF NOT EXISTS lot_trade_items (
+	lot_trade_item_id int unsigned primary key auto_increment,
+	lot_trade_id int unsigned,
+	item_type enum('Item', 'Squffy') default 'Item',
+	squffy_id int unsigned,
+	item_id smallint unsigned,
+	amount smallint unsigned
+);
+
+CREATE TABLE IF NOT EXISTS lot_items (
+	lot_item_id int unsigned primary key auto_increment,
+	lot_id int unsigned,
+	item_type enum('Item', 'Squffy') default 'Item',
+	squffy_id int unsigned,
+	item_id smallint unsigned,
+	amount smallint unsigned
+);	
