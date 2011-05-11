@@ -113,6 +113,12 @@ class User {
 		}
 		return $notification_list;
 	}
+	public function canSellItem($item_name, $item_amount){
+		$inventory = $this->getInventory();
+		$item_name = str_ireplace(" ", "_", strtolower($item_name));
+		if($inventory[$item_name] >= $item_amount) return true;
+		return false;
+	}
 	public static function loginNameTaken($login_name){
 		if($login_name == "") return true;
 		$queryString = "SELECT login_name FROM user_login WHERE login_name='".$login_name."';";
