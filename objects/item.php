@@ -54,6 +54,14 @@ class Item{
 		
 		$info['species'] = $species;
 		return $info;
+	}	
+	
+	public static function getItemNameFromID($item_id){
+		$queryString = "SELECT item_name FROM items WHERE item_id='".$item_id."'";
+		$query = runDBQuery($queryString);
+		if(@mysql_num_rows($query) < 1) { return NULL; }
+		$item_names = @mysql_fetch_assoc($query);
+		return $item_names['item_name'];
 	}
 }
 ?>
