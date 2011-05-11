@@ -12,7 +12,9 @@ include("./includes/header.php");
 <a href="drey.php">Drey</a><br />
 <a href="view_squffy.php?id=112">View squffy</a><br />
 <a href="edit_squffy.php?id=112">Edit squffy</a><br />
+<a href="customs.php">Custom squffy options</a><br />
 <a href="design.php">Design custom squffy</a><br />
+<a href="custom.php">Create custom squffy</a><br />
 <a href="crons/finish_pregnancy.php">Cron: finish pregnancy</a><br />
 
 <?php

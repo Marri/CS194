@@ -1,4 +1,10 @@
 <?php
+if(isset($_POST['save'])) {
+	$save_valid = true;
+	include('./save_design.php');
+	die();
+}
+
 $selected = "squffies";
 $js[] = "design";
 $js[] = "colorpicker";
@@ -25,7 +31,7 @@ if($numTraits < 1) { $numTraits = 1; }
 	</tr>
     <tr>
     	<td colspan="3" class="width450 text-center">
-            <?php generateImage(); ?>			
+            <?php echo generateImage(); ?>			
         </td>
         <td class="vertical-top small width150">
             Add as many traits as you like; trait 1 appears on top of trait 2, etc.<br /><br />
@@ -84,18 +90,25 @@ if($numTraits < 1) { $numTraits = 1; }
         </td>
 	</tr>
 	<tr>
-    	<th class="content-subheader" colspan="4">Appearance Traits</th>
+    	<th class="content-subheader" colspan="3">Appearance Traits</th>
+		<th class="content-subheader">Options</th>
 	</tr>
 	<tr>
-    	<th class="content-subheader" colspan="2">Appearance Trait</th>
-        <th class="content-subheader " colspan="2">Appearance Trait Color</th>
+    	<th class="content-subheader" colspan="1">Appearance Trait</th>
+        <th class="content-subheader" colspan="2">Appearance Trait Color</th>
+		<td rowspan="' . ($numTraits + 1) . '" class="vertical-top" id="buttons">
+		<input id="add-trait" type="button" class="submit-input" value="Add another trait" /><br /><br />
+		<input type="submit" class="submit-input" value="Generate Preview" name="preview" /><br /><br />
+		Design name:<br/> <input class="margin-top-small margin-bottom-small" type="text" name="design_name" size="20" maxlength="50" /><br />
+		<input type="submit" class="submit-input margin-top-small" value="Save Design" name="save" />
+		</td>
 	</tr>';
 	for($i = 1; $i <= $numTraits; $i++) {
 		echo '<tr id="traitRow' . $i . '">
-			<td align="center" class="vertical-top" colspan="2">';
+			<td align="center" class="vertical-top" colspan="1">';
 				trait_dropdown("trait" . $i, $traitlist);
 			echo '</td>
-			<td colspan="2" class="text-center">
+			<td colspan="2" class="text-center vertical-top">
 				<input type="text" value="';
 				echo (isset($_POST['trait' . $i . '_color']) ? $_POST['trait' . $i . '_color'] : "FFFFFF");
 				echo '" id="trait' . $i . 'Color" class="width100 float-left" name="trait' . $i . '_color" />
@@ -112,12 +125,12 @@ if($numTraits < 1) { $numTraits = 1; }
 			echo '</td>
 		</tr>';
 	}
-	echo '<tr>
+	/*echo '<tr>
 		<td colspan="4" align="right" id="addRow">
 			<input id="add-trait" type="button" class="submit-input" value="Add another trait" /> &nbsp;&nbsp;&nbsp; <input type="submit" class="submit-input" value="Generate Preview" />
 		</td>
-		</tr>
-</table></form>';
+		</tr>';*/
+	echo '</table></form>';
 
 function trait_dropdown($fieldname, $optionlist){
   $html = (isset($_POST["$fieldname"]) ? $_POST["$fieldname"] : "none");
@@ -163,7 +176,7 @@ function generateImage() {
 	}
 	
 	if($url != "") { $url = '?' . substr($url, 1); }
-	echo "<img alt='Preview Design' src='./scripts/generate_squffy_design.php$url' />";
+	return "<img alt='Preview Design' src='./scripts/generate_design.php$url' />";
 };
 
 function displayColors() {

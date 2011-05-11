@@ -103,5 +103,10 @@ print_r($squffy->getPersonalityTraits());
 echo '<br><br>items:<br>';
 print_r($squffy->getItems());
 
+if(!$squffy->isCustom()) {
+	echo '<br><br>family:<br>';
+	print_r($squffy->getFamily());
+}
+
 include('./includes/footer.php');
 ?>

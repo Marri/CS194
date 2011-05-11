@@ -80,15 +80,15 @@ function bindPicker(varname) {
 	});						   
 };
 
-function bindClick() {	
-	$("#add-trait").unbind();
-	$("#add-trait").click( function (e) {
+function addTrait() {
+		var buttonNum = parseInt($("#buttons").attr('rowspan'));
+		$("#buttons").attr('rowspan', buttonNum + 1);
 		numShown ++;
 		var html = '<tr id="traitRow' 
 		+ numShown 
-		+ '"><td align="center" class="align-top" colspan="2"><select class="width100" name="trait' + numShown + '" size="1">'
+		+ '"><td align="center" class="vertical-top" colspan="1"><select class="width100" name="trait' + numShown + '" size="1">'
 		+ traitMenu
-		+ '</select></td><td align="center" class="align-top" colspan="2"><input type="text" value="FFFFFF" id="trait'
+		+ '</select></td><td align="center" class="vertical-top" colspan="2"><input type="text" value="FFFFFF" id="trait'
 		+ numShown 
 		+ 'Color" class="width100 float-left" name="trait' + numShown + '_color" />'
 		+ '<div class="trait' + numShown + 'ColorSelector colorSelector">'
@@ -97,15 +97,17 @@ function bindClick() {
 		+ '<a href="#"><img src="./images/icons/arrow_up.png" alt="^" class="moveRowUp" rowId="' + numShown + '" /></a>'
 		+ '<a href="#"><img src="./images/icons/arrow_down.png" alt="v" class="moveRowDown" rowId="' + numShown + '" /></a>'
 		+ '<a href="#"><img src="./images/icons/cross.png" class="removeTraitRow" rowId="' + numShown + '" alt="X" /></a>'
-		+ '</td></tr>'
-		+ '<tr><td colspan="4" align="right" id="addRow">'
-		+ '	<input id="add-trait" type="button" class="submit-input" value="Add another trait" /> &nbsp;&nbsp;&nbsp; <input type="submit" class="submit-input" value="Generate Preview" />'
 		+ '</td></tr>';
-		$("#addRow").remove();
 		$(".content-table").append(html);
 		bindClick();
 		bindX();
 		bindPicker("trait" + numShown);
+}
+
+function bindClick() {	
+	$("#add-trait").unbind();
+	$("#add-trait").click( function (e) {
+		addTrait();
 	});
 };
 
@@ -140,7 +142,8 @@ function removeRow(element) {
 		}
 			
 	}
-	numShown--;
+	numShown--;	
+	if(rowID == '1') { addTrait(); }
 };
 
 function moveRowUp(element) {

@@ -73,10 +73,10 @@
                     <span id='youraccount' class='submenu-span'>
                     <?php
                     if($loggedin) {
-						echo '<a href="./profile.php?userid=' . $userid . '" class="five">Your Profile</a>' .
+						echo '<a href="./profile.php?userid=' . $userid . '" class="fivesmall">Your Profile</a>' .
 							 '<a href="./edit_account.php" class="fivewide">Edit Account Settings</a>' .
 							 '<a href="./buy.php" class="fivewide">Purchase Squffy Dollars</a>' .
-							 '<a href="./refer.php" class="five">Refer Players</a>' .
+							 '<a href="./refer.php" class="fivesmall">Refer Players</a>' .
 							 '<a href="./referred.php" class="fivelast">Referral History</a>';
                     } else {
 						echo '<a href="./register.php" class="three">Create Account</a>' .
@@ -87,12 +87,11 @@
                     </span>
                     <span id='squffies' class='submenu-span hidden'>
                     	<?php
-						echo '<a href="./drey.php" class="six">Drey</a>' .
-							 '<a href="./nursery.php" class="six">Nursery</a>' .
-							 '<a href="./gypsy.php" class="six">Gypsy</a>' .
-							 '<a href="./hire.php" class="six">Job Fair</a>' .
-							 '<a href="./design.php" class="six">Design</a>' .
-							 '<a href="./customs.php" class="sixlast">Create</a>';
+						echo '<a href="./drey.php" class="five">Drey</a>' .
+							 '<a href="./nursery.php" class="five">Nursery</a>' .
+							 '<a href="./gypsy.php" class="five">Gypsy</a>' .
+							 '<a href="./hire.php" class="five">Job Fair</a>' .
+							 '<a href="./customs.php" class="fivelast">Customs</a>';
 						?>
                     </span>
                     <span id='intheworld' class='submenu-span hidden'>
@@ -129,3 +128,12 @@
                     </span>
                 </div>
                 <div id='content'>
+                
+                <?php
+				if(!isset($forLoggedIn)) { $forLoggedIn = false; }
+				if($forLoggedIn && !$loggedin) {
+					displayErrors(array("You must be logged in to see this page."));
+					include('./includes/footer.php');
+					die();
+				}
+				?>

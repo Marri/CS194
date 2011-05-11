@@ -69,6 +69,7 @@ body, html {
 
 .margin-right-small { margin-right: 5px; }
 .margin-top-small { margin-top: 5px; }
+.margin-bottom-small { margin-bottom: 5px; }
 .no-margin { margin: 0px; }
 .padding-10 { padding: 10px; }
 
@@ -280,7 +281,8 @@ body > #left-column {
     border-right: 0px;
 }
 
-#submenu a.five { width: 130px; }
+#submenu a.fivesmall { width: 130px; }
+#submenu a.five { width: 175px; }
 #submenu a.fivewide { width: 220px; }
 #submenu a.fivelast { 
 	width: 159px;

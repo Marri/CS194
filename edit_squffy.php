@@ -3,6 +3,7 @@ $selected = "squffies";
 $js[] = 'edit_squffy';
 include("./includes/header.php");
 include('./objects/personality.php');
+include('./objects/appearance.php');
 include('./objects/squffy.php');
 
 $id = getID("id");
