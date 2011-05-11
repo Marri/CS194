@@ -184,7 +184,10 @@ DROP TABLE IF EXISTS inventory;
 CREATE TABLE IF NOT EXISTS inventory (
 	user_id mediumint unsigned,
 	cashew smallint unsigned,
-	squffy_dollar smallint unsigned
+	squffy_dollar smallint unsigned,
+	single_acorn smallint unsigned,
+	double_acorn smallint unsigned,
+	triple_acorn smallint unsigned
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -392,8 +395,11 @@ CREATE TABLE IF NOT EXISTS lots (
 	user_id mediumint unsigned,
 	lot_type enum('Sale', 'Trade', 'Auction') default 'Sale',
 	is_finished enum('true', 'false') default 'false',
-	sale_price_item_id smallint unsigned,
-	sale_price_amount smallint unsigned,
+	sale_price_squffy_id smallint unsigned,
+	sale_price_selling_item_id smallint unsigned,
+	sale_price_selling_amount smallint unsigned,
+	sale_price_wanted_item_id smallint unsigned,
+	sale_price_wanted_amount smallint unsigned,
 	auction_ends datetime,
 	auction_item_id smallint unsigned
 );
@@ -435,6 +441,26 @@ CREATE TABLE IF NOT EXISTS lot_items (
 	item_id smallint unsigned,
 	amount smallint unsigned
 );	
+
+DROP TABLE IF EXISTS designs;
+CREATE TABLE IF NOT EXISTS designs (
+	design_id int unsigned primary key auto_increment,
+	design_name varchar(50),
+	user_id mediumint unsigned,
+	base_color varchar(6),
+	eye_color varchar(6),
+	foot_color varchar(6),
+	num_traits tinyint unsigned default '0'
+);
+
+DROP TABLE IF EXISTS design_traits;
+CREATE TABLE IF NOT EXISTS design_traits (
+	design_id int unsigned,
+	trait_id tinyint unsigned,
+	trait_color varchar(6),
+	trait_order tinyint unsigned
+);
+
 
 INSERT INTO `appearance_traits` 
 	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
@@ -547,14 +573,14 @@ VALUES
 
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `squffy_dollar`)
+	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`)
 VALUES
-	(1, 100, 100);
+	(1, 100, 100, 3, 3, 3);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
 VALUES
-	(1, 1);
+	(1, 15);
 
 INSERT INTO `squffies` 
 	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
@@ -576,7 +602,10 @@ INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`)
 VALUES
 	(1, 'Cashew', 1, 'A cashew.'),
-	(2, 'Squffy Dollar', 2, 'Money.');
+	(2, 'Squffy Dollar', 2, 'Money.'),
+	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
+	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),
+	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.');
 	
 INSERT into `subforums`
 	(`subforum_id`, `subforum_name`, `subforum_order`)
