@@ -1,7 +1,11 @@
 <?php
-include_once("../objects/appearance.php");
+if(isset($dirUp)) {
+	$img_dir = './images/generate/' . $species . '/' . $species;
+} else {
+	include_once("../objects/appearance.php");
+	$img_dir = '../images/generate/' . $species . '/' . $species;
+}
 
-$img_dir = '../images/generate/' . $species . '/' . $species;
 $design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
 foreach($markings as $trait) {
 	$design = addToBase($design, $img_dir, $trait, true);

@@ -58,7 +58,7 @@ class Design {
 	public function fetchTraits() {
 		if($this->traits != NULL) { return; }
 		$query = "
-		SELECT design_traits.trait_color, appearance_traits.trait_name, appearance_traits.trait_title, appearance_traits.trait_type
+		SELECT design_traits.trait_id, design_traits.trait_color, design_traits.trait_order, appearance_traits.trait_name, appearance_traits.trait_title, appearance_traits.trait_type
 		FROM design_traits, appearance_traits 
 		WHERE design_traits.trait_id = appearance_traits.trait_id AND design_id = " . $this->id . "
 		ORDER BY trait_order DESC";
@@ -67,10 +67,12 @@ class Design {
 		$this->traits =array();
 		while($info = @mysql_fetch_assoc($result)) {
 			$trait = array();
+			$trait['id'] = $info['trait_id'];
 			$trait['name'] = $info['trait_name'];
 			$trait['title'] = $info['trait_title'];
 			$trait['color'] = $info['trait_color'];
 			$trait['type'] = $info['trait_type'];
+			$trait['order'] = $info['trait_order'];
 			$this->traits[] = $trait;
 		}
 	}

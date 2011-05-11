@@ -32,10 +32,13 @@ Finish database schema
 Update all current features to Look Pretty with layout
 Extend layout background properly
 Finish edit_squffy page
-Write custom creation scripts
+Add edit/delete design page
+Add restrictions and error checking for design creation/editing
 Add support for dominant traits (all currently recessive)
 Add support for chromosomes affecting traits being passed on
 Add support for chromosomes affecting gender of children
 Add support for multiple births
-Add support for chromosomes passing on to children
 How handling eggs...?
+Add species picking
+Fix all the images to standardize at 375 x 375
+Fix all the mutations to only have L not H images

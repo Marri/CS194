@@ -51,10 +51,14 @@ body, html {
 .width100 { width: 100px; }
 .width125 { width: 125px; }
 .width150 { width: 150px; }
+.width175 { width: 175px; }
 .width200 { width: 200px; }
 .width300 { width: 300px; }
 .width400 { width: 400px; }
 .width450 { width: 450px; }
+
+.male { background-color: #F2F2FF; }
+.female { background-color: #FFF2F2; }
 
 .div-center { margin: 0px auto; }
 .float-left { float: left; }

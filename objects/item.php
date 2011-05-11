@@ -48,8 +48,8 @@ class Item{
 		$breed = substr($item, -4);
 		if($breed == "corn") { $species = 1; }
 		elseif($breed == "park") { $species = 4; }
-		elseif($breed == "seed") { $species = 3; }
-		elseif($breed == "horn") { $species = 2; }
+		elseif($breed == "seed") { $species = 2; }
+		elseif($breed == "horn") { $species = 3; }
 		elseif($breed == "ings") { $species = 5; }
 		
 		$info['species'] = $species;

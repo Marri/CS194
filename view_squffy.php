@@ -23,6 +23,13 @@ displayErrors($errors);
 displayNotices($notices);
 
 echo '<h1>' . $squffy->getLink() . '</h1>';
+$img = $squffy->getURL();
+if(!file_exists($img)) { 
+	$thumb = $squffy->getThumbnail();
+	include('./scripts/reset_image.php');
+}
+echo "<img src='$img' alt='Squffy' /><br />";
+
 echo '<form action="view_squffy.php?id=' . $id . '" method="post">
 ID: <input type="text" name="mate_id" length="10" />
 <input type="submit" name="breed" value="Breed to" />
@@ -105,7 +112,12 @@ print_r($squffy->getItems());
 
 if(!$squffy->isCustom()) {
 	echo '<br><br>family:<br>';
-	print_r($squffy->getFamily());
+	$family = $squffy->getFamily();
+	foreach($family as $relation => $rel_id) {
+		if($rel_id == NULL) { continue; }
+		$rel = Squffy::getSquffyByID($rel_id);
+		echo $relation . ': ' . $rel->getLink() . '<br>';
+	}
 }
 
 include('./includes/footer.php');
