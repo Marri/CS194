@@ -31,5 +31,29 @@ class Item{
 		}
 		return $item_list;
 	}
+	
+	public static function CustomInfo($item) {
+		$info = array();
+	
+		$type = substr($item, 0, 6);
+		$canUse = 0;
+		
+		if($type == "single") { $canUse = 1; }
+		elseif($type == "double") { $canUse = 2; }
+		elseif($type == "triple") { $canUse = 3; }
+		
+		$info['num'] = $canUse;
+		
+		$species = "tree";
+		$breed = substr($item, -4);
+		if($breed == "corn") { $species = 1; }
+		elseif($breed == "park") { $species = 4; }
+		elseif($breed == "seed") { $species = 3; }
+		elseif($breed == "horn") { $species = 2; }
+		elseif($breed == "ings") { $species = 5; }
+		
+		$info['species'] = $species;
+		return $info;
+	}
 }
 ?>

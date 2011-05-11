@@ -187,7 +187,19 @@ CREATE TABLE IF NOT EXISTS inventory (
 	squffy_dollar smallint unsigned,
 	single_acorn smallint unsigned,
 	double_acorn smallint unsigned,
-	triple_acorn smallint unsigned
+	triple_acorn smallint unsigned,
+	single_seed smallint unsigned,
+	double_seed smallint unsigned,
+	triple_seed smallint unsigned,
+	single_thorn smallint unsigned,
+	double_thorn smallint unsigned,
+	triple_thorn smallint unsigned,
+	single_spark smallint unsigned,
+	double_spark smallint unsigned,
+	triple_spark smallint unsigned,
+	single_wings smallint unsigned,
+	double_wings smallint unsigned,
+	triple_wings smallint unsigned
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -358,6 +370,7 @@ CREATE TABLE IF NOT EXISTS designs (
 	design_id int unsigned primary key auto_increment,
 	design_name varchar(50),
 	user_id mediumint unsigned,
+	species_id tinyint unsigned,
 	base_color varchar(6),
 	eye_color varchar(6),
 	foot_color varchar(6),
@@ -442,25 +455,6 @@ CREATE TABLE IF NOT EXISTS lot_items (
 	item_id smallint unsigned,
 	amount smallint unsigned
 );	
-
-DROP TABLE IF EXISTS designs;
-CREATE TABLE IF NOT EXISTS designs (
-	design_id int unsigned primary key auto_increment,
-	design_name varchar(50),
-	user_id mediumint unsigned,
-	base_color varchar(6),
-	eye_color varchar(6),
-	foot_color varchar(6),
-	num_traits tinyint unsigned default '0'
-);
-
-DROP TABLE IF EXISTS design_traits;
-CREATE TABLE IF NOT EXISTS design_traits (
-	design_id int unsigned,
-	trait_id tinyint unsigned,
-	trait_color varchar(6),
-	trait_order tinyint unsigned
-);
 
 
 INSERT INTO `appearance_traits` 
@@ -574,9 +568,9 @@ VALUES
 
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`)
+	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
 VALUES
-	(1, 100, 100, 3, 3, 3);
+	(1, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -606,7 +600,19 @@ VALUES
 	(2, 'Squffy Dollar', 2, 'Money.'),
 	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
 	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),
-	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.');
+	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.'),
+	(6, 'Single Seed', 3, 'Make a ground squffy with one appearance trait.'),
+	(7, 'Double Seed', 3, 'Make a ground squffy with two appearance traits.'),
+	(8, 'Triple Seed', 3, 'Make a ground squffy with three appearance traits.'),
+	(9, 'Single Thorn', 3, 'Make a sand squffy with one appearance trait.'),
+	(10, 'Double Thorn', 3, 'Make a sand squffy with two appearance traits.'),
+	(11, 'Triple Thorn', 3, 'Make a sand squffy with three appearance traits.'),
+	(12, 'Single Spark', 3, 'Make a lihtan squffy with one appearance trait.'),
+	(13, 'Double Spark', 3, 'Make a lihtan squffy with two appearance traits.'),
+	(14, 'Triple Spark', 3, 'Make a lihtan squffy with three appearance traits.'),
+	(15, 'Single Wings', 3, 'Make a fey squffy with one appearance trait.'),
+	(16, 'Double Wings', 3, 'Make a fey squffy with two appearance traits.'),
+	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.');
 	
 INSERT into `subforums`
 	(`subforum_id`, `subforum_name`, `subforum_order`)
@@ -624,3 +630,15 @@ VALUES
 	('1', '1', 'first thread', '1', 'first thread of threads', '2011-05-05 08:35:45', '2011-05-05 09:13:31', '0');
 
 INSERT INTO `pregnancies` (`pregnancy_id`, `mother_id`, `father_id`, `user_id`, `date_birth`) VALUES (NULL, '2', '112', '1', NOW());
+
+INSERT INTO `designs` (`design_id`, `design_name`, `user_id`, `species_id`, `base_color`, `eye_color`, `foot_color`, `num_traits`) VALUES
+(1, 'Basic', 1, 1, 'F0DDA3', '009900', '886633', 0),
+(12, 'Mystic', 1, 4, 'D7C9FF', '886633', 'D4AB6F', 3),
+(13, 'Tiger', 1, 2, 'FF8800', '0000BB', '886633', 2);
+
+INSERT INTO `design_traits` (`design_id`, `trait_id`, `trait_color`, `trait_order`) VALUES
+(12, 27, 'FFFFFF', 0),
+(12, 2, '000000', 1),
+(12, 15, '000000', 2),
+(13, 16, '000000', 0),
+(13, 9, '000000', 1);

@@ -127,6 +127,11 @@ input.submit-input-disabled {
 .errors a { font-weight: bold; }
 .errors ul { margin: 0px !important; }
 
+.small-error {
+	color: #FF0000;
+	font-style: italic;
+}
+
 .success {
 	margin-bottom: 10px;
 	border: 4px black solid;

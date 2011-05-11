@@ -461,5 +461,53 @@ class Squffy {
 		$query = "INSERT INTO squffy_family VALUES ($id, $mom_id, $dad_id, $mom_mom_id, $mom_dad_id, $dad_mom_id, $dad_dad_id);";
 		runDBQuery($query);
 	}
+	
+	public static function createCustom($design, $owner) {
+		$personality = Personality::RandomTraits();
+		$name = $mother->getName() . ' x ' . $father->getName(); //TODO get
+		$gender = 'M'; //TODO get
+		$species = $design->getSpecies();
+		$base = $design->getBase();
+		$eye = $design->getEye();
+		$foot = $design->getFoot();
+		
+		$query = "
+		INSERT INTO `squffies` 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+		VALUES
+			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'false', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
+		runDBQuery($query);
+		$id = mysql_insert_id();
+
+		$i = 0;
+		foreach($appearance as $trait) {
+			$query = "
+			INSERT INTO `squffy_appearance` 
+				(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
+			VALUES
+				($id, " . $trait->getID() . ", '" . $trait->getSquare() . "', '" . $trait->getColor() . "', $i)";
+			runDBQuery($query);
+			$i++;
+		}
+		
+		$mom_id = $mother->getID();
+		$mom_mom_id = 'NULL';
+		$mom_dad_id = 'NULL';
+		if(!$mother->isCustom()) {
+			$mom_mom_id = $mother->getMotherID();
+			$mom_dad_id = $mother->getFatherID();
+		}
+		
+		$dad_id = $father->getID();
+		$dad_mom_id = 'NULL';
+		$dad_dad_id = 'NULL';
+		if(!$father->isCustom()) {
+			$dad_mom_id = $father->getMotherID();
+			$dad_dad_id = $father->getFatherID();
+		}
+		
+		$query = "INSERT INTO squffy_family VALUES ($id, $mom_id, $dad_id, $mom_mom_id, $mom_dad_id, $dad_mom_id, $dad_dad_id);";
+		runDBQuery($query);
+	}
 }
 ?>
