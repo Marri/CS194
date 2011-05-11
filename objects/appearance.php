@@ -8,6 +8,10 @@ class Appearance {
 		$square,
 		$color;
 		
+	const BASE_DEFAULT = 'F0DDA3';
+	const EYE_DEFAULT = '009900';
+	const FOOT_DEFAULT = '886633';
+		
 	public function __construct($info) {
 		$this->id = $info['trait_id'];
 		$this->square = $info['trait_square'];
@@ -134,6 +138,26 @@ class Appearance {
 		$color .= (strlen($g) < 2?'0':'').$g;
 		$color .= (strlen($b) < 2?'0':'').$b;
 		return $color;
+	}
+	
+	public static function Colors() {
+		return array(
+			"pink" => "FFBBBB",
+			"red" => "BB0000", 
+			"orange" => "FF8800",
+			"yellow" => "FFFF00", 
+			"green" => "009900", 
+			"teal" => "33BBBB",
+			"darkblue" => "000080",
+			"blue" => "0000BB", 
+			"lightblue" => "8888ff",
+			"purple" => "DD99FF",
+			"gray" => "999999", 
+			"grey" => "999999", 
+			"brown" => "886633",
+			"black" => "000000",
+			"white" => "FFFFFF"
+		);
 	}
 }
 ?>

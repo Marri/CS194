@@ -356,6 +356,7 @@ CREATE TABLE IF NOT EXISTS design_traits (
 DROP TABLE IF EXISTS designs;
 CREATE TABLE IF NOT EXISTS designs (
 	design_id int unsigned primary key auto_increment,
+	design_name varchar(50),
 	user_id mediumint unsigned,
 	base_color varchar(6),
 	eye_color varchar(6),

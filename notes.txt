@@ -28,14 +28,14 @@ Pessimistic
 Neglectful
 
 Amanda!
-**Finish database schema
+Finish database schema
 Update all current features to Look Pretty with layout
 Extend layout background properly
-*Finish edit_squffy page
-***Write breeding scripts
-***Write custom creation scripts
-
-*** Current week
-**  Old todo for current week
-*   Old todo
-    Low priority old todo
+Finish edit_squffy page
+Write custom creation scripts
+Add support for dominant traits (all currently recessive)
+Add support for chromosomes affecting traits being passed on
+Add support for chromosomes affecting gender of children
+Add support for multiple births
+Add support for chromosomes passing on to children
+How handling eggs...?

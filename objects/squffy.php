@@ -92,6 +92,7 @@ class Squffy {
 		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
+		$this->family_tree = NULL;
 		$this->items = NULL;
 		$this->personality_traits = array();
 		$this->personality_traits['strength1'] = $info['strength1_id'];
@@ -181,6 +182,7 @@ class Squffy {
 	public function getAppearanceTraits() { return $this->appearance_traits; }
 	public function getPersonalityTraits() { return $this->personality_traits; }
 	public function getItems() { return $this->items; }
+	public function getFamily() { return $this->family_tree; }
 	public function getMotherID() { return $this->family_tree['mother']; }
 	public function getFatherID() { return $this->family_tree['father']; }
 	public function getMotherMotherID() { return $this->family_tree['mother']; }
@@ -242,6 +244,8 @@ class Squffy {
 		
 		$query = "UPDATE `squffies` SET `is_pregnant` = 'true' WHERE `squffy_id` = " . $this->id;
 		runDBQuery($query);
+		
+		$this->is_pregnant = 'true';
 	}
 	
 	public function setMate($mate) {		
@@ -383,6 +387,30 @@ class Squffy {
 		}		
 	}
 	
+	private function fetchFamily() {
+		if($this->family_tree != NULL) { return; }
+		if($this->isCustom()) { 
+			$this->family_tree = array();
+			$this->family_tree['mother'] = NULL;
+			$this->family_tree['father'] = NULL;
+			$this->family_tree['mother_mother'] = NULL;
+			$this->family_tree['mother_father'] = NULL;
+			$this->family_tree['father_mother'] = NULL;
+			$this->family_tree['father_father'] = NULL;
+			return; 
+		}
+		$query = 'SELECT * FROM squffy_family WHERE squffy_id = ' . $this->id;
+		$result = runDBQuery($query);
+		$info = @mysql_fetch_assoc($result);
+		$this->family_tree = array();
+		$this->family_tree['mother'] = $info['mother_id'];
+		$this->family_tree['father'] = $info['father_id'];
+		$this->family_tree['mother_mother'] = $info['mother_mother_id'];
+		$this->family_tree['mother_father'] = $info['mother_father_id'];
+		$this->family_tree['father_mother'] = $info['father_mother_id'];
+		$this->family_tree['father_father'] = $info['father_father_id'];
+	}
+	
 	//Static methods
 	public static function createChild($mother, $father, $owner) {
 		$personality = Personality::GenerateTraits($mother, $father);
@@ -413,6 +441,25 @@ class Squffy {
 			runDBQuery($query);
 			$i++;
 		}
+		
+		$mom_id = $mother->getID();
+		$mom_mom_id = 'NULL';
+		$mom_dad_id = 'NULL';
+		if(!$mother->isCustom()) {
+			$mom_mom_id = $mother->getMotherID();
+			$mom_dad_id = $mother->getFatherID();
+		}
+		
+		$dad_id = $father->getID();
+		$dad_mom_id = 'NULL';
+		$dad_dad_id = 'NULL';
+		if(!$father->isCustom()) {
+			$dad_mom_id = $father->getMotherID();
+			$dad_dad_id = $father->getFatherID();
+		}
+		
+		$query = "INSERT INTO squffy_family VALUES ($id, $mom_id, $dad_id, $mom_mom_id, $mom_dad_id, $dad_mom_id, $dad_dad_id);";
+		runDBQuery($query);
 	}
 }
 ?>
