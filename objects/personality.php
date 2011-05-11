@@ -48,6 +48,19 @@ class Personality {
 		return $personality;
 	}
 	
+	public static function RandomTraits() {
+		$options = array();				
+		for($i = 1; $i <= Personality::NUM_TRAITS + 4; $i++) { array_push($options, $i); }		
+		$traits = array_rand($options, 4);
+		$personality = array();
+		$personality['strength1'] = $traits[0];
+		$personality['strength2'] = $traits[1];
+		$personality['weakness1'] = $traits[2];
+		$personality['weakness2'] = $traits[3];
+		
+		return $personality;
+	}
+	
 	private static function GetTrait($id, $replace) {
 		if($id <= self::NUM_TRAITS) { return $id; }
 		$id -= self::NUM_TRAITS;

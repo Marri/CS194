@@ -47,8 +47,7 @@ class Squffy {
 		$items,
 		$base_color,
 		$eye_color,
-		$foot_color,
-		
+		$foot_color,		
 		$c1,
 		$c2,
 		$c3,
@@ -57,6 +56,7 @@ class Squffy {
 		$c6,
 		$c7,
 		$c8,
+		
 		$breeding_rights, //user id of user with breeding rights
 		$rights_revert, //date and time breeding rights revert to owner
 		$num_items,		
@@ -89,6 +89,14 @@ class Squffy {
 		$this->base_color = $info['base_color'];
 		$this->eye_color = $info['eye_color'];
 		$this->foot_color = $info['foot_color'];
+		$this->c1 = $info['c1'];
+		$this->c2 = $info['c2'];
+		$this->c3 = $info['c3'];
+		$this->c4 = $info['c4'];
+		$this->c5 = $info['c5'];
+		$this->c6 = $info['c6'];
+		$this->c7 = $info['c7'];
+		$this->c8 = $info['c8'];
 		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
@@ -172,6 +180,14 @@ class Squffy {
 	public function getEnergy() { return $this->energy; }
 	public function getHappiness() { return $this->happiness; }
 	public function getLuck() { return $this->luck; }
+	public function getC1() { return $this->c1; }
+	public function getC2() { return $this->c2; }
+	public function getC3() { return $this->c3; }
+	public function getC4() { return $this->c4; }
+	public function getC5() { return $this->c5; }
+	public function getC6() { return $this->c6; }
+	public function getC7() { return $this->c7; }
+	public function getC8() { return $this->c8; }
 	public function getDegreeName() { return $this->degree_name; }
 	public function getDegreeType() { return $this->degree_type; }
 	public function getOwnerID() { return $this->owner_id; }
@@ -190,6 +206,8 @@ class Squffy {
 	public function getFatherMotherID() { return $this->family_tree['father_mother']; }
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
 	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
+	public function getURL() { return './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; }
+	public function getThumbnail() { return './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png'; }
 	
 	//Predicates
 	public function isPregnant() { return $this->is_pregnant == "true"; }
@@ -330,7 +348,8 @@ class Squffy {
 	//Private methods
 	public function fetchAppearance() {
 		if($this->appearance_traits != NULL) return;
-		$query = 'SELECT * FROM `squffy_appearance` WHERE `squffy_id` = ' . $this->id;
+		$query = 'SELECT * FROM `squffy_appearance` WHERE `squffy_id` = ' . $this->id . '
+		 ORDER BY squffy_appearance.trait_order DESC';
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
@@ -342,7 +361,9 @@ class Squffy {
 	private function fetchFullAppearance() {
 		if($this->appearance_traits != NULL) return;
 		$query = 'SELECT appearance_traits.trait_name, appearance_traits.trait_title, appearance_traits.trait_type, squffy_appearance.*
-		 FROM `squffy_appearance`, appearance_traits WHERE squffy_appearance.trait_id = appearance_traits.trait_id AND `squffy_id` = ' . $this->id;
+		 FROM `squffy_appearance`, appearance_traits 
+		 WHERE squffy_appearance.trait_id = appearance_traits.trait_id AND `squffy_id` = ' . $this->id . '
+		 ORDER BY squffy_appearance.trait_order DESC';
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
@@ -412,6 +433,12 @@ class Squffy {
 	}
 	
 	//Static methods
+	private static function averageChromosome($mom_c, $dad_c) {
+		$min = min($mom_c, $dad_c);
+		$max = max($mom_c, $dad_c);
+		return mt_rand($min, $max);
+	}
+	
 	public static function createChild($mother, $father, $owner) {
 		$personality = Personality::GenerateTraits($mother, $father);
 		$appearance = Appearance::GenerateTraits($mother, $father);
@@ -422,12 +449,20 @@ class Squffy {
 		$base = Appearance::GetTraitColor($mother->getBaseColor(), $father->getBaseColor());
 		$eye = Appearance::GetTraitColor($mother->getEyeColor(), $father->getEyeColor());
 		$foot = Appearance::GetTraitColor($mother->getFootColor(), $father->getFootColor());
+		$c1 = self::averageChromosome($mother->getC1(), $father->getC1());
+		$c2 = self::averageChromosome($mother->getC2(), $father->getC2());
+		$c3 = self::averageChromosome($mother->getC3(), $father->getC3());
+		$c4 = self::averageChromosome($mother->getC4(), $father->getC4());
+		$c5 = self::averageChromosome($mother->getC5(), $father->getC5());
+		$c6 = self::averageChromosome($mother->getC6(), $father->getC6());
+		$c7 = self::averageChromosome($mother->getC7(), $father->getC7());
+		$c8 = self::averageChromosome($mother->getC8(), $father->getC8());
 		
 		$query = "
 		INSERT INTO `squffies` 
 			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
 		VALUES
-			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'false', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
+			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, $c1, $c2, $c3, $c4, $c5, $c6, $c7, $c8, '$base', '$eye', '$foot', 'false', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
 		runDBQuery($query);
 		$id = mysql_insert_id();
 
@@ -460,6 +495,35 @@ class Squffy {
 		
 		$query = "INSERT INTO squffy_family VALUES ($id, $mom_id, $dad_id, $mom_mom_id, $mom_dad_id, $dad_mom_id, $dad_dad_id);";
 		runDBQuery($query);
+	}
+	
+	public static function CreateCustom($name, $gender, $design, $owner) {
+		$personality = Personality::RandomTraits();
+		$species = $design->getSpecies();
+		$base = $design->getBase();
+		$eye = $design->getEye();
+		$foot = $design->getFoot();
+		
+		$query = "
+		INSERT INTO `squffies` 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+		VALUES
+			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'true', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
+		runDBQuery($query);
+		$id = mysql_insert_id();
+		
+		$design->fetchTraits();
+		$appearance = $design->getTraits();
+		foreach($appearance as $trait) {
+			$query = "
+			INSERT INTO `squffy_appearance` 
+				(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
+			VALUES
+				($id, " . $trait['id'] . ", 'S', '" . $trait['color'] . "', " . $trait['order'] . ")";
+			runDBQuery($query);
+		}
+		
+		return $id;
 	}
 }
 ?>

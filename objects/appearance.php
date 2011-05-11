@@ -6,6 +6,7 @@ class Appearance {
 		$title,
 		$type,
 		$square,
+		$order,
 		$color;
 		
 	const BASE_DEFAULT = 'F0DDA3';
@@ -16,6 +17,7 @@ class Appearance {
 		$this->id = $info['trait_id'];
 		$this->square = $info['trait_square'];
 		$this->color = $info['trait_color'];
+		$this->order = $info['trait_order'];
 		
 		if(isset($info['trait_name'])) {
 			$this->name = $info['trait_name'];
@@ -31,6 +33,7 @@ class Appearance {
 	public function getSquare() { return $this->square; }
 	public function getColor() { return $this->color; }
 	public function getMid() { return 'C'; }
+	public function getOrder() { return $this->order; }
 	
 	public static function GenerateTraits($mom, $dad) {
 		$dad->fetchAppearance();
@@ -40,6 +43,7 @@ class Appearance {
 		$mom_traits = $mom->getAppearanceTraits();
 		
 		$kid_traits = array();
+		$i = 0;
 		foreach ($dad_traits as $trait) {
 			$id = $trait->getID();
 			$mom_square = 'N';
@@ -53,6 +57,8 @@ class Appearance {
 			if($kid_info['trait_square'] != 'N') {
 				$kid_info['trait_color'] = self::GetTraitColor($mom_color, $trait->getColor());
 				$kid_info['trait_id'] = $id;
+				$kid_info['trait_order'] = $i;
+				$i++;
 				$kid_trait = new Appearance($kid_info);
 				$kid_traits[$id] = $kid_trait;
 			}
@@ -66,6 +72,8 @@ class Appearance {
 			if($kid_info['trait_square'] != 'N') {
 				$kid_info['trait_color'] = self::GetTraitColor($trait->getColor(), 'FFFFFF');
 				$kid_info['trait_id'] = $id;
+				$kid_info['trait_order'] = $i;
+				$i++;
 				$kid_trait = new Appearance($kid_info);
 				$kid_traits[$id] = $kid_trait;
 			}

@@ -187,7 +187,19 @@ CREATE TABLE IF NOT EXISTS inventory (
 	squffy_dollar smallint unsigned,
 	single_acorn smallint unsigned,
 	double_acorn smallint unsigned,
-	triple_acorn smallint unsigned
+	triple_acorn smallint unsigned,
+	single_seed smallint unsigned,
+	double_seed smallint unsigned,
+	triple_seed smallint unsigned,
+	single_thorn smallint unsigned,
+	double_thorn smallint unsigned,
+	triple_thorn smallint unsigned,
+	single_spark smallint unsigned,
+	double_spark smallint unsigned,
+	triple_spark smallint unsigned,
+	single_wings smallint unsigned,
+	double_wings smallint unsigned,
+	triple_wings smallint unsigned
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -358,6 +370,7 @@ CREATE TABLE IF NOT EXISTS designs (
 	design_id int unsigned primary key auto_increment,
 	design_name varchar(50),
 	user_id mediumint unsigned,
+	species_id tinyint unsigned,
 	base_color varchar(6),
 	eye_color varchar(6),
 	foot_color varchar(6),
@@ -442,25 +455,6 @@ CREATE TABLE IF NOT EXISTS lot_items (
 	item_id smallint unsigned,
 	amount smallint unsigned
 );	
-
-DROP TABLE IF EXISTS designs;
-CREATE TABLE IF NOT EXISTS designs (
-	design_id int unsigned primary key auto_increment,
-	design_name varchar(50),
-	user_id mediumint unsigned,
-	base_color varchar(6),
-	eye_color varchar(6),
-	foot_color varchar(6),
-	num_traits tinyint unsigned default '0'
-);
-
-DROP TABLE IF EXISTS design_traits;
-CREATE TABLE IF NOT EXISTS design_traits (
-	design_id int unsigned,
-	trait_id tinyint unsigned,
-	trait_color varchar(6),
-	trait_order tinyint unsigned
-);
 
 
 INSERT INTO `appearance_traits` 
@@ -574,9 +568,9 @@ VALUES
 
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`)
+	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
 VALUES
-	(1, 100, 100, 3, 3, 3);
+	(1, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -586,8 +580,8 @@ VALUES
 INSERT INTO `squffies` 
 	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
 VALUES
-	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 2, 3, 'Master', 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
-	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 1, 0, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0);
+	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 2, 3, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
+	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 1, 0, NULL, 0, 100, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0);
 	
 INSERT INTO `squffy_appearance` 
 	(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
@@ -606,7 +600,19 @@ VALUES
 	(2, 'Squffy Dollar', 2, 'Money.'),
 	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
 	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),
-	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.');
+	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.'),
+	(6, 'Single Seed', 3, 'Make a ground squffy with one appearance trait.'),
+	(7, 'Double Seed', 3, 'Make a ground squffy with two appearance traits.'),
+	(8, 'Triple Seed', 3, 'Make a ground squffy with three appearance traits.'),
+	(9, 'Single Thorn', 3, 'Make a sand squffy with one appearance trait.'),
+	(10, 'Double Thorn', 3, 'Make a sand squffy with two appearance traits.'),
+	(11, 'Triple Thorn', 3, 'Make a sand squffy with three appearance traits.'),
+	(12, 'Single Spark', 3, 'Make a lihtan squffy with one appearance trait.'),
+	(13, 'Double Spark', 3, 'Make a lihtan squffy with two appearance traits.'),
+	(14, 'Triple Spark', 3, 'Make a lihtan squffy with three appearance traits.'),
+	(15, 'Single Wings', 3, 'Make a fey squffy with one appearance trait.'),
+	(16, 'Double Wings', 3, 'Make a fey squffy with two appearance traits.'),
+	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.');
 	
 INSERT into `subforums`
 	(`subforum_id`, `subforum_name`, `subforum_order`)
@@ -624,3 +630,23 @@ VALUES
 	('1', '1', 'first thread', '1', 'first thread of threads', '2011-05-05 08:35:45', '2011-05-05 09:13:31', '0');
 
 INSERT INTO `pregnancies` (`pregnancy_id`, `mother_id`, `father_id`, `user_id`, `date_birth`) VALUES (NULL, '2', '112', '1', NOW());
+
+INSERT INTO `designs` (`design_id`, `design_name`, `user_id`, `species_id`, `base_color`, `eye_color`, `foot_color`, `num_traits`) VALUES
+(1, 'Basic', 1, 1, 'F0DDA3', '009900', '886633', 0),
+(2, 'Mystic', 1, 4, 'D7C9FF', '886633', 'D4AB6F', 3),
+(3, 'Tiger', 1, 2, 'FF8800', '0000BB', '886633', 2),
+(4, 'Pinky', 1, 3, 'FFBBBB', '009900', 'DD99FF', 3),
+(5, 'Nevyn', 1, 1, 'FACE61', 'AAAAFF', '222222', 3);
+
+INSERT INTO `design_traits` (`design_id`, `trait_id`, `trait_color`, `trait_order`) VALUES
+(2, 27, 'FFFFFF', 0),
+(2, 2, '000000', 1),
+(2, 15, '000000', 2),
+(3, 16, '000000', 0),
+(3, 9, '000000', 1),
+(4, 23, 'ffbbff', 0),
+(4, 2, 'ffddff', 1),
+(4, 26, 'DD99FF', 2),
+(5, 35, '584C34', 0),
+(5, 21, 'FFFFFF', 1),
+(5, 19, 'FACE61', 2);

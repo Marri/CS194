@@ -97,6 +97,10 @@ class User {
 			$queryString = 'DELETE FROM `cache_changed` WHERE `user_id` = ' . $this->id;
         	runDBQuery($queryString);
 		}
+	}
+	
+	public function updateInventory($col, $change) {
+		$this->inventory[$col] = $this->inventory[$col] + $change;
 	}	
 		
     public function seenNow() {

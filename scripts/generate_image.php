@@ -1,8 +1,11 @@
 <?php
-header("Content-type: image/png");
-include_once("../objects/appearance.php");
+if(isset($dirUp)) {
+	$img_dir = './images/generate/' . $species . '/' . $species;
+} else {
+	include_once("../objects/appearance.php");
+	$img_dir = '../images/generate/' . $species . '/' . $species;
+}
 
-$img_dir = '../images/generate/' . $species . '/' . $species;
 $design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
 foreach($markings as $trait) {
 	$design = addToBase($design, $img_dir, $trait, true);
@@ -42,8 +45,32 @@ function addToBase($base_image, $img_dir, $trait, $hasColor) {
 	return $base_image;
 };
 
+if(isset($resize) && isset($width) && isset($height)) {
+	$truecolor = imagecreatetruecolor($width, $height);
+	imagealphablending($truecolor, false);
+    $color = imagecolortransparent($truecolor, imagecolorallocatealpha($truecolor, 0, 0, 0, 127));
+	imagefill($truecolor, 0, 0, $color);
+    imagesavealpha($truecolor, true);
+	
+	$image_width = imagesx($design);
+	$image_height = imagesy($design);	
+	imagecopyresampled($truecolor, $design, 0, 0, 0, 0, $width, $height, $image_width, $image_height);
+	imagesavealpha($truecolor, true);
+	$design = $truecolor;
+}
+
 //TODO save or display?
-imagepng($design);
-imagedestroy($design);
+if(!isset($display)) { $display = "show"; }
+
+if ($display == "image") {
+	//Can include the file and use the $design image
+} elseif ($display == "notpng") {
+	imagepng($design);
+	imagedestroy($design);
+} else {
+	header("Content-type: image/png");
+	imagepng($design);
+	imagedestroy($design);
+}
 
 ?>
