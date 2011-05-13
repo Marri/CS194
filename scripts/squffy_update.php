@@ -6,6 +6,12 @@ if(!isset($squffy)) { die(); }
 $newName = $_POST['squffy_name'];
 $newHire = $_POST['hireable'] == 'y' ? true : false;
 $newBreed = $_POST['breedable'] == 'y' ? true : false;
+$newHSD = $_POST['hire_sd'];
+$newHI = $_POST['hire_item'];
+$newHIA = $_POST['hire_amount'];
+$newBSD = $_POST['breed_sd'];
+$newBI = $_POST['breed_item'];
+$newBIA = $_POST['breed_amount'];
 
 if(!$newName) {
 	$errors[] = "You must choose a name for your squffy.";
@@ -19,12 +25,37 @@ if(!$newName) {
 }
 
 if($newHire != $hireable) {
-	$changes .= ", hireable = '" . convertBoolean($newHire) . "'";
+	$changes .= ", is_hireable = '" . convertBoolean($newHire) . "'";
 	$hireable = $newHire;
 }
+if($newHSD != $hire_sd) {
+	$changes .= ', hire_price_sd = ' . $newHSD;
+	$hire_sd = $newHSD;
+}
+if($newHI != $hire_item) {
+	$changes .= ', hire_price_item_id = ' . $newHI;
+	$hire_item = $newHI;
+}
+if($newHIA != $hire_amount) {
+	$changes .= ', hire_price_item_amount = ' . $newHIA;
+	$hire_amount = $newHIA;
+}
+
 if($newBreed != $breedable) {
-	$changes .= ", breedable = '" . convertBoolean($newBreed) . "'";
+	$changes .= ", is_breedable = '" . convertBoolean($newBreed) . "'";
 	$breedable = $newBreed;
+}
+if($newBSD != $breed_sd) {
+	$changes .= ', breeding_price_sd = ' . $newBSD;
+	$breed_sd = $newBSD;
+}
+if($newBI != $breed_item) {
+	$changes .= ', breeding_price_item_id = ' . $newBI;
+	$breed_item = $newBI;
+}
+if($newBIA != $breed_amount) {
+	$changes .= ', breeding_price_item_amount = ' . $newBIA;
+	$breed_amount = $newBIA;
 }
 
 if($valid) {
@@ -32,5 +63,6 @@ if($valid) {
 }
 if(strlen($changes) > 0) {
 	$query = 'UPDATE squffies SET '.substr($changes, 2) . ' WHERE squffy_id = ' . $squffy->getID();
+	runDBQuery($query);
 }	
 ?>

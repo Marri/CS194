@@ -93,20 +93,26 @@ class Appearance {
 		return self::rgb2html($kid_r, $kid_g, $kid_b);
 	}
 	
-	private static function GetTrait($mom_square, $dad_square, $mid) {
+	private static function GetTrait($mom_square, $dad_square, $mid, $mom_c, $dad_c) {
 		if($dad_square == 'S') {
 			if($mom_square == $dad_square) { return 'S'; }
-			elseif($mom_square == 'N') { return $mid; }
-			else {
-				$rand = mt_rand(0, 1);
-				if($rand == 1) { return 'S'; }
+			elseif($mom_square == 'N') {			
+				if($dad_c == 0) { return $mid; }
+				$rand = mt_rand(0, 200 - $dad_c);
+				if($rand < 10) { return 'S'; }
+				return $mid;
+			} else {
+				$rand = mt_rand(0, 700 - $mom_c - $dad_c);
+				if($rand < 350) { return 'S'; }
 				return $mid;
 			}
-		} elseif ($dad_square == $mid) {
-			$rand = mt_rand(0, 1);				
-			if($mom_square == 'S') {
-				if($rand == 1) { return 'S'; }
+		} elseif ($dad_square == $mid) {		
+			if($mom_square == 'S') {			
+				$rand = mt_rand(0, 700 - $mom_c - $dad_c);
+				if($rand < 350) { return 'S'; }
 				return $mid;
+				
+			//TODO
 			} elseif ($mom_square == $mid) {
 				if($rand == 1) { return $mid; }
 				$rand2 = mt_rand(0, 1);
@@ -117,7 +123,14 @@ class Appearance {
 				return $mid;
 			}
 		} else {
-			if($mom_square == 'S') { return $mid; }
+			if($mom_square == 'S') { 			
+				if($mom_c == 0) { return $mid; }
+				$rand = mt_rand(0, 200 - $mom_c);
+				if($rand < 10) { return 'S'; }
+				return $mid;
+			}
+			
+			//TODO
 			$rand = mt_rand(0, 1);
 			if($rand == 1) { return 'N'; }
 			return $mid;

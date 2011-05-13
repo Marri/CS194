@@ -1,6 +1,5 @@
 <?php
 	include("./includes/header.php");
-	include("./objects/forums.php");
 	
 	$to_id = mysql_real_escape_string($_POST['to_id']);
 	$to_username = mysql_real_escape_string($_POST['to_username']);

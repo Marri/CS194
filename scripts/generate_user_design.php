@@ -19,11 +19,14 @@ foreach($design->getTraits() as $trait) {
 	else { $mutations[] = $trait; }
 }
 
+$filename = '../images/designs/' . floor($id / 1000) . '/' . $id . '.png';
 if(isset($_GET['thumbnail']) && $_GET['thumbnail'] == 'true') {
+	$filename = '../images/designs/' . floor($id / 1000) . '/t' . $id . '.png';
 	$resize = true;
 	$width = 200;
 	$height = 175;
 }
 
+$display = "showsave";
 include('./generate_image.php');
 ?>

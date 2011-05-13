@@ -7,6 +7,7 @@ class Item{
 		$type,
 		$description;
 		
+	public function getID() { return $this->id; }
 	public function getName(){ return $this->name; }
 	public function getColumnName(){ return $this->column_name; }
 	public function getDescription(){ return $this->description; }

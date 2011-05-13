@@ -88,6 +88,12 @@ CREATE TABLE IF NOT EXISTS squffies (
 	weakness1_id tinyint unsigned,
 	weakness2_id tinyint unsigned,
 	mate_id int unsigned,
+	hire_price_sd smallint unsigned,
+	hire_price_item_id tinyint unsigned,
+	hire_price_item_amount smallint unsigned,
+	breeding_price_sd smallint unsigned,
+	breeding_price_item_id tinyint unsigned,
+	breeding_price_item_amount smallint unsigned,
 	breeding_rights mediumint unsigned,
 	rights_revert datetime,
 	num_items tinyint unsigned default '0'

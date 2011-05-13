@@ -17,6 +17,8 @@ include("./includes/header.php");
 <a href="custom.php">Create custom squffy</a><br />
 <a href="crons/finish_pregnancy.php">Cron: finish pregnancy</a><br />
 
+<a href="market.php">Market</a><br />
+
 <?php
 include('./includes/footer.php');
 ?>

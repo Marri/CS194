@@ -11,6 +11,8 @@ foreach($squffy->getAppearanceTraits() as $trait) {
 	if($trait->getType() == 1) { $markings[] = array('name'=>$trait->getName(), 'color'=>$trait->getColor()); }
 	else { $mutations[] = array('name'=>$trait->getName(), 'color'=>$trait->getColor()); }
 }
+$markings = array_reverse($markings);
+$mutations = array_reverse($mutations);
 
 $display = "image";
 $dirUp = true;

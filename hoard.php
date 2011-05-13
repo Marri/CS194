@@ -1,7 +1,6 @@
 <?php
 $selected = "home";
 include("./includes/header.php");
-include("./objects/item.php");
 
 $item_list = Item::getItemList();
 $curr_user = $_SESSION['user'];

@@ -3,6 +3,7 @@ include('../includes/connect.php');
 include('../objects/squffy.php');
 include('../objects/personality.php');
 include('../objects/appearance.php');
+include('../objects/cost.php');
 
 $query = 'SELECT * FROM `pregnancies` WHERE TO_DAYS(now()) - TO_DAYS(date_birth) >= 0';
 $result = runDBQuery($query);

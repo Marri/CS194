@@ -1,6 +1,5 @@
 <?php
 include("./includes/header.php");
-include("./objects/forums.php");
 
 
 $board_id = mysql_real_escape_string($_GET["board_id"]);

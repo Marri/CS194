@@ -1,6 +1,5 @@
 <?php
 	include("./includes/header.php");
-	include("./objects/forums.php");
 	
 	
 	$thread_name = $_GET["thread_name"];

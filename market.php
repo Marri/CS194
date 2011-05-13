@@ -1,8 +1,6 @@
 <?php
 $selected = "home";
 include("./includes/header.php");
-include("./objects/item.php");
-include("./objects/lot.php");
 
 
 $lot_name_error = "";

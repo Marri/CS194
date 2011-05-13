@@ -1,9 +1,6 @@
 <?php
 $selected = "squffies";
 include("./includes/header.php");
-include('./objects/personality.php');
-include('./objects/appearance.php');
-include('./objects/squffy.php');
 
 $id = $_GET['id'];
 $squffy = Squffy::getSquffyByIDExtended

@@ -1,21 +1,20 @@
 <?php
 $selected = "squffies";
 $js[] = 'edit_squffy';
+$css[] = 'squffy';
 include("./includes/header.php");
-include('./objects/personality.php');
-include('./objects/appearance.php');
-include('./objects/squffy.php');
 
 $id = getID("id");
 $squffy = Squffy::getSquffyByIDExtended
 	($id, 
 	array(
-		Squffy::FETCH_FAMILY, 
+		Squffy::FETCH_FULL_APPEARANCE, 
+		/*Squffy::FETCH_FAMILY, 
 		Squffy::FETCH_FULL_APPEARANCE, 
 		Squffy::FETCH_PERSONALITY, 
 		Squffy::FETCH_SPECIES, 
 		Squffy::FETCH_ITEMS, 
-		Squffy::FETCH_DEGREE
+		Squffy::FETCH_DEGREE*/
 	)
 );
 if($squffy == NULL) { 
@@ -24,42 +23,100 @@ if($squffy == NULL) {
 	die();
 }
 	
+//Set all variables used so can be altered by the update script
 $name = $squffy->getName();
 $breedable = $squffy->isBreedable();
 $hireable = $squffy->isHireable();
-//$hireSD = $squffy->getHireSD();
+$hire = $squffy->getHirePrice();
+$breed = $squffy->getBreedPrice();
+$hire_sd = $hire->getSDPrice();
+$hire_item = $hire->getItemID();
+$hire_amount = $hire->getItemPrice();
+$breed_sd = $breed->getSDPrice();
+$breed_item = $breed->getItemID();
+$breed_amount = $breed->getItemPrice();
 
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
 
 $item_options = "";
-$query = "SELECT item_id, item_name FROM items";
-$result = runDBQuery($query);
-while($item = @mysql_fetch_assoc($result)) {
-	$item_options .= '<option value="' . $item['item_id'] . '">' . $item['item_name'] . '</option>';
+$items = Item::getItemList();
+foreach($items as $item) {
+	if($item->getID() == 2){ continue; }
+	$item_options .= '<option value="' . $item->getID() . '">' . $item->getName() . '</option>';
 }
+
+$t = $squffy->getAppearanceTraits();
+$traits = array();
+foreach($t as $trait) {
+	$traits[] = $trait;
+}
+$num = sizeof($traits);
+$i = 0;
 ?>
 <form action="edit_squffy.php?id=<?php echo $id; ?>" method="post">
 <table class="content-table">
-<tr><th colspan="2" class="content-header">
-Edit <?php echo $squffy->getName(); ?>
+<tr><th colspan="6" class="content-header">
+Edit <?php echo $name; ?>
 </th></tr>
-<tr><td>Name</td><td><input type='text' name="squffy_name" value="<?php echo $name; ?>" /></td></tr>
+<tr><th class="content-subheader width50p" colspan="2">Edit Information</th><th class="content-subheader" colspan="4">Reorder Appearance Traits</th></tr>
 
-<tr><td class="width200">Available for hire?</td><td><input type='radio' name="hireable" class="hireable" value='y'<?php checked($hireable); ?> /> Yes <input type='radio' name="hireable" class="hireable" value='n'<?php checked(!$hireable); ?> /> No</td></tr>
-<tr class="hire_extra<?php if(!$hireable) echo ' hidden'; ?>"><td>Hire price in SD</td><td><input type='text' /></td></tr>
+<tr><td>Name</td><td><input class="width100p" type='text' name="squffy_name" value="<?php echo $name; ?>" /></td>
+<?php
+if($i < $num) {
+	echo '<td class="width125">' . $traits[$i]->getTitle() . '</td><td class="width50"> 
+	<div class="color-box" style="background-color: #' . $traits[$i]->getColor() . '"></div></td>
+	<td>' . $traits[$i]->getColor() .'</td>
+	<td>MOVE</td>';
+	$i++;
+} 
+?>
+</tr>
+<tr><td class="width150">Available for hire?</td>
+<td><input type='radio' name="hireable" class="hireable" value='y'<?php checked($hireable); ?> /> Yes <input type='radio' name="hireable" class="hireable" value='n'<?php checked(!$hireable); ?> /> No</td>
+<?php
+if($i < $num) {
+	echo '<td class="width125">' . $traits[$i]->getTitle() . '</td><td class="width50"> 
+	<div class="color-box" style="background-color: #' . $traits[$i]->getColor() . '"></div></td>
+	<td>' . $traits[$i]->getColor() .'</td>
+	<td>MOVE</td>';
+	$i++;
+} 
+?>
+</tr>
+<tr class="hire_extra<?php if(!$hireable) echo ' hidden'; ?>"><td>Hire price in SD</td><td><input class="width100" type='text' name='hire_sd' value="<?php echo $hire_sd; ?>" /></td>
+<?php
+if($i < $num) {
+	echo '<td class="width125">' . $traits[$i]->getTitle() . '</td><td class="width50"> 
+	<div class="color-box" style="background-color: #' . $traits[$i]->getColor() . '"></div></td>
+	<td>' . $traits[$i]->getColor() .'</td>
+	<td>MOVE</td>';
+	$i++;
+} 
+?>
+</tr>
 <tr class="hire_extra<?php if(!$hireable) echo ' hidden"'; ?>"><td>Hire price in items</td><td>
-<input text="text" /> <select size="1"><?php echo $item_options ?></select>
-</td></tr>
+<input text="text" class="width100" name="hire_amount" value="<?php echo $hire_amount; ?>" /> <select size="1" name="hire_item"><?php replace($hire_item, $item_options); ?></select>
+</td>
+<?php
+if($i < $num) {
+	echo '<td class="width125">' . $traits[$i]->getTitle() . '</td><td class="width50"> 
+	<div class="color-box" style="background-color: #' . $traits[$i]->getColor() . '"></div></td>
+	<td>' . $traits[$i]->getColor() .'</td>
+	<td>MOVE</td>';
+	$i++;
+} 
+?>
+</tr>
 
 <tr><td>Available for breeding?</td><td><input type='radio' name="breedable" class='breedable' value='y'<?php checked($breedable); ?> /> Yes <input name="breedable" class='breedable' type='radio' value='n'<?php checked(!$breedable); ?> /> No</td></tr>
-<tr class="breed_extra<?php if(!$breedable) echo ' hidden"'; ?>"><td>Breeding price in SD</td><td><input type='text' /></td></tr>
+<tr class="breed_extra<?php if(!$breedable) echo ' hidden"'; ?>"><td>Breeding price in SD</td><td><input class="width100" type='text' name='breed_sd' value="<?php echo $breed_sd; ?>" /></td></tr>
 <tr class="breed_extra<?php if(!$breedable) echo ' hidden"'; ?>"><td>Breeding price in items</td><td>
-<input text="text" /> <select size="1"><?php echo $item_options ?></select>
+<input text="text" class="width100" name="breed_amount" value="<?php echo $breed_amount; ?>" /> <select size="1" name="breed_item"><?php replace($breed_item, $item_options); ?></select>
 </td></tr>
 <tr><td class="text-center" colspan="2">
-<input class="submit-input" type='submit' name='update_squffy' value='Update <?php echo $squffy->getName(); ?>' />
+<input class="submit-input" type='submit' name='update_squffy' value='Update <?php echo $name; ?>' />
 </td></tr>
 </table>
 </form>
@@ -74,6 +131,8 @@ Edit <?php echo $squffy->getName(); ?>
 </table>
 
 <?php*/
-
+function replace($val, $options) {
+	echo str_replace('value="' . $val . '"','value="' . $val . '" selected', $options);
+}
 include('./includes/footer.php');
 ?>

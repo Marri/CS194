@@ -1,7 +1,6 @@
 <?php
+$js[] = "messages";
 include("./includes/header.php");
-include("./objects/messaging.php");
-include("./js/messages.js");
 ?>
 <h1> Messages</h1>
 

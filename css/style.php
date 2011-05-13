@@ -47,6 +47,7 @@ body, html {
 .width50p { width: 50%; }
 .width100p { width: 100%; }
 .width20 { width: 20px; }
+.width50 { width: 50px; }
 .width80 { width: 80px; }
 .width100 { width: 100px; }
 .width125 { width: 125px; }

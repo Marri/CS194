@@ -2,7 +2,6 @@
 $selected = "squffies";
 $forLoggedIn = true;
 include("./includes/header.php");
-include("./objects/item.php");
 
 $inventory = $user->getInventory();
 
@@ -36,11 +35,7 @@ if(!isset($_POST['use_item'])) {
 	</form>
 	<?php
 	}
-} elseif(isset($_POST['squffy_name'])) {
-	include('./objects/design.php');
-	include('./objects/personality.php');
-	include('./objects/squffy.php');
-	
+} elseif(isset($_POST['squffy_name'])) {	
 	//Create squffy
 	$name = $_POST['squffy_name'];
 	$gender = $_POST['gender'];
@@ -56,7 +51,6 @@ if(!isset($_POST['use_item'])) {
 	
 	displayNotices(array("Your new custom has just been created! <a href='view_squffy.php?id=$id'>See $name's page here</a>."));
 } elseif(isset($_POST['use_item'])) {
-	include("./objects/design.php");
 	$item = $_POST['use_item'];
 	$item_info = Item::CustomInfo($item);
 	
@@ -76,7 +70,7 @@ if(!isset($_POST['use_item'])) {
 			
 			if($i % 4 == 0) { echo '<tr>'; }
 			echo '<td class="text-center vertical-top width200"><b>' . $design->getName() . '</b><br />
-			<img src="./scripts/generate_user_design.php?thumbnail=true&design=' . $design->getID() . '" /><br />';
+			<img src="' . $design->getThumbnail() . '" /><br />';
 			if($numTraits <= $item_info['num'] && $design->getSpecies() == $item_info['species']) { echo '<input type="radio" name="design" value="' . $design->getID() . '"> Use design'; }
 			if($design->getSpecies() != $item_info['species']) { echo '<span class="small-error">Wrong species!</span><br />'; }
 			if($numTraits> $item_info['num']) { echo '<span class="small-error">Too many traits!</span>'; }
