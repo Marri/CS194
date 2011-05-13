@@ -452,14 +452,14 @@ class Squffy {
 		return mt_rand($min, $max);
 	}
 	
-	private static function GetSpecies($mom, $dad) {
+	private static function GetSpeciesFromParents($mom, $dad) {
 		$species = $mom->getSpeciesID();
 		if($species == $dad->getSpeciesID()) { return $species; }
 		if(mt_rand(0, 500) > 250) { return $species; }
 		return $dad->getSpeciesID();
 	}
 	
-	private static function GetGender($mom, $dad) {
+	private static function GetGenderFromParents($mom, $dad) {
 		$gender = 'M';
 		$max = 400 - $mom->getC8() - $dad->getC8();		
 		if(mt_rand(0, $max) < 40) { $gender = 'F'; }
@@ -472,7 +472,7 @@ class Squffy {
 		$name = $mother->getName() . ' x ' . $father->getName();
 		$gender = 
 		
-		$species = self::GetSpecies($mother, $father);
+		$species = self::GetSpeciesFromParents($mother, $father);
 		
 		$base = Appearance::GetTraitColor($mother->getBaseColor(), $father->getBaseColor());
 		$eye = Appearance::GetTraitColor($mother->getEyeColor(), $father->getEyeColor());
