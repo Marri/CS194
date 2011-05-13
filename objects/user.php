@@ -70,7 +70,9 @@ class User {
 		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
 		return false;
 	}
-	
+	/*
+	 * requires an alternative Item.
+	 */
 	public function canAffordItem($cost) {
 		$itemName = $cost->getItemName();
 		if($this->inventory["$itemName"] >= $cost->getItemPrice()) { return true; }
@@ -101,6 +103,7 @@ class User {
 	
 	public function updateInventory($col, $change) {
 		$this->inventory[$col] = $this->inventory[$col] + $change;
+		return $this->inventory[$col];
 	}	
 		
     public function seenNow() {
@@ -117,11 +120,55 @@ class User {
 		}
 		return $notification_list;
 	}
-	public function canSellItem($item_name, $item_amount){
+	/*
+	* function to determine if item in specified amount is owned by the user
+	* This is also a duplicate of an earlier function...
+	*/
+	private function haveItemAmount($item_name, $item_amount){
 		$inventory = $this->getInventory();
 		$item_name = str_ireplace(" ", "_", strtolower($item_name));
 		if($inventory[$item_name] >= $item_amount) return true;
 		return false;
+	}
+	
+	/*
+	 * takes in an item name and item amount to determine if the user
+	 * can buy it
+	 */
+	public function canSellItem($item_name, $item_amount){
+		return haveItemAmount($item_name, $item_amount);
+	}
+	private static function updateInventoryTable($user_id, $item1_col, $item1_change, $item2_col, $item2_change){
+		$selectString = 'SELECT '.$item1_col.','.$item2_col.' FROM `inventory` WHERE `user_id` = ' . $user_id;
+        $select = runDBQuery($selectString);
+        $item_amounts = @mysql_fetch_assoc($select);
+        $item1_amount = $item_amounts[$item1_col] + $item1_change;
+        $item2_amount = $item_amounts[$item2_col] + $item2_change;
+        
+        $updateString = "UPDATE inventory SET ".$item1_col."='".$item1_amount."', ".$item2_col."='".$item2_amount."' WHERE user_id='".$user_id."';";
+        runDBQuery($updateString);
+        
+	}
+	/*
+	* returns an error message when buying fails
+	*/
+	public function buyItem($lot_id, $sale_id, $sale_name, $sale_amount, $want_id, $want_name, $want_amount, $seller_id){
+		//check if user can buy possibly check to see if lot is already finished
+		$finished = Lot::LotFinished($lot_id);//keep users from buying using a finished lot
+		if($finished) return "Lot already sold";		
+		if($this->haveItemAmount($want_name, $want_amount)){
+			//mark lot as finished
+			Lot::FinishLot($lot_id);
+			// and transfer items
+			self::updateInventoryTable($this->getID(), str_ireplace(" ", "_", strtolower($sale_name)), $sale_amount, str_ireplace(" ", "_", strtolower($want_name)), -$want_amount);
+			self::updateInventoryTable($seller_id, str_ireplace(" ", "_", strtolower($sale_name)), -$sale_amount, str_ireplace(" ", "_", strtolower($want_name)), $want_amount);
+			self::cacheChanged($this->id);
+			self::cacheChanged($seller_id);
+			// return empty string for error
+			return "";
+		}
+		//otherwise return that the user can't buy the item
+		return "Insufficient funds to buy";
 	}
 	public static function loginNameTaken($login_name){
 		if($login_name == "") return true;
@@ -181,6 +228,10 @@ class User {
 			return "Wrong activation key";
 		}
 	}
+	public static function cacheChanged($user_id){
+		$queryString = "INSERT INTO cache_changed VALUES('".$user_id."');";
+		runDBQuery($queryString);
+	}
 	//Private methods
 	private static function secure($password, $salt) {
 		$hash = sha1($password . $salt);
@@ -225,8 +276,8 @@ class User {
 		}
 	}
 	private static function createEmptyInventory($user_id){
-		$queryString = "INSERT INTO inventory (user_id, cashew, squffy_dollar) VALUES ('".$user_id."', '0', '0');";
-		$query = runDBQuery($queryString);
+		$queryString = "INSERT INTO inventory VALUES ('".$user_id."', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');";
+		$query = runDBQuery($queryString); /// we should consider just making the default zero
 	}
 }
 ?>

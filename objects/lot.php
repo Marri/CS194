@@ -63,7 +63,7 @@ class Lot{
 	}
 	public static function getOtherLots($user_id){
 		$other_lots = array();
-		$queryString = "SELECT * FROM lots WHERE user_id != '".$user_id."'";
+		$queryString = "SELECT * FROM lots WHERE user_id != '".$user_id."' AND is_finished='false'";
 		$results = runDBQuery($queryString);
 		
 		while($lots = mysql_fetch_assoc($results)){
@@ -85,12 +85,21 @@ class Lot{
 		}
 		return $other_lots;
 	}
-	public static function CreateSellItemLot($lot_name, $userid, $sell_id, $sell_amount, $want_id, $want_amount, $lot_type, $auction_ends){
-		
+	public static function CreateSellItemLot($lot_name, $userid, $sell_id, $sell_amount, $want_id, $want_amount, $lot_type, $auction_ends){	
 		$queryString = "INSERT INTO lots (lot_name, user_id, lot_type, sale_price_selling_item_id, sale_price_selling_amount, sale_price_wanted_item_id, sale_price_wanted_amount, auction_ends) VALUES ('".$lot_name."', '".$userid."', '".$lot_type."', '".$sell_id."', '".$sell_amount."', '".$want_id."', '".$want_amount."', '".$auction_ends."');";
 		//echo $queryString;
 		runDBQuery($queryString);
-	}	
+	}
+	public static function FinishLot($lot_id){
+		$queryString = "UPDATE lots SET is_finished='true' WHERE lot_id='".$lot_id."'";
+		runDBQuery($queryString);
+	}
+	public static function LotFinished($lot_id){
+		$queryString = "SELECT is_finished FROM lots WHERE lot_id='".$lot_id."'";
+		$query = runDBQuery($queryString);
+		$lot = mysql_fetch_assoc($query);
+		return $lot['is_finished'];
+	}
 }
 
 ?>

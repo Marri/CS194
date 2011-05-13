@@ -16,6 +16,7 @@ class Notification{
 	public function getUserID(){ return $this->user_id; }
 	public function getNoteType(){ return $this->type; }
 	public function unread(){ return $this->unread; }
+	//probably need a notify function
 	
 	
 }

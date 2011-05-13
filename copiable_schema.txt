@@ -548,29 +548,27 @@ VALUES
 INSERT INTO `users` 
 	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `activated`) 
 VALUES
-	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL, 'true');
-
-INSERT INTO `users` 
-	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `activated`) 
-VALUES
-	(2, 'dagclo', 1, '2011-04-26 20:57:38', NULL, 'true');
+	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL, 'true'),
+	(2, 'dagclo', 1, '2011-04-26 20:57:38', NULL, 'true'),
+	(3, 'user1', 1, '2011-04-26 20:57:38', NULL, 'true');
 
 
 INSERT INTO `user_login` 
 	(`login_name`, `user_id`, `hash`, `salt`) 
 VALUES
-	('Marri', 1, 'e442e614cac529f9312ebd0b53dbeecf5d619393', 'MT3erI09wCNtbtlkh0X3NvWndGMqV');
+	('Marri', 1, 'e442e614cac529f9312ebd0b53dbeecf5d619393', 'MT3erI09wCNtbtlkh0X3NvWndGMqV'),
+	('dagclo', 2, 'c7197f6ead8d1c3955113ba6c6f504fc51f5435c', 'AL6sUrvu3wTlHkN'),
+	('user1', 3, '4f85334c66baffb440a5b26bbd2e410a787dab03', 'c7h6g9Npv3Rx96j');
 	
-INSERT INTO `user_login` 
-	(`login_name`, `user_id`, `hash`, `salt`) 
-VALUES
-	('dagclo', 2, 'c7197f6ead8d1c3955113ba6c6f504fc51f5435c', 'AL6sUrvu3wTlHkN');
+	
 
 	
 INSERT INTO `inventory`
 	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
 VALUES
-	(1, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
+	(1, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
+	(2, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
+	(3, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -650,3 +648,4 @@ INSERT INTO `design_traits` (`design_id`, `trait_id`, `trait_color`, `trait_orde
 (5, 35, '584C34', 0),
 (5, 21, 'FFFFFF', 1),
 (5, 19, 'FACE61', 2);
+

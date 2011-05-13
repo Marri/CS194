@@ -17,7 +17,16 @@ $inventory = $curr_user->getInventory();
 	for($i = 0; $i < count($item_list); $i++){
 		$curr_item = $item_list[$i]; ?>
 		
-		<tr><td><?php echo $curr_item->getName() ?></td><td><?php echo $curr_item->getDescription() ?></td><td><?php echo $inventory[$curr_item->getColumnName()];?></td></tr>
+		<tr>
+			<td><?php echo $curr_item->getName() ?></td>
+			<td><?php echo $curr_item->getDescription() ?></td>
+			<td><?php 
+				if(isset($inventory[$curr_item->getColumnName()])){
+					echo  $inventory[$curr_item->getColumnName()];
+				}else{
+					echo 0;
+				}?>
+			</td></tr>
 		
 		<?php
 	}
