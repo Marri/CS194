@@ -86,6 +86,7 @@ class Lot{
 		return $other_lots;
 	}
 	public static function CreateSellItemLot($lot_name, $userid, $sell_id, $sell_amount, $want_id, $want_amount, $lot_type, $auction_ends){
+		
 		$queryString = "INSERT INTO lots (lot_name, user_id, lot_type, sale_price_selling_item_id, sale_price_selling_amount, sale_price_wanted_item_id, sale_price_wanted_amount, auction_ends) VALUES ('".$lot_name."', '".$userid."', '".$lot_type."', '".$sell_id."', '".$sell_amount."', '".$want_id."', '".$want_amount."', '".$auction_ends."');";
 		//echo $queryString;
 		runDBQuery($queryString);

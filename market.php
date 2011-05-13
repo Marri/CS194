@@ -4,6 +4,7 @@ include("./includes/header.php");
 
 $user_lots = Lot::GetUserLots($userid);
 $other_lots = Lot::GetOtherLots($userid);
+
 $lot_name_error = "";
 $sell_id_error = "";
 $sell_amount_error = "";
@@ -77,7 +78,7 @@ if(isset($_POST['newLot'])){
 		$auction_ends_error = "Empty String invalid";
 	}
 	
-	if($canCreateLot){
+	if($canCreateLot && $user->canSellItem($sell_name, $sell_amount)){
 		if($selling_squffy){
 			//set up squffy lot
 		}else{
@@ -93,6 +94,7 @@ if(isset($_POST['newLot'])){
 <table>
 	<tr>
 		<th>Lot ID</th>
+		<th>Lot Name</th>
 		<th>Item For Sale</th>
 		<th>Selling Price</th>
 	</tr>
@@ -101,6 +103,7 @@ for($i = 0; $i < count($user_lots); $i++){	?>
 	
 	<tr>
 		<td><?php echo $user_lots[$i]->getID(); ?> </td>
+		<td><?php echo $user_lots[$i]->getName(); ?> </td>
 		<td><?php echo Item::getItemNameFromID($user_lots[$i]->getSaleItemID()) ?></td>
 		<td><?php echo $user_lots[$i]->getWantedItemAmount()." ".Item::getItemNameFromID($user_lots[$i]->getWantedItemId())."(s)"; ?></td>
 	</tr>
@@ -112,6 +115,7 @@ for($i = 0; $i < count($user_lots); $i++){	?>
 	<tr>
 		<th>Lot ID</th>
 		<th>User Id</th>
+		<th>Lot Name</th>
 		<th>Item For Sale</th>
 		<th>Selling Price</th>
 	</tr>
@@ -121,6 +125,7 @@ for($i = 0; $i < count($other_lots); $i++){	?>
 	<tr>
 		<td><?php echo $other_lots[$i]->getID(); ?> </td>
 		<td><?php echo $other_lots[$i]->getUserID(); ?> </td>
+		<td><?php echo $other_lots[$i]->getName(); ?></td>
 		<td><?php echo Item::getItemNameFromID($other_lots[$i]->getSaleItemID()) ?></td>
 		<td><?php echo $other_lots[$i]->getWantedItemAmount()." ".Item::getItemNameFromID($other_lots[$i]->getWantedItemId())."(s)"; ?></td>
 		<td>
