@@ -1,7 +1,6 @@
 <?php
 
 include("./includes/header.php");
-include("./objects/notification.php");
 
 $notifications = $user->getNotifications();
 

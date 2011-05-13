@@ -2,16 +2,12 @@
 $selected = "squffies";
 $forLoggedIn = true;
 include("./includes/header.php");
-include("./objects/appearance.php");
 
 if(!isset($save_valid)) {
 	displayErrors(array("You have navigated to this page from the wrong place."));
 	include('./includes/footer.php');
 	die();
 }
-$errors = array();
-$notices = array();
-
 $name = $_POST['design_name'];
 if(!$name) {
 	$errors[] = "You did not pick a name.";

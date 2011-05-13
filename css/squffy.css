@@ -1,0 +1,6 @@
+.color-box {
+	display: inline-block;
+    width: 50px;
+    border: 1px black solid;
+    height: 18px;
+}

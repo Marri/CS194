@@ -1,8 +1,6 @@
 <?php
 $selected = "squffies";
 include("./includes/header.php");
-include('./objects/personality.php');
-include('./objects/squffy.php');
 
 if(isset($_POST['learn'])) {
 	$days = 5;

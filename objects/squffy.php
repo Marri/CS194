@@ -98,6 +98,16 @@ class Squffy {
 		$this->c7 = $info['c7'];
 		$this->c8 = $info['c8'];
 		
+		//Costs
+		$cost['id'] = $info['breeding_price_item_id'];
+		$cost['amount'] = $info['breeding_price_item_amount'];
+		$cost['sd'] = $info['breeding_price_sd'];
+		$this->breed_price = new Cost($cost);
+		$cost['id'] = $info['hire_price_item_id'];
+		$cost['amount'] = $info['hire_price_item_amount'];
+		$cost['sd'] = $info['hire_price_sd'];
+		$this->hire_price = new Cost($cost);
+		
 		//Defaults for separately fetched information
 		$this->appearance_traits = NULL;
 		$this->family_tree = NULL;
@@ -198,6 +208,8 @@ class Squffy {
 	public function getAppearanceTraits() { return $this->appearance_traits; }
 	public function getPersonalityTraits() { return $this->personality_traits; }
 	public function getItems() { return $this->items; }
+	public function getBreedPrice() { return $this->breed_price; }
+	public function getHirePrice() { return $this->hire_price; }
 	public function getFamily() { return $this->family_tree; }
 	public function getMotherID() { return $this->family_tree['mother']; }
 	public function getFatherID() { return $this->family_tree['father']; }
@@ -205,6 +217,7 @@ class Squffy {
 	public function getMotherFatherID() { return $this->family_tree['father']; }
 	public function getFatherMotherID() { return $this->family_tree['father_mother']; }
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
+	
 	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
 	public function getURL() { return './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; }
 	public function getThumbnail() { return './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png'; }
@@ -349,7 +362,7 @@ class Squffy {
 	public function fetchAppearance() {
 		if($this->appearance_traits != NULL) return;
 		$query = 'SELECT * FROM `squffy_appearance` WHERE `squffy_id` = ' . $this->id . '
-		 ORDER BY squffy_appearance.trait_order DESC';
+		 ORDER BY squffy_appearance.trait_order ASC';
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
@@ -363,7 +376,7 @@ class Squffy {
 		$query = 'SELECT appearance_traits.trait_name, appearance_traits.trait_title, appearance_traits.trait_type, squffy_appearance.*
 		 FROM `squffy_appearance`, appearance_traits 
 		 WHERE squffy_appearance.trait_id = appearance_traits.trait_id AND `squffy_id` = ' . $this->id . '
-		 ORDER BY squffy_appearance.trait_order DESC';
+		 ORDER BY squffy_appearance.trait_order ASC';
 		$result = runDBQuery($query);
 		$this->appearance_traits = array();
 		while($trait = @mysql_fetch_assoc($result)) {
@@ -439,13 +452,28 @@ class Squffy {
 		return mt_rand($min, $max);
 	}
 	
+	private static function GetSpecies($mom, $dad) {
+		$species = $mom->getSpeciesID();
+		if($species == $dad->getSpeciesID()) { return $species; }
+		if(mt_rand(0, 500) > 250) { return $species; }
+		return $dad->getSpeciesID();
+	}
+	
+	private static function GetGender($mom, $dad) {
+		$gender = 'M';
+		$max = 400 - $mom->getC8() - $dad->getC8();		
+		if(mt_rand(0, $max) < 40) { $gender = 'F'; }
+		return $gender;
+	}
+	
 	public static function createChild($mother, $father, $owner) {
 		$personality = Personality::GenerateTraits($mother, $father);
 		$appearance = Appearance::GenerateTraits($mother, $father);
 		$name = $mother->getName() . ' x ' . $father->getName();
-		$gender = 'M';
-		if(mt_rand(0, 3) == 1) { $gender = 'F'; }
-		$species = $mother->getSpeciesID();
+		$gender = 
+		
+		$species = self::GetSpecies($mother, $father);
+		
 		$base = Appearance::GetTraitColor($mother->getBaseColor(), $father->getBaseColor());
 		$eye = Appearance::GetTraitColor($mother->getEyeColor(), $father->getEyeColor());
 		$foot = Appearance::GetTraitColor($mother->getFootColor(), $father->getFootColor());

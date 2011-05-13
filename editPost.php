@@ -1,6 +1,5 @@
 <?php
 	include("./includes/header.php");
-	include("./objects/forums.php");
 	
 	
 	$thread_id = mysql_real_escape_string($_POST["thread_id"]);

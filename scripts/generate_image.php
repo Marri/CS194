@@ -64,6 +64,11 @@ if(!isset($display)) { $display = "show"; }
 
 if ($display == "image") {
 	//Can include the file and use the $design image
+} elseif ($display == "showsave" && isset($filename)) {
+	header("Content-type: image/png");
+	imagepng($design, $filename, 0);
+	imagepng($design);
+	imagedestroy($design);
 } elseif ($display == "notpng") {
 	imagepng($design);
 	imagedestroy($design);

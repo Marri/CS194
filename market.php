@@ -1,8 +1,6 @@
 <?php
 $selected = "home";
 include("./includes/header.php");
-include("./objects/lot.php");
-include("./objects/item.php");
 
 $user_lots = Lot::GetUserLots($userid);
 $other_lots = Lot::GetOtherLots($userid);

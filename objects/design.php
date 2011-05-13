@@ -37,6 +37,21 @@ class Design {
 	public function getUser(){ return $this->user; }
 	public function getNumTraits() { return $this->num_traits; }
 	
+	public function getImage() {
+		$img = './images/designs/' . floor($this->id / 1000) . '/' . $this->id . '.png';
+		if(!file_exists($img)) {
+			$img = './scripts/generate_user_design.php?design=' . $this->id;
+		}
+		return $img;
+	}	
+	public function getThumbnail() {
+		$img = './images/designs/' . floor($this->id / 1000) . '/t' . $this->id . '.png';
+		if(!file_exists($img)) {
+			$img = './scripts/generate_user_design.php?thumbnail=true&design=' . $this->id;
+		}
+		return $img;
+	}
+	
 	public static function GetUserDesigns($userid) {
 		$query = "SELECT * FROM designs WHERE user_id = $userid";
 		$result = runDBQuery($query);

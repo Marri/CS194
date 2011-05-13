@@ -41,4 +41,11 @@ Add support for multiple births
 How handling eggs...?
 Add species picking
 Fix all the images to standardize at 375 x 375
+Fix design images: should never return generate_image file as url
+Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
+
+Progress for the week:
 Fix all the mutations to only have L not H images
+Hire and breed prices can be updatedon the edit squffy page
+List of all appearance traits on the edit squffy page: eventual reordering
+Chromosome 8 (XX dominance) considered when picking gender
