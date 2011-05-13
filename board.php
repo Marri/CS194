@@ -41,6 +41,7 @@ $threads = $board->getThreads();
 	echo "</table>";
 ?>
 
+<?php if($loggedin){ ?>
 
 <form action="" method="post">
 <br>Thread Title: <input type="text" name="thread_name" /></br>
@@ -51,6 +52,7 @@ $threads = $board->getThreads();
 <br><input type="submit" name="postThread" value="Post New Thread!" /></br>
 </form>
 
-<?php 
+<?php
+}
 include("./includes/footer.php");
 ?>

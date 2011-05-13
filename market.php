@@ -3,6 +3,7 @@ $selected = "home";
 include("./includes/header.php");
 
 
+
 $lot_name_error = "";
 $sell_id_error = "";
 $sell_amount_error = "";
@@ -22,7 +23,7 @@ $buy_id = "";
 $buy_amount = "";
 
 
-
+if($loggedin){
 if(isset($_POST['buyItem'])){
 	$lot_id = mysql_real_escape_string($_POST['lot_id']);
 	$sale_id = mysql_real_escape_string($_POST['sale_id']);
@@ -184,5 +185,6 @@ for($i = 0; $i < count($other_lots); $i++){	?>
 
 
 <?php
+}
 include('./includes/footer.php');
 ?>

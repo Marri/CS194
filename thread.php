@@ -46,11 +46,16 @@ for($i=0;$i<$post_list_size; $i++){
 <?php
 }
 echo "</table>";
-?>
+if($loggedin){ ?>
 <br><h2> Create Post </h2></br>
 <form action="" method="post">
 <br>Text: </br><br><textarea name="post_text" rows="10" cols="40"></textarea></br>
 <input type="hidden" name="board_id" value="<?php echo $thread->GetBoardID();?>"/>
 <br><input type="submit" name="newPost" value="Post"/></br>
 </form>
+
+<?php
+}
+include("./includes/footer.php");
+?>
 
