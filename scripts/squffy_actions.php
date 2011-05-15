@@ -22,6 +22,10 @@ if(isset($_POST['taught'])) {
 	include('./scripts/squffy_learn.php'); 
 }
 
+if(isset($_POST['reorder'])) {
+	include('./scripts/squffy_reorder.php'); 
+}
+
 //Heal
 if(isset($_POST['heal'])) {
 	$original = $squffy->getHealth();

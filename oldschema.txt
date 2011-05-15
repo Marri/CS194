@@ -1,0 +1,1100 @@
+--
+-- Table structure for table `boards`
+--
+
+DROP TABLE IF EXISTS `boards`;
+CREATE TABLE `boards` (
+  `boardid` int(10) NOT NULL,
+  `boardname` varchar(255) NOT NULL,
+  `restricted` enum('Y','N') NOT NULL default 'N',
+  `description` varchar(2047) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `codecomments`
+--
+
+DROP TABLE IF EXISTS `codecomments`;
+CREATE TABLE `codecomments` (
+  `commentid` int(20) NOT NULL auto_increment,
+  `newsid` int(10) NOT NULL,
+  `posterid` int(40) NOT NULL,
+  `content` varchar(1000) NOT NULL,
+  `dateposted` datetime NOT NULL,
+  `appear` enum('Y','N') default 'Y',
+  PRIMARY KEY  (`commentid`)
+) ENGINE=MyISAM AUTO_INCREMENT=409 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `codenews`
+--
+
+DROP TABLE IF EXISTS `codenews`;
+CREATE TABLE `codenews` (
+  `newsid` int(10) NOT NULL auto_increment,
+  `posterid` int(40) NOT NULL,
+  `dateposted` datetime NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `content` varchar(2000) NOT NULL,
+  `appear` enum('Y','N') NOT NULL default 'Y',
+  PRIMARY KEY  (`newsid`)
+) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `comments`
+--
+
+DROP TABLE IF EXISTS `comments`;
+CREATE TABLE `comments` (
+  `commentid` int(20) NOT NULL auto_increment,
+  `newsid` int(10) NOT NULL,
+  `posterid` int(40) NOT NULL,
+  `content` varchar(1000) NOT NULL,
+  `dateposted` datetime NOT NULL,
+  `appear` enum('Y','N') NOT NULL default 'Y',
+  PRIMARY KEY  (`commentid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1838 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `crondata`
+--
+
+DROP TABLE IF EXISTS `crondata`;
+CREATE TABLE `crondata` (
+  `runby` varchar(5) NOT NULL,
+  `lastrun` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `farminfo`
+--
+
+DROP TABLE IF EXISTS `farminfo`;
+CREATE TABLE `farminfo` (
+  `foodtypeid` int(4) NOT NULL auto_increment,
+  `foodname` varchar(255) default NULL,
+  `minworkers` int(2) default NULL,
+  `maxseedsonplot` int(2) default NULL,
+  `timetogrow` int(2) default NULL,
+  `weedpercentdaily` int(2) default NULL,
+  `waterpercentdaily` int(2) default NULL,
+  `plotcost` int(2) default NULL,
+  PRIMARY KEY  (`foodtypeid`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `farms`
+--
+
+DROP TABLE IF EXISTS `farms`;
+CREATE TABLE `farms` (
+  `farmid` int(20) NOT NULL auto_increment,
+  `farmname` varchar(255) default NULL,
+  `ownerid` int(40) default NULL,
+  `foodtypeid` int(4) default NULL,
+  `seedsplanted` int(3) default NULL,
+  `weedamount` int(3) default NULL,
+  `wateramount` int(3) default NULL,
+  `plowed` enum('Y','N') default 'N',
+  `fertilized` enum('Y','N') default 'N',
+  `alive` enum('Y','N') default 'Y',
+  `dateplowed` datetime default NULL,
+  `datefertilized` datetime default NULL,
+  `dateweeded` datetime default NULL,
+  `datewatered` datetime default NULL,
+  `dateplanted` datetime default NULL,
+  `dategrowing` datetime default NULL,
+  `dateclearing` datetime default NULL,
+  `dateharvest` datetime default NULL,
+  `percentdone` int(3) default NULL,
+  PRIMARY KEY  (`farmid`),
+  KEY `ownerid` (`ownerid`),
+  KEY `weedamount` (`weedamount`),
+  KEY `wateramount` (`wateramount`)
+) ENGINE=MyISAM AUTO_INCREMENT=1990 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `ipaddresses`
+--
+
+DROP TABLE IF EXISTS `ipaddresses`;
+CREATE TABLE `ipaddresses` (
+  `ipaddress` varchar(25) NOT NULL,
+  `userid` int(40) NOT NULL,
+  `lastin` datetime NOT NULL,
+  `banned` enum('Y','N') NOT NULL default 'N',
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `item`
+--
+
+DROP TABLE IF EXISTS `item`;
+CREATE TABLE `item` (
+  `owneditemid` int(50) NOT NULL auto_increment,
+  `itemname` varchar(255) NOT NULL,
+  `bank` enum('Y','N') NOT NULL default 'N',
+  `inuse` int(30) default NULL,
+  `pending` enum('Y','N') NOT NULL default 'N',
+  `trading` enum('Y','N') NOT NULL default 'N',
+  `stocked` enum('Y','N') NOT NULL default 'N',
+  `storepricebwd` int(5) NOT NULL default '0',
+  `shopnut` varchar(255) NOT NULL,
+  `shopnutprice` int(10) NOT NULL default '0',
+  `ownerid` int(40) NOT NULL,
+  `uses` int(10) NOT NULL default '0',
+  `type` varchar(255) NOT NULL,
+  `wuffyid` int(30) default NULL,
+  PRIMARY KEY  (`owneditemid`),
+  KEY `ownerid` (`ownerid`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM AUTO_INCREMENT=505040 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `iteminfo`
+--
+
+DROP TABLE IF EXISTS `iteminfo`;
+CREATE TABLE `iteminfo` (
+  `itemid` int(40) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `uses` int(3) NOT NULL default '1',
+  `description` varchar(255) NOT NULL,
+  `price` int(3) NOT NULL,
+  `pawnshop` enum('Y','N') NOT NULL default 'N',
+  `pawnshopnut` varchar(50) NOT NULL,
+  `pawnshoplevel` int(2) NOT NULL,
+  PRIMARY KEY  (`itemid`)
+) ENGINE=MyISAM AUTO_INCREMENT=245 DEFAULT CHARSET=latin1;
+
+
+--
+-- Table structure for table `itemtransfers`
+--
+
+DROP TABLE IF EXISTS `itemtransfers`;
+CREATE TABLE `itemtransfers` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `idsent` int(50) NOT NULL default '0',
+  `itemname` varchar(100) NOT NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2751 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+CREATE TABLE `messages` (
+  `messageid` int(100) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `content` varchar(4000) default NULL,
+  `datesent` datetime NOT NULL,
+  `new` enum('Y','N') NOT NULL default 'Y',
+  `showin` enum('Y','N') NOT NULL default 'Y',
+  `showout` enum('Y','N') default 'Y',
+  `newid` int(40) NOT NULL,
+  PRIMARY KEY  (`messageid`),
+  KEY `senderid` (`senderid`),
+  KEY `receiverid` (`receiverid`)
+) ENGINE=MyISAM AUTO_INCREMENT=72678 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `newmessages`
+--
+
+DROP TABLE IF EXISTS `newmessages`;
+CREATE TABLE `newmessages` (
+  `messageid` int(100) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `subject` varchar(255) default NULL,
+  `content` blob,
+  `datesent` datetime default NULL,
+  PRIMARY KEY  (`messageid`),
+  KEY `receiverid` (`receiverid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2288 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+CREATE TABLE `notifications` (
+  `nid` int(20) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `TYPE` enum('Item Transfer','Nut Transfer','Squffy Transfer','SD Transfer','SD Purchase','SD Breeding','Nut Purchase','Nut Breeding') default NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default NULL,
+  `sendersquffyid` int(30) default NULL,
+  `receiversquffyid` int(30) default NULL,
+  `receiversquffyname` varchar(255) NOT NULL,
+  `femaleid` int(30) default NULL,
+  `nut` varchar(100) default NULL,
+  `nutprice` int(4) default NULL,
+  `amountsent` int(5) default NULL,
+  `sdprice` int(4) default NULL,
+  PRIMARY KEY  (`nid`)
+) ENGINE=MyISAM AUTO_INCREMENT=14850 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `nutbreedings`
+--
+
+DROP TABLE IF EXISTS `nutbreedings`;
+CREATE TABLE `nutbreedings` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `receiversquffyid` int(30) default NULL,
+  `receiversquffyname` varchar(255) default NULL,
+  `sendersquffyid` int(30) default NULL,
+  `nut` varchar(100) default NULL,
+  `nutprice` int(4) default NULL,
+  `femaleid` int(30) default NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `STATUS` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=2857 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `nutpile`
+--
+
+DROP TABLE IF EXISTS `nutpile`;
+CREATE TABLE `nutpile` (
+  `userid` int(40) default NULL,
+  `icashews` int(10) default '0',
+  `pcashews` int(11) NOT NULL default '0',
+  `tcashews` int(11) NOT NULL default '0',
+  `scashews` int(11) NOT NULL default '0',
+  `palmonds` int(11) NOT NULL default '0',
+  `ialmonds` int(11) NOT NULL default '0',
+  `talmonds` int(11) NOT NULL default '0',
+  `salmonds` int(11) NOT NULL default '0',
+  `iwalnuts` int(11) NOT NULL default '0',
+  `pwalnuts` int(11) NOT NULL default '0',
+  `twalnuts` int(11) NOT NULL default '0',
+  `swalnuts` int(11) NOT NULL default '0',
+  `ichestnuts` int(11) NOT NULL default '0',
+  `pchestnuts` int(11) NOT NULL default '0',
+  `tchestnuts` int(11) NOT NULL default '0',
+  `schestnuts` int(11) NOT NULL default '0',
+  `ipecans` int(11) NOT NULL default '0',
+  `ppecans` int(11) NOT NULL default '0',
+  `tpecans` int(11) NOT NULL default '0',
+  `specans` int(11) NOT NULL default '0',
+  `ipistachios` int(11) NOT NULL default '0',
+  `ppistachios` int(11) NOT NULL default '0',
+  `tpistachios` int(11) NOT NULL default '0',
+  `spistachios` int(11) NOT NULL default '0',
+  `fcashews` int(5) NOT NULL default '0',
+  `fpistachios` int(5) NOT NULL default '0',
+  `fchestnuts` int(5) NOT NULL default '0',
+  `fpecans` int(5) NOT NULL default '0',
+  `fwalnuts` int(5) NOT NULL default '0',
+  `falmonds` int(5) NOT NULL default '0',
+  KEY `userid` (`userid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `nutpurchases`
+--
+
+DROP TABLE IF EXISTS `nutpurchases`;
+CREATE TABLE `nutpurchases` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `squffyid` int(30) default NULL,
+  `squffyname` varchar(255) NOT NULL,
+  `nut` varchar(100) default NULL,
+  `nutprice` int(4) default NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1986 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `nuttransfers`
+--
+
+DROP TABLE IF EXISTS `nuttransfers`;
+CREATE TABLE `nuttransfers` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `amountsent` int(5) NOT NULL default '0',
+  `nutname` varchar(100) NOT NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=995 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `offeritems`
+--
+
+DROP TABLE IF EXISTS `offeritems`;
+CREATE TABLE `offeritems` (
+  `offeritemid` int(40) NOT NULL auto_increment,
+  `offerid` int(40) default NULL,
+  `tradeid` int(40) default NULL,
+  `offeringtype` enum('nut','item','sd','squffy') default NULL,
+  `offeringid` int(30) default NULL,
+  `offeringname` varchar(255) default NULL,
+  `offeringimage` varchar(255) default NULL,
+  `offeringamount` int(3) default NULL,
+  PRIMARY KEY  (`offeritemid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1436 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `olditems`
+--
+
+DROP TABLE IF EXISTS `olditems`;
+CREATE TABLE `olditems` (
+  `owneditemid` int(50) default NULL,
+  `itemname` varchar(255) default NULL,
+  `bank` enum('Y','N') default 'N',
+  `inuse` int(30) default NULL,
+  `pending` enum('Y','N') default 'N',
+  `stocked` enum('Y','N') default 'N',
+  `storepricebwd` int(5) default '0',
+  `ownerid` int(40) default NULL,
+  `uses` int(10) default '0',
+  `TYPE` varchar(255) default NULL,
+  `wuffyid` int(30) default NULL,
+  `shopnut` varchar(255) NOT NULL,
+  `shopnutprice` int(10) NOT NULL,
+  `trading` enum('Y','N') NOT NULL default 'N'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `oldmessages`
+--
+
+DROP TABLE IF EXISTS `oldmessages`;
+CREATE TABLE `oldmessages` (
+  `messageid` int(100) default NULL,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `subject` varchar(255) default NULL,
+  `content` varchar(4000) default NULL,
+  `datesent` datetime default NULL,
+  `new` enum('Y','N') default 'Y',
+  `showin` enum('Y','N') default 'Y',
+  `showout` enum('Y','N') default 'Y'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `oldposts`
+--
+
+DROP TABLE IF EXISTS `oldposts`;
+CREATE TABLE `oldposts` (
+  `postid` int(50) default NULL,
+  `threadid` int(30) default NULL,
+  `boardid` int(10) default NULL,
+  `posterid` int(40) default NULL,
+  `content` varchar(10000) default NULL,
+  `dateposted` datetime default NULL,
+  `dateedited` datetime default NULL,
+  `SHOW` enum('Y','N') default 'Y',
+  KEY `SHOW` (`SHOW`),
+  KEY `threadid` (`threadid`),
+  KEY `threadid_2` (`threadid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `oldthreads`
+--
+
+DROP TABLE IF EXISTS `oldthreads`;
+CREATE TABLE `oldthreads` (
+  `threadid` int(20) default NULL,
+  `boardid` int(10) default NULL,
+  `posterid` int(40) default NULL,
+  `subject` varchar(255) default NULL,
+  `content` varchar(25000) default NULL,
+  `dateposted` datetime default NULL,
+  `dateedited` datetime default NULL,
+  `SHOW` enum('Y','N') default 'Y',
+  `locked` enum('Y','N') default 'N',
+  `sticky` enum('Y','N') default 'N',
+  `lastupdate` datetime default NULL,
+  KEY `boardid` (`boardid`),
+  KEY `SHOW` (`SHOW`),
+  KEY `lastupdate` (`lastupdate`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `players`
+--
+
+DROP TABLE IF EXISTS `players`;
+CREATE TABLE `players` (
+  `userid` int(40) NOT NULL auto_increment,
+  `username` varchar(255) NOT NULL,
+  `loginname` varchar(255) NOT NULL,
+  `hashword` varchar(1000) NOT NULL,
+  `yourown` varchar(25) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `levelid` int(3) NOT NULL,
+  `lastseen` datetime NOT NULL,
+  `avatarurl` varchar(1000) default NULL,
+  `threadmail` enum('Y','N') NOT NULL default 'N',
+  `threadmessage` enum('Y','N') NOT NULL default 'N',
+  `dateinterest` date default NULL,
+  `hideseekon` enum('Y','N') NOT NULL default 'N',
+  `rpson` enum('Y','N') NOT NULL default 'N',
+  `hangman` enum('Y','N') NOT NULL default 'N',
+  `wordid` int(3) default NULL,
+  `guessed` varchar(27) default NULL,
+  `numhangman` int(2) NOT NULL default '0',
+  `datearchery` date default NULL,
+  `bwd` int(7) NOT NULL default '0',
+  `newsalert` enum('Y','N') NOT NULL default 'Y',
+  `codenewsalert` enum('Y','N') NOT NULL default 'Y',
+  `dateupgraded` date NOT NULL,
+  `dateupgradeditem` date NOT NULL,
+  `dateitem` date NOT NULL,
+  `dateupgradeditem2` datetime NOT NULL,
+  `dateitem2` datetime NOT NULL,
+  `dateriver` date default NULL,
+  `starthunt` enum('Y','N','D') default 'N',
+  `dolls` enum('Y','N') NOT NULL default 'N',
+  `ball` enum('Y','N') NOT NULL default 'N',
+  `box` enum('Y','N') NOT NULL default 'N',
+  `seeds` enum('Y','N') NOT NULL default 'N',
+  `harvest` enum('Y','N') NOT NULL default 'N',
+  `sunplushie` enum('Y','N') NOT NULL default 'N',
+  `strawberries` enum('Y','N') NOT NULL default 'N',
+  `numhideseek` int(2) NOT NULL default '0',
+  `newbiepack` enum('Y','N') NOT NULL default 'N',
+  `drey` varchar(2047) default NULL,
+  `notes` varchar(2047) default NULL,
+  `trash1` int(3) NOT NULL default '0',
+  `trash2` int(3) NOT NULL default '0',
+  `trash3` int(3) NOT NULL default '0',
+  `trash4` int(3) NOT NULL default '0',
+  `ground` int(2) NOT NULL default '0',
+  `tree` int(2) NOT NULL default '0',
+  `sand` int(2) NOT NULL default '0',
+  `lihtan` int(2) NOT NULL default '0',
+  `bday` int(2) NOT NULL default '0',
+  `chatter` int(2) NOT NULL default '0',
+  `friend` int(2) NOT NULL default '0',
+  `bragger` int(2) NOT NULL default '0',
+  `gaming` int(2) NOT NULL default '0',
+  `tper` int(2) NOT NULL default '0',
+  `hero` int(2) NOT NULL default '0',
+  `datehangman` date NOT NULL,
+  `hangmanwon` tinyint(2) NOT NULL default '0',
+  `gargoyle` int(2) NOT NULL default '0',
+  `numpumpkins` int(2) NOT NULL default '0',
+  `atball` enum('Y','N') NOT NULL default 'N',
+  `applebob` tinyint(3) unsigned NOT NULL default '0',
+  `goodiebag` enum('Y','N') NOT NULL default 'N',
+  `tped` enum('Y','N') NOT NULL default 'N',
+  `numtped` int(4) NOT NULL default '0',
+  `datetped` datetime NOT NULL,
+  `dugout` int(3) NOT NULL default '0',
+  `dug` varchar(30) NOT NULL,
+  `candies` tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`userid`)
+) ENGINE=MyISAM AUTO_INCREMENT=4074 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `posts`
+--
+
+DROP TABLE IF EXISTS `posts`;
+CREATE TABLE `posts` (
+  `postid` int(50) NOT NULL auto_increment,
+  `threadid` int(30) NOT NULL,
+  `boardid` int(10) NOT NULL,
+  `posterid` int(40) NOT NULL,
+  `content` varchar(10000) default NULL,
+  `dateposted` datetime NOT NULL,
+  `dateedited` datetime default NULL,
+  `show` enum('Y','N') NOT NULL default 'Y',
+  PRIMARY KEY  (`postid`)
+) ENGINE=MyISAM AUTO_INCREMENT=30805 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `purchases`
+--
+
+DROP TABLE IF EXISTS `purchases`;
+CREATE TABLE `purchases` (
+  `purchaseid` int(20) NOT NULL auto_increment,
+  `userid` int(40) NOT NULL,
+  `amount` int(6) NOT NULL,
+  `date` datetime NOT NULL,
+  `auth` varchar(50) default NULL,
+  PRIMARY KEY  (`purchaseid`)
+) ENGINE=MyISAM AUTO_INCREMENT=359 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `retiredsquffies`
+--
+
+DROP TABLE IF EXISTS `retiredsquffies`;
+CREATE TABLE `retiredsquffies` (
+  `squffyid` int(30) NOT NULL auto_increment,
+  `ownerid` int(40) default NULL,
+  `name` varchar(255) default NULL,
+  `title` varchar(255) default NULL,
+  `subdreyid` int(10) default NULL,
+  `description` varchar(5000) default NULL,
+  `age` int(10) NOT NULL default '0',
+  `generation` int(4) default NULL,
+  `gender` enum('F','M') default NULL,
+  `species` varchar(255) default NULL,
+  `momid` int(30) default NULL,
+  `dadid` int(30) default NULL,
+  `mateid` int(30) default NULL,
+  `traitd` int(3) NOT NULL default '0',
+  `geneticd` int(3) NOT NULL default '0',
+  `fertile` int(3) NOT NULL default '0',
+  `xx` int(3) NOT NULL default '0',
+  `inbred` int(3) NOT NULL default '0',
+  `hunger` int(3) NOT NULL default '0',
+  `exercise` int(3) NOT NULL default '0',
+  `health` int(3) NOT NULL default '0',
+  `luck` int(3) NOT NULL default '100',
+  `speed` int(3) NOT NULL default '0',
+  `agility` int(3) NOT NULL default '0',
+  `endurance` int(3) NOT NULL default '0',
+  `strength` int(3) NOT NULL default '0',
+  `pregnant` enum('Y','N') NOT NULL default 'N',
+  `pregfor` int(40) default NULL,
+  `pregby` int(30) default NULL,
+  `pregdate` datetime default NULL,
+  `candied` enum('Y','N') NOT NULL default 'N',
+  `pantryban` enum('Y','N') NOT NULL default 'N',
+  `pending` enum('Y','N') NOT NULL default 'N',
+  `pendby` int(30) default NULL,
+  `pendtrans` enum('Y','N') NOT NULL default 'N',
+  `trading` enum('Y','N') NOT NULL default 'N',
+  `breedable` enum('Y','N') NOT NULL default 'N',
+  `breedprice` int(4) default NULL,
+  `breeditemname` varchar(255) default NULL,
+  `breeditemnum` int(8) default NULL,
+  `sale` enum('Y','N') NOT NULL default 'N',
+  `saleprice` int(4) default NULL,
+  `saleitemname` varchar(255) default NULL,
+  `saleitemnum` int(10) default NULL,
+  `farmid` int(20) default NULL,
+  `farmwork` enum('Weed','Water','Plow','Fertilize') default NULL,
+  `numlayered` int(2) NOT NULL default '0',
+  `basec` varchar(6) default NULL,
+  `eyec` varchar(6) default NULL,
+  `feetearc` varchar(6) default NULL,
+  `bellyc` varchar(6) default NULL,
+  `bellys` int(2) NOT NULL default '0',
+  `bellyo` int(2) default NULL,
+  `cheetahc` varchar(6) default NULL,
+  `cheetahs` int(2) NOT NULL default '0',
+  `cheetaho` int(2) default NULL,
+  `maskc` varchar(6) default NULL,
+  `masks` int(2) NOT NULL default '0',
+  `masko` int(2) default NULL,
+  `socksc` varchar(6) default NULL,
+  `sockss` int(2) NOT NULL default '0',
+  `sockso` int(2) default NULL,
+  `hennac` varchar(6) default NULL,
+  `hennas` int(2) NOT NULL default '0',
+  `hennao` int(2) default NULL,
+  `leopardc` varchar(6) default NULL,
+  `leopards` int(2) NOT NULL default '0',
+  `leopardo` int(2) default NULL,
+  `stripesc` varchar(6) default NULL,
+  `stripess` int(2) NOT NULL default '0',
+  `stripeso` int(2) default NULL,
+  `rainc` varchar(6) default NULL,
+  `rains` int(2) default '0',
+  `raino` int(2) default NULL,
+  `skunkc` varchar(6) default NULL,
+  `skunks` int(2) NOT NULL default '0',
+  `skunko` int(2) default NULL,
+  `hoodc` varchar(6) default NULL,
+  `hoods` int(2) NOT NULL default '0',
+  `hoodo` int(2) default NULL,
+  `paintc` varchar(6) default NULL,
+  `paints` int(2) NOT NULL default '0',
+  `painto` int(2) default NULL,
+  `lemurc` varchar(6) default NULL,
+  `lemurs` int(2) NOT NULL default '0',
+  `lemuro` int(2) default NULL,
+  `giraffec` varchar(6) default NULL,
+  `giraffes` int(2) NOT NULL default '0',
+  `giraffeo` int(2) default NULL,
+  `vinesc` varchar(6) default NULL,
+  `viness` int(2) NOT NULL default '0',
+  `vineso` int(2) default NULL,
+  `patchesc` varchar(6) default NULL,
+  `patchess` int(2) NOT NULL default '0',
+  `patcheso` int(2) default NULL,
+  `siamesec` varchar(6) default NULL,
+  `siameses` int(2) NOT NULL default '0',
+  `siameseo` int(3) NOT NULL,
+  `wolfc` varchar(6) default NULL,
+  `wolfs` int(2) NOT NULL default '0',
+  `wolfo` int(2) default NULL,
+  `eartipsc` varchar(6) default NULL,
+  `eartipss` int(2) NOT NULL default '0',
+  `eartipso` int(2) default NULL,
+  `frecklesc` varchar(6) default NULL,
+  `freckless` int(2) NOT NULL default '0',
+  `freckleso` int(2) default NULL,
+  `linec` varchar(6) default NULL,
+  `lines` int(2) NOT NULL default '0',
+  `lineo` int(2) default NULL,
+  `weavec` varchar(6) NOT NULL,
+  `weaves` int(2) NOT NULL,
+  `weaveo` int(3) NOT NULL,
+  `sunc` varchar(6) NOT NULL,
+  `suns` int(2) NOT NULL,
+  `suno` int(3) NOT NULL,
+  `tattooc` varchar(6) NOT NULL,
+  `tattoos` int(2) NOT NULL,
+  `tattooo` int(3) NOT NULL,
+  `rootsc` varchar(6) NOT NULL,
+  `rootss` int(2) NOT NULL,
+  `rootso` int(3) NOT NULL,
+  `harlequinc` varchar(6) NOT NULL,
+  `harlequins` int(2) NOT NULL,
+  `harlequino` int(3) NOT NULL,
+  `swirlc` varchar(6) NOT NULL,
+  `swirls` int(2) NOT NULL,
+  `swirlo` int(3) NOT NULL,
+  `marblec` varchar(6) NOT NULL,
+  `marbles` int(2) NOT NULL,
+  `marbleo` int(3) NOT NULL,
+  `burnc` varchar(6) NOT NULL,
+  `burns` int(2) NOT NULL,
+  `burno` int(3) NOT NULL,
+  `clawc` varchar(6) default NULL,
+  `claws` int(3) NOT NULL,
+  `birdwingc` varchar(6) default NULL,
+  `birdwings` int(3) NOT NULL,
+  `hornsc` varchar(6) default NULL,
+  `hornss` int(3) NOT NULL,
+  `pixiec` varchar(6) default NULL,
+  `pixies` int(3) NOT NULL,
+  `manec` varchar(6) default NULL,
+  `manes` int(2) NOT NULL default '0',
+  `antennac` varchar(6) default NULL,
+  `antennas` int(2) NOT NULL default '0',
+  `beardc` varchar(6) NOT NULL,
+  `beards` int(2) NOT NULL default '0',
+  `whiskerc` varchar(6) NOT NULL,
+  `whiskers` int(2) NOT NULL default '0',
+  `kirinc` varchar(6) NOT NULL,
+  `kirins` int(2) NOT NULL default '0',
+  `antlerc` varchar(6) NOT NULL,
+  `antlers` int(2) NOT NULL default '0',
+  `items` int(3) NOT NULL,
+  PRIMARY KEY  (`squffyid`)
+) ENGINE=MyISAM AUTO_INCREMENT=17029 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `sdbreedings`
+--
+
+DROP TABLE IF EXISTS `sdbreedings`;
+CREATE TABLE `sdbreedings` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `receiversquffyid` int(30) default NULL,
+  `receiversquffyname` varchar(255) default NULL,
+  `sendersquffyid` int(30) default NULL,
+  `sdprice` int(4) default NULL,
+  `femaleid` int(30) NOT NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=260 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `sdpurchases`
+--
+
+DROP TABLE IF EXISTS `sdpurchases`;
+CREATE TABLE `sdpurchases` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) default NULL,
+  `receiverid` int(40) default NULL,
+  `squffyid` int(30) default NULL,
+  `squffyname` varchar(255) NOT NULL,
+  `sdprice` int(4) default NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=311 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `sdtransfers`
+--
+
+DROP TABLE IF EXISTS `sdtransfers`;
+CREATE TABLE `sdtransfers` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `amountsent` int(5) NOT NULL default '0',
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=99 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `snowdreys`
+--
+
+DROP TABLE IF EXISTS `snowdreys`;
+CREATE TABLE `snowdreys` (
+  `userid` int(20) default NULL,
+  `rand` varchar(30) default NULL,
+  `used` int(2) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `squffies`
+--
+
+DROP TABLE IF EXISTS `squffies`;
+CREATE TABLE `squffies` (
+  `squffyid` int(30) NOT NULL auto_increment,
+  `ownerid` int(40) NOT NULL,
+  `name` varchar(255) default NULL,
+  `title` varchar(255) default NULL,
+  `subdreyid` int(10) default NULL,
+  `description` varchar(5000) default NULL,
+  `age` int(10) default '0',
+  `generation` int(4) default NULL,
+  `gender` enum('F','M') default NULL,
+  `species` varchar(255) default NULL,
+  `momid` int(30) default NULL,
+  `dadid` int(30) default NULL,
+  `mateid` int(30) default NULL,
+  `traitd` int(3) default '0',
+  `geneticd` int(3) default '0',
+  `fertile` int(3) default '0',
+  `xx` int(3) default '0',
+  `inbred` int(3) default '0',
+  `hunger` int(3) default '0',
+  `exercise` int(3) default '0',
+  `health` int(3) default '100',
+  `luck` int(3) NOT NULL default '100',
+  `speed` int(3) default '0',
+  `agility` int(3) default '0',
+  `endurance` int(3) default '0',
+  `strength` int(3) default '0',
+  `pregnant` enum('Y','N') default 'N',
+  `pregfor` int(40) default NULL,
+  `pregby` int(30) default NULL,
+  `pregdate` datetime default NULL,
+  `candied` enum('Y','N') NOT NULL default 'N',
+  `pantryban` enum('Y','N') NOT NULL default 'N',
+  `pending` enum('Y','N') default 'N',
+  `pendby` int(30) default NULL,
+  `pendtrans` enum('Y','N') default 'N',
+  `trading` enum('Y','N') NOT NULL default 'N',
+  `breedable` enum('Y','N') default 'N',
+  `breedprice` int(4) default NULL,
+  `breeditemname` varchar(255) NOT NULL,
+  `breeditemnum` int(8) NOT NULL,
+  `sale` enum('Y','N') default 'N',
+  `saleprice` int(4) default NULL,
+  `saleitemname` varchar(255) NOT NULL,
+  `saleitemnum` int(10) NOT NULL,
+  `farmid` int(20) default NULL,
+  `farmwork` enum('Weed','Water','Plow','Fertilize') default NULL,
+  `numlayered` int(2) default '0',
+  `basec` varchar(6) default NULL,
+  `eyec` varchar(6) default NULL,
+  `feetearc` varchar(6) default NULL,
+  `bellyc` varchar(6) default NULL,
+  `bellys` int(2) default '0',
+  `bellyo` int(3) default NULL,
+  `cheetahc` varchar(6) default NULL,
+  `cheetahs` int(2) default '0',
+  `cheetaho` int(3) default NULL,
+  `maskc` varchar(6) default NULL,
+  `masks` int(2) default '0',
+  `masko` int(3) default NULL,
+  `socksc` varchar(6) default NULL,
+  `sockss` int(2) default '0',
+  `sockso` int(3) default NULL,
+  `hennac` varchar(6) default NULL,
+  `hennas` int(2) default '0',
+  `hennao` int(3) default NULL,
+  `leopardc` varchar(6) default NULL,
+  `leopards` int(2) default '0',
+  `leopardo` int(3) default NULL,
+  `stripesc` varchar(6) default NULL,
+  `stripess` int(2) default '0',
+  `stripeso` int(3) default NULL,
+  `rainc` varchar(6) default NULL,
+  `rains` int(2) default '0',
+  `raino` int(3) default NULL,
+  `skunkc` varchar(6) default NULL,
+  `skunks` int(2) default '0',
+  `skunko` int(3) default NULL,
+  `hoodc` varchar(6) default NULL,
+  `hoods` int(2) default '0',
+  `hoodo` int(3) default NULL,
+  `paintc` varchar(6) default NULL,
+  `paints` int(2) default '0',
+  `painto` int(3) default NULL,
+  `lemurc` varchar(6) default NULL,
+  `lemurs` int(2) default '0',
+  `lemuro` int(3) default NULL,
+  `giraffec` varchar(6) default NULL,
+  `giraffes` int(2) default '0',
+  `giraffeo` int(3) default NULL,
+  `vinesc` varchar(6) default NULL,
+  `viness` int(2) default '0',
+  `vineso` int(3) default NULL,
+  `patchesc` varchar(6) default NULL,
+  `patchess` int(2) default '0',
+  `patcheso` int(3) default NULL,
+  `siamesec` varchar(6) default NULL,
+  `siameses` int(2) default '0',
+  `siameseo` int(3) default NULL,
+  `wolfc` varchar(6) default NULL,
+  `wolfs` int(2) NOT NULL default '0',
+  `wolfo` int(3) default NULL,
+  `eartipsc` varchar(6) NOT NULL,
+  `eartipss` int(2) NOT NULL default '0',
+  `eartipso` int(2) NOT NULL,
+  `frecklesc` varchar(6) NOT NULL,
+  `freckless` int(2) NOT NULL default '0',
+  `freckleso` int(2) NOT NULL,
+  `linec` varchar(6) NOT NULL,
+  `lines` int(2) NOT NULL default '0',
+  `lineo` int(2) NOT NULL,
+  `weavec` varchar(6) NOT NULL,
+  `weaves` int(2) NOT NULL,
+  `weaveo` int(3) NOT NULL,
+  `sunc` varchar(6) NOT NULL,
+  `suns` int(2) NOT NULL,
+  `suno` int(3) NOT NULL,
+  `tattooc` varchar(6) NOT NULL,
+  `tattoos` int(2) NOT NULL,
+  `tattooo` int(3) NOT NULL,
+  `rootsc` varchar(6) NOT NULL,
+  `rootss` int(2) NOT NULL,
+  `rootso` int(3) NOT NULL,
+  `harlequinc` varchar(6) NOT NULL,
+  `harlequins` int(2) NOT NULL,
+  `harlequino` int(3) NOT NULL,
+  `swirlc` varchar(6) NOT NULL,
+  `swirls` int(2) NOT NULL,
+  `swirlo` int(3) NOT NULL,
+  `marblec` varchar(6) NOT NULL,
+  `marbles` int(2) NOT NULL,
+  `marbleo` int(3) NOT NULL,
+  `burnc` varchar(6) NOT NULL,
+  `burns` int(2) NOT NULL,
+  `burno` int(3) NOT NULL,
+  `clawc` varchar(6) default NULL,
+  `claws` int(2) default '0',
+  `birdwingc` varchar(6) default NULL,
+  `birdwings` int(2) default '0',
+  `hornsc` varchar(6) default NULL,
+  `hornss` int(2) default '0',
+  `pixiec` varchar(6) default NULL,
+  `pixies` int(2) default '0',
+  `manec` varchar(6) default NULL,
+  `manes` int(2) default '0',
+  `antennac` varchar(6) default NULL,
+  `antennas` int(2) default '0',
+  `beardc` varchar(6) NOT NULL,
+  `beards` int(2) NOT NULL default '0',
+  `whiskerc` varchar(6) NOT NULL,
+  `whiskers` int(2) NOT NULL default '0',
+  `kirinc` varchar(6) NOT NULL,
+  `kirins` int(2) NOT NULL default '0',
+  `antlerc` varchar(6) NOT NULL,
+  `antlers` int(2) NOT NULL default '0',
+  `items` int(3) NOT NULL default '0',
+  PRIMARY KEY  (`squffyid`),
+  KEY `ownerid` (`ownerid`),
+  KEY `age` (`age`)
+) ENGINE=MyISAM AUTO_INCREMENT=17935 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `squffytransfers`
+--
+
+DROP TABLE IF EXISTS `squffytransfers`;
+CREATE TABLE `squffytransfers` (
+  `transferid` int(30) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `idsent` int(30) NOT NULL,
+  `squffyname` varchar(255) NOT NULL,
+  `datesent` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datecompleted` datetime default NULL,
+  `status` enum('New','Pending','Accepted','Rejected','Canceled') default 'New',
+  PRIMARY KEY  (`transferid`)
+) ENGINE=MyISAM AUTO_INCREMENT=5609 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `subdreys`
+--
+
+DROP TABLE IF EXISTS `subdreys`;
+CREATE TABLE `subdreys` (
+  `subdreyid` int(10) NOT NULL auto_increment,
+  `ownerid` int(40) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY  (`subdreyid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1826 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `threads`
+--
+
+DROP TABLE IF EXISTS `threads`;
+CREATE TABLE `threads` (
+  `threadid` int(20) NOT NULL auto_increment,
+  `boardid` int(10) NOT NULL,
+  `posterid` int(40) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `content` varchar(25000) default NULL,
+  `dateposted` datetime NOT NULL,
+  `dateedited` datetime default NULL,
+  `show` enum('Y','N') default 'Y',
+  `locked` enum('Y','N') NOT NULL default 'N',
+  `sticky` enum('Y','N') NOT NULL default 'N',
+  `lastupdate` datetime NOT NULL,
+  PRIMARY KEY  (`threadid`)
+) ENGINE=MyISAM AUTO_INCREMENT=4135 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `tradeitems`
+--
+
+DROP TABLE IF EXISTS `tradeitems`;
+CREATE TABLE `tradeitems` (
+  `titemid` int(40) NOT NULL auto_increment,
+  `tradeid` int(40) default NULL,
+  `tradingtype` enum('nut','item','sd','squffy') default NULL,
+  `tradingid` int(30) default NULL,
+  `tradingname` varchar(255) default NULL,
+  `tradingimage` varchar(255) default NULL,
+  `tradingamount` int(3) default NULL,
+  PRIMARY KEY  (`titemid`)
+) ENGINE=MyISAM AUTO_INCREMENT=4358 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `tradeoffers`
+--
+
+DROP TABLE IF EXISTS `tradeoffers`;
+CREATE TABLE `tradeoffers` (
+  `offerid` int(40) NOT NULL auto_increment,
+  `ownerid` int(40) default NULL,
+  `tradeid` int(40) default NULL,
+  `tradename` varchar(255) default NULL,
+  `tradeowner` int(40) default NULL,
+  `visible` enum('Y','N') default 'N',
+  `note` blob,
+  `dateadded` datetime default NULL,
+  `dateseen` datetime default NULL,
+  `datefinished` datetime default NULL,
+  `status` enum('Unfinished','New','Pending','Updated','Accepted','Refused','Canceled') default NULL,
+  PRIMARY KEY  (`offerid`)
+) ENGINE=MyISAM AUTO_INCREMENT=560 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `trades`
+--
+
+DROP TABLE IF EXISTS `trades`;
+CREATE TABLE `trades` (
+  `tradeid` int(40) NOT NULL auto_increment,
+  `ownerid` int(40) default NULL,
+  `tradename` varchar(255) default NULL,
+  `wanted` blob,
+  `onlytradefor` varchar(255) default NULL,
+  `offersvisible` enum('Y','N') default 'N',
+  `dateadded` datetime default NULL,
+  `datefinished` datetime default NULL,
+  `expires` datetime default NULL,
+  `pendingoffers` int(3) default NULL,
+  `status` enum('Unfinished','Available','Completed','Canceled') default NULL,
+  PRIMARY KEY  (`tradeid`)
+) ENGINE=MyISAM AUTO_INCREMENT=350 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `vday`
+--
+
+DROP TABLE IF EXISTS `vday`;
+CREATE TABLE `vday` (
+  `cardid` int(10) NOT NULL auto_increment,
+  `senderid` int(40) NOT NULL,
+  `receiverid` int(40) NOT NULL,
+  `note` blob NOT NULL,
+  `image` enum('1','2','3') NOT NULL,
+  PRIMARY KEY  (`cardid`)
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `wnews`
+--
+
+DROP TABLE IF EXISTS `wnews`;
+CREATE TABLE `wnews` (
+  `newsid` int(10) NOT NULL auto_increment,
+  `posterid` int(40) NOT NULL,
+  `dateposted` datetime NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `content` varchar(2500) default NULL,
+  `appear` enum('Y','N') NOT NULL default 'Y',
+  PRIMARY KEY  (`newsid`)
+) ENGINE=MyISAM AUTO_INCREMENT=221 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `xmas`
+--
+
+DROP TABLE IF EXISTS `xmas`;
+CREATE TABLE `xmas` (
+  `userid` int(20) NOT NULL,
+  `item` date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

@@ -36,6 +36,14 @@ $breed_sd = $breed->getSDPrice();
 $breed_item = $breed->getItemID();
 $breed_amount = $breed->getItemPrice();
 
+$t = $squffy->getAppearanceTraits();
+$traits = array();
+foreach($t as $trait) {
+	if($trait->getSquare() != 'C') { $traits[] = $trait; }
+}
+$num = sizeof($traits);
+$i = 0;
+
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
@@ -46,14 +54,6 @@ foreach($items as $item) {
 	if($item->getID() == 2){ continue; }
 	$item_options .= '<option value="' . $item->getID() . '">' . $item->getName() . '</option>';
 }
-
-$t = $squffy->getAppearanceTraits();
-$traits = array();
-foreach($t as $trait) {
-	$traits[] = $trait;
-}
-$num = sizeof($traits);
-$i = 0;
 ?>
 <form action="edit_squffy.php?id=<?php echo $id; ?>" method="post">
 <table class="content-table">
@@ -119,16 +119,20 @@ function replace($val, $options) {
 
 function showTrait($num, &$traits, $i) {
 	if($i == $num) {
-		echo '<td colspan="4" class="text-center"><input type="submit" class="submit-input" value="Reorder traits" name="reorder" /></td>';
+		echo '<td colspan="4" class="text-center">
+		<input type="submit" id="reorder" num="' . $num . '" class="submit-input" value="Reorder traits" name="reorder" /></td>';
 	} elseif($i < $num) {
-		echo '<td class="width125">' . $traits[$i]->getTitle() . '</td><td class="width50"> 
+		echo '<td class="width125" id="trait' . $i . 'name">' . $traits[$i]->getTitle() . '</td><td class="width50" id="trait' . $i . 'box"> 
 		<div class="color-box" style="background-color: #' . $traits[$i]->getColor() . '"></div></td>
-		<td class="width80">' . $traits[$i]->getColor() .'</td>
-		<td><img src="./images/icons/arrow_up.png" class="margin-right-small no-border float-left';
+		<td class="width80" id="trait' . $i . 'color">' . $traits[$i]->getColor() .'</td>
+		<td>
+		<input type="hidden" name="trait' . $i . '" id="trait' . $i . '" value="' . $traits[$i]->getID() . '" />
+		<a href="#"><img num="' . $i . '" src="./images/icons/arrow_up.png" class="moveArrowUp margin-right-small no-border float-left';
 		if($i == 0) { echo ' invisible'; }
-		echo '" />';
-		if($i < $num - 1) { echo '<img src="./images/icons/arrow_down.png" class="margin-right-small no-border float-left" />'; }
-		echo '</td>';
+		echo '" /></a>
+		<a href="#"><img num="' . $i . '" src="./images/icons/arrow_down.png" class="moveArrowDown margin-right-small no-border float-left';
+		if($i == $num - 1) { echo ' invisible'; }
+		echo '" /></a></td>';
 	} else {
 		echo '<td></td><td></td><td></td><td></td>';
 	}
