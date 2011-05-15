@@ -189,23 +189,23 @@ CREATE TABLE IF NOT EXISTS users (
 DROP TABLE IF EXISTS inventory;
 CREATE TABLE IF NOT EXISTS inventory (
 	user_id mediumint unsigned,
-	cashew smallint unsigned,
-	squffy_dollar smallint unsigned,
-	single_acorn smallint unsigned,
-	double_acorn smallint unsigned,
-	triple_acorn smallint unsigned,
-	single_seed smallint unsigned,
-	double_seed smallint unsigned,
-	triple_seed smallint unsigned,
-	single_thorn smallint unsigned,
-	double_thorn smallint unsigned,
-	triple_thorn smallint unsigned,
-	single_spark smallint unsigned,
-	double_spark smallint unsigned,
-	triple_spark smallint unsigned,
-	single_wings smallint unsigned,
-	double_wings smallint unsigned,
-	triple_wings smallint unsigned
+	cashew smallint unsigned default '0',
+	squffy_dollar smallint unsigned default '0',
+	single_acorn smallint unsigned default '0',
+	double_acorn smallint unsigned default '0',
+	triple_acorn smallint unsigned default '0',
+	single_seed smallint unsigned default '0',
+	double_seed smallint unsigned default '0',
+	triple_seed smallint unsigned default '0',
+	single_thorn smallint unsigned default '0',
+	double_thorn smallint unsigned default '0',
+	triple_thorn smallint unsigned default '0',
+	single_spark smallint unsigned default '0',
+	double_spark smallint unsigned default '0',
+	triple_spark smallint unsigned default '0',
+	single_wings smallint unsigned default '0',
+	double_wings smallint unsigned default '0',
+	triple_wings smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS pantry;
