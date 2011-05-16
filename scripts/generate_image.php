@@ -1,24 +1,41 @@
 <?php
-if(isset($dirUp)) {
-	$img_dir = './images/generate/' . $species . '/' . $species;
-} else {
-	include_once("../objects/appearance.php");
-	$img_dir = '../images/generate/' . $species . '/' . $species;
-}
+function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp = false, $resize = false, $width = 0, $height = 0) {
+	if($dirUp) {
+		$img_dir = './images/generate/' . $species . '/' . $species;
+	} else {
+		include_once("../objects/appearance.php");
+		$img_dir = '../images/generate/' . $species . '/' . $species;
+	}
 
-$design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
-foreach($markings as $trait) {
-	$design = addToBase($design, $img_dir, $trait, true);
-}
-$design = addToBase($design, $img_dir, array('name'=>'feetear', 'color'=>$foot), true);
-$design = addToBase($design, $img_dir, array('name'=>'eye', 'color'=>$eye), true);
-$design = addToBase($design, $img_dir, array('name'=>'standard'), false);
-foreach($mutations as $trait) {
-	$name = $trait['name'];
-	$trait['name'] = $name . 'c';
-	$design = addToBase($design, $img_dir, $trait, true);
-	$trait['name'] = $name . 'l';
-	$design = addToBase($design, $img_dir, $trait, false);
+	$design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
+	foreach($markings as $trait) {
+		$design = addToBase($design, $img_dir, $trait, true);
+	}
+	$design = addToBase($design, $img_dir, array('name'=>'feetear', 'color'=>$foot), true);
+	$design = addToBase($design, $img_dir, array('name'=>'eye', 'color'=>$eye), true);
+	$design = addToBase($design, $img_dir, array('name'=>'standard'), false);
+	foreach($mutations as $trait) {
+		$name = $trait['name'];
+		$trait['name'] = $name . 'c';
+		$design = addToBase($design, $img_dir, $trait, true);
+		$trait['name'] = $name . 'l';
+		$design = addToBase($design, $img_dir, $trait, false);
+	}
+
+	if($resize) {
+		$truecolor = imagecreatetruecolor($width, $height);
+		imagealphablending($truecolor, false);
+		$color = imagecolortransparent($truecolor, imagecolorallocatealpha($truecolor, 0, 0, 0, 127));
+		imagefill($truecolor, 0, 0, $color);
+		imagesavealpha($truecolor, true);
+		
+		$image_width = imagesx($design);
+		$image_height = imagesy($design);	
+		imagecopyresampled($truecolor, $design, 0, 0, 0, 0, $width, $height, $image_width, $image_height);
+		imagesavealpha($truecolor, true);
+		$design = $truecolor;
+	}
+	return $design;
 }
 
 function addToBase($base_image, $img_dir, $trait, $hasColor) {
@@ -45,20 +62,7 @@ function addToBase($base_image, $img_dir, $trait, $hasColor) {
 	return $base_image;
 };
 
-if(isset($resize) && isset($width) && isset($height)) {
-	$truecolor = imagecreatetruecolor($width, $height);
-	imagealphablending($truecolor, false);
-    $color = imagecolortransparent($truecolor, imagecolorallocatealpha($truecolor, 0, 0, 0, 127));
-	imagefill($truecolor, 0, 0, $color);
-    imagesavealpha($truecolor, true);
-	
-	$image_width = imagesx($design);
-	$image_height = imagesy($design);	
-	imagecopyresampled($truecolor, $design, 0, 0, 0, 0, $width, $height, $image_width, $image_height);
-	imagesavealpha($truecolor, true);
-	$design = $truecolor;
-}
-
+/*
 //TODO save or display?
 if(!isset($display)) { $display = "show"; }
 
@@ -76,6 +80,6 @@ if ($display == "image") {
 	header("Content-type: image/png");
 	imagepng($design);
 	imagedestroy($design);
-}
+}*/
 
 ?>

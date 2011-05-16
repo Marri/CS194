@@ -584,8 +584,8 @@ VALUES
 INSERT INTO `squffies` 
 	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
 VALUES
-	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 2, 3, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
-	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 1, 0, NULL, 0, 100, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0);
+	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 1, 3, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
+	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 2, 0, NULL, 0, 100, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0);
 	
 INSERT INTO `squffy_appearance` 
 	(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 

@@ -53,7 +53,7 @@ class Appearance {
 				$mom_color = $mom_traits[$id]->getColor();  
 			}
 			
-			$kid_info['trait_square'] = self::GetTrait($mom_square, $trait->getSquare(), $trait->getMid());			
+			$kid_info['trait_square'] = self::GetTrait($mom_square, $trait->getSquare(), $trait->getMid(), $mom->getC6(), $dad->getC6());			
 			if($kid_info['trait_square'] != 'N') {
 				$kid_info['trait_color'] = self::GetTraitColor($mom_color, $trait->getColor());
 				$kid_info['trait_id'] = $id;
@@ -68,7 +68,7 @@ class Appearance {
 			$id = $trait->getID();
 			if(isset($kid_traits[$id])) { continue; }
 			
-			$kid_info['trait_square'] = self::GetTrait($trait->getSquare(), 'N', $trait->getMid());			
+			$kid_info['trait_square'] = self::GetTrait($trait->getSquare(), 'N', $trait->getMid(), $mom->getC6(), $dad->getC6());			
 			if($kid_info['trait_square'] != 'N') {
 				$kid_info['trait_color'] = self::GetTraitColor($trait->getColor(), 'FFFFFF');
 				$kid_info['trait_id'] = $id;

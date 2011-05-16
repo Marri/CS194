@@ -4,3 +4,13 @@
     border: 1px black solid;
     height: 18px;
 }
+
+.percent-holder {
+	width: 100%;
+	border: 1px black solid;
+	text-align: center;
+}
+
+.good-percent { background-color: #99FF99; }
+.mid-percent { background-color: #FFFF99; }
+.bad-percent { background-color: #FF9999; }

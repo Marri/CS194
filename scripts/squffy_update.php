@@ -28,15 +28,15 @@ if($newHire != $hireable) {
 	$changes .= ", is_hireable = '" . convertBoolean($newHire) . "'";
 	$hireable = $newHire;
 }
-if($newHSD != $hire_sd) {
+if($newHire && $newHSD != $hire_sd) {
 	$changes .= ', hire_price_sd = ' . $newHSD;
 	$hire_sd = $newHSD;
 }
-if($newHI != $hire_item) {
+if($newHire && $newHI != $hire_item) {
 	$changes .= ', hire_price_item_id = ' . $newHI;
 	$hire_item = $newHI;
 }
-if($newHIA != $hire_amount) {
+if($newHire && $newHIA != $hire_amount) {
 	$changes .= ', hire_price_item_amount = ' . $newHIA;
 	$hire_amount = $newHIA;
 }
@@ -45,24 +45,24 @@ if($newBreed != $breedable) {
 	$changes .= ", is_breedable = '" . convertBoolean($newBreed) . "'";
 	$breedable = $newBreed;
 }
-if($newBSD != $breed_sd) {
+if($newBreed && $newBSD != $breed_sd) {
 	$changes .= ', breeding_price_sd = ' . $newBSD;
 	$breed_sd = $newBSD;
 }
-if($newBI != $breed_item) {
+if($newBreed && $newBI != $breed_item) {
 	$changes .= ', breeding_price_item_id = ' . $newBI;
 	$breed_item = $newBI;
 }
-if($newBIA != $breed_amount) {
+if($newBreed && $newBIA != $breed_amount) {
 	$changes .= ', breeding_price_item_amount = ' . $newBIA;
 	$breed_amount = $newBIA;
 }
 
 if($valid) {
 	$notices[] = "Your squffy has been updated.";
+	if(strlen($changes) > 0) {
+		$query = 'UPDATE squffies SET '.substr($changes, 2) . ' WHERE squffy_id = ' . $squffy->getID();
+		runDBQuery($query);
+	}	
 }
-if(strlen($changes) > 0) {
-	$query = 'UPDATE squffies SET '.substr($changes, 2) . ' WHERE squffy_id = ' . $squffy->getID();
-	runDBQuery($query);
-}	
 ?>

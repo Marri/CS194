@@ -5,17 +5,19 @@ $(document).ready( function() {
 	
 	$(".hireable").click(function() {
 		var setting = $(this).val();
-		$(".hire_extra").removeClass("hidden");
 		if(setting == 'n') {
-			$(".hire_extra").addClass("hidden");
+			$(".hire").attr('disabled', 'disabled');
+		} else {
+			$(".hire").attr('disabled', '');
 		}
 	});
 	
 	$(".breedable").click(function() {
 		var setting = $(this).val();
-		$(".breed_extra").removeClass("hidden");
 		if(setting == 'n') {
-			$(".breed_extra").addClass("hidden");
+			$(".breed").attr('disabled', 'disabled');
+		} else {
+			$(".breed").attr('disabled', '');
 		}
 	});
 	

@@ -1,8 +1,8 @@
 <?php
-include('../includes/connect.php');
+include('./includes/connect.php');
 $objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy');
 foreach($objects as $object) {
-	include('../objects/' . $object . '.php');
+	include('./objects/' . $object . '.php');
 }
 
 $squffy = Squffy::getSquffyByID(2);

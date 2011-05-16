@@ -22,8 +22,16 @@ if(isset($_POST['taught'])) {
 	include('./scripts/squffy_learn.php'); 
 }
 
+//Reorder appearance traits
 if(isset($_POST['reorder'])) {
 	include('./scripts/squffy_reorder.php'); 
+	include('./scripts/reset_image.php'); 
+}
+
+//Reset image
+if(isset($_POST['reset_image'])) {
+	include('./scripts/reset_image.php');
+	$notices[] = "Your squffy's image has been reset. You may need to press Ctrl+F5 to see the changes."; 
 }
 
 //Heal

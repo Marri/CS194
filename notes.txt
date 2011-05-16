@@ -49,3 +49,4 @@ Fix all the mutations to only have L not H images
 Hire and breed prices can be updatedon the edit squffy page
 List of all appearance traits on the edit squffy page: eventual reordering
 Chromosome 8 (XX dominance) considered when picking gender
+Reordering traits feature finished

@@ -27,6 +27,10 @@ if(isset($_GET['thumbnail']) && $_GET['thumbnail'] == 'true') {
 	$height = 175;
 }
 
-$display = "showsave";
-include('./generate_image.php');
+include_once('./generate_image.php');
+$design = makeImage($species, $markings, $mutations, $base, $eye, $foot, false, true, $width, $height);
+header("Content-type: image/png");
+imagepng($design, $filename, 0);
+imagepng($design);
+imagedestroy($design);
 ?>

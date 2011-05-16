@@ -75,6 +75,7 @@ body, html {
 .margin-right-small { margin-right: 5px; }
 .margin-top-small { margin-top: 5px; }
 .margin-bottom-small { margin-bottom: 5px; }
+.pad-left-small { padding-left: 5px; }
 .no-margin { margin: 0px; }
 .padding-10 { padding: 10px; }
 
@@ -398,4 +399,21 @@ body > #left-column {
     border: 2px #000000 solid;
     margin: 0px;
     padding: 0px;
+}
+
+a.menu-link {
+	height: 30px;
+    line-height: 210%;
+    padding: 0px;
+    width: 100%;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    border: 2px #000000 solid;
+    margin: 0px 0px 5px 0px;
+    color: #FFFFFF !important;
+    font-weight: bold;
+    display: block;
+    background-image: url(../images/layouts/<?php echo $layout['folder']; ?>/buttonback.png); 
+    background-repeat: repeat-x;
 }

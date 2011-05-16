@@ -11,6 +11,16 @@ class Item{
 	public function getName(){ return $this->name; }
 	public function getColumnName(){ return $this->column_name; }
 	public function getDescription(){ return $this->description; }
+	public function canMakeCustom() {
+		$breed = substr($this->name, -5);
+		$species = 0;
+		if($breed == "Acorn") { $species = 1; }
+		elseif($breed == "Spark") { $species = 4; }
+		elseif($breed == " Seed") { $species = 2; }
+		elseif($breed == "Thorn") { $species = 3; }
+		if($species > 0) { return true; }
+		return false;
+	}
 
 		
 	public static function getItemList(){

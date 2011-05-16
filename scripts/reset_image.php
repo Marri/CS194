@@ -14,9 +14,10 @@ foreach($squffy->getAppearanceTraits() as $trait) {
 $markings = array_reverse($markings);
 $mutations = array_reverse($mutations);
 
-$display = "image";
-$dirUp = true;
-include('./scripts/generate_image.php');
+if(!isset($dirUp)) { $dirUp = true; }
+include_once('./scripts/generate_image.php');
+$design = makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp);
+$img = $squffy->getURL(false);
 imagepng($design, $img, 0);
 
 $width = $height = 125;
@@ -32,5 +33,6 @@ $image_height = imagesy($design);
 imagecopyresampled($truecolor, $design, 0, 0, 0, 0, $width, $height, $image_width, $image_height);
 imagesavealpha($truecolor, true);
 $design = $truecolor;
+$thumb = $squffy->getThumbnail(false);
 imagepng($design, $thumb, 0);
 ?>

@@ -62,4 +62,19 @@ function displayNotices($notices) {
 	foreach($notices as $notice) { echo $notice . '<br />'; }
 	echo '</div>';
 }
+
+function drawMenuTop($title, $links) {
+	echo '<table class="width100p">
+	<tr>
+	<th class="content-header width200">Menu</th>
+	<th class="content-header">' . $title . '</th>
+	</tr>
+	<tr>
+	<td class="vertical-top">';
+	foreach($links as $link) {
+		echo '<a class="menu-link" href="' . $link['url'] . '">' . $link['name'] . '</a>';
+	}
+	echo '</td>
+	<td class="text-center vertical-top">';
+}
 ?>

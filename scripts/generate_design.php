@@ -41,23 +41,11 @@ if($numTraits > 0) {
 $markings = array_reverse($markings);
 $mutations = array_reverse($mutations);
 
-function getTrait($key, &$traits, $default = 'FFFFFF') {
-	$name = strtolower($_GET[$key]);
-	$mark = true;
-	if(substr($name, 0, 3) == "mut") {
-		$mark = false;
-		$name = substr($name, 3);
-		if(!isset($traits[$name])) { return NULL; }
-		if($traits[$name] != 2) { return NULL; }
-	} else {
-		if(!isset($traits[$name])) { return NULL; }
-		if($traits[$name] != 1) { return NULL; }
-	}
-	
-	$color = getColor($key, $default);
-	
-	return array('name' => $name, 'color' => $color, 'isMark' => $mark);
-}
+include('./generate_image.php');
+$image = makeImage($species, $markings, $mutations, $base, $eye, $foot);
+header("Content-type: image/png");
+imagepng($image);
+imagedestroy($image);
 
 function getColor($key, $default) {
 	$color = $default;
@@ -75,6 +63,21 @@ function isValidHex($hex) {
 	return true;
 };
 
-include('./generate_image.php');
-
+function getTrait($key, &$traits, $default = 'FFFFFF') {
+	$name = strtolower($_GET[$key]);
+	$mark = true;
+	if(substr($name, 0, 3) == "mut") {
+		$mark = false;
+		$name = substr($name, 3);
+		if(!isset($traits[$name])) { return NULL; }
+		if($traits[$name] != 2) { return NULL; }
+	} else {
+		if(!isset($traits[$name])) { return NULL; }
+		if($traits[$name] != 1) { return NULL; }
+	}
+	
+	$color = getColor($key, $default);
+	
+	return array('name' => $name, 'color' => $color, 'isMark' => $mark);
+}
 ?>

@@ -112,6 +112,7 @@ class Squffy {
 		$this->appearance_traits = NULL;
 		$this->family_tree = NULL;
 		$this->items = NULL;
+		$this->species = NULL;
 		$this->personality_traits = array();
 		$this->personality_traits['strength1'] = $info['strength1_id'];
 		$this->personality_traits['strength2'] = $info['strength2_id'];
@@ -181,6 +182,10 @@ class Squffy {
 	public function getID() { return $this->id; }
 	public function getName() { return $this->name; }
 	public function getGender() { return $this->gender; }
+	public function getGenderDisplay() { 
+		if($this->gender == 'F') { return 'Female'; }
+		return 'Male'; 
+	}
 	public function getAge() { return $this->age; }
 	public function getBirthday() { return $this->birthday; }
 	public function getSpeciesID() { return $this->species_id; }
@@ -219,8 +224,28 @@ class Squffy {
 	public function getFatherFatherID() { return $this->family_tree['father_father']; }
 	
 	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
-	public function getURL() { return './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; }
-	public function getThumbnail() { return './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png'; }
+	public function getURL($make = true) { 
+		$img = './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; 
+		if($make && !file_exists($img)) {
+			$this->fetchFullAppearance();
+			$this->fetchSpecies();
+			$squffy = $this;
+			include('./scripts/reset_image.php');
+		}
+		$img = './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; 
+		return $img;
+	}
+	public function getThumbnail($make = true) { 
+		$img = './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png'; 
+		if($make && !file_exists($img)) {
+			$this->fetchFullAppearance();
+			$this->fetchSpecies();
+			$squffy = $this;
+			include('./scripts/reset_image.php');
+		}
+		$img = './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png';
+		return $img;
+	}
 	
 	//Predicates
 	public function isPregnant() { return $this->is_pregnant == "true"; }
@@ -359,6 +384,14 @@ class Squffy {
 	//Staff carpenter's shop (builder)
 	
 	//Private methods
+	public function fetchSpecies() {
+		if($this->species != NULL) { return; }
+		$query = "SELECT species_name FROM species WHERE species.species_id = " . $this->species_id;
+		$result = runDBQuery($query);
+		$info = @mysql_fetch_assoc($result);
+		$this->species = $info['species_name'];
+	}
+	
 	public function fetchAppearance() {
 		if($this->appearance_traits != NULL) return;
 		$query = 'SELECT * FROM `squffy_appearance` WHERE `squffy_id` = ' . $this->id . '
@@ -383,6 +416,11 @@ class Squffy {
 			$trait = new Appearance($trait);
 			$this->appearance_traits[$trait->getID()] = $trait;
 		}		
+	}
+	
+	public function refetchAppearance() { 
+		$this->appearance_traits = NULL;
+		$this->fetchFullAppearance();
 	}
 	
 	private function fetchPersonality() {
@@ -470,7 +508,7 @@ class Squffy {
 		$personality = Personality::GenerateTraits($mother, $father);
 		$appearance = Appearance::GenerateTraits($mother, $father);
 		$name = $mother->getName() . ' x ' . $father->getName();
-		$gender = 
+		$gender = self::GetGenderFromParents($mother, $father);
 		
 		$species = self::GetSpeciesFromParents($mother, $father);
 		
