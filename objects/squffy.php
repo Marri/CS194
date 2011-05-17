@@ -178,7 +178,10 @@ class Squffy {
 		if(in_array(self::FETCH_ITEMS, $options)) { $squffy->fetchItems(); }
 		return $squffy;
 	}
-		
+	public static function ChangeSquffyOwner($squffy_id, $new_owner_id){
+		$queryString = "UPDATE squffies SET squffy_owner='".$new_owner_id."' WHERE squffy_id='".$squffy_id."';";
+		runDBQuery($queryString);
+	}
 	//Getters
 	public function getID() { return $this->id; }
 	public function getName() { return $this->name; }
