@@ -6,12 +6,16 @@ if(!isset($squffy)) { die(); }
 $newName = $_POST['squffy_name'];
 $newHire = $_POST['hireable'] == 'y' ? true : false;
 $newBreed = $_POST['breedable'] == 'y' ? true : false;
+if($newHire) {
 $newHSD = $_POST['hire_sd'];
 $newHI = $_POST['hire_item'];
 $newHIA = $_POST['hire_amount'];
+}
+if($newBreed) {
 $newBSD = $_POST['breed_sd'];
 $newBI = $_POST['breed_item'];
 $newBIA = $_POST['breed_amount'];
+}
 
 if(!$newName) {
 	$errors[] = "You must choose a name for your squffy.";

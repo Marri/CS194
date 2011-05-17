@@ -30,16 +30,11 @@ Neglectful
 Amanda!
 Finish database schema
 Update all current features to Look Pretty with layout
-Extend layout background properly
 Finish edit_squffy page
 Add edit/delete design page
 Add restrictions and error checking for design creation/editing
 Add support for dominant traits (all currently recessive)
-Add support for chromosomes affecting traits being passed on
-Add support for chromosomes affecting gender of children
-Add support for multiple births
 How handling eggs...?
-Add species picking
 Fix all the images to standardize at 375 x 375
 Fix design images: should never return generate_image file as url
 Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
@@ -50,3 +45,8 @@ Hire and breed prices can be updatedon the edit squffy page
 List of all appearance traits on the edit squffy page: eventual reordering
 Chromosome 8 (XX dominance) considered when picking gender
 Reordering traits feature finished
+View_squffy page revamped: basics, appearance and edit added
+Added support for multiple births, affected by fertility gene
+Added support for gender affected by xx dominance gene
+Added support for trait dominance affecting traits being passed on
+Added randomization for species picking at birth

@@ -319,9 +319,7 @@ DROP TABLE IF EXISTS newbie_packs;
 CREATE TABLE IF NOT EXISTS newbie_packs (
 	pack_id mediumint unsigned primary key auto_increment,
 	user_id mediumint unsigned,
-	species enum('Unchosen', 'Tree', 'Ground') default 'Unchosen',
-	items_claimed enum('true', 'false') default 'false',
-	squffy_made enum('true', 'false') default 'false'
+	squffy_made enum('none', 'tree', 'ground', 'both') default 'none'
 );
 
 DROP TABLE IF EXISTS degree_progress;

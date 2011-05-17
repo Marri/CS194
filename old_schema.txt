@@ -1,3 +1,16 @@
+-- item, squffies, players, nutpile, **farms
+-- iteminfo has such info
+
+-- use } elseif(isset($_POST['use_item'])) { block as example for making customs
+-- allow 2 traits max
+-- allow tree or ground (seed = ground, acorn = tree)
+
+--foreach user
+	--make map
+	--foreach item in old item table
+	--  map[item]++
+	--update their inventory based on map
+
 --
 -- Table structure for table `boards`
 --

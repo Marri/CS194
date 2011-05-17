@@ -76,11 +76,12 @@ foreach($items as $item) {
 <td class="text-left" colspan="3"><input type='radio' name="hireable" class="hireable" value='y'<?php checked($hireable); ?> /> Yes <input type='radio' name="hireable" class="hireable" value='n'<?php checked(!$hireable); ?> /> No</td>
 
 </tr>
-<tr><th class="content-subheader">Hire price in SD</td><td colspan="3"><input class="width100 hire" type='text' name='hire_sd' value="<?php echo $hire_sd; ?>" /></td>
+<tr><th class="content-subheader">Hire price in SD</td><td colspan="3">
+<input class="width100 hire" type='text' name='hire_sd' value="<?php echo $hire_sd; ?>" <?php if(!$hireable) { echo 'disabled="disabled" '; } ?>/></td>
 
 </tr>
 <tr><th class="content-subheader">Hire price in items</td><td colspan="3">
-<input text="text" class="width100 hire" name="hire_amount" value="<?php echo $hire_amount; ?>" /> <select size="1" name="hire_item" class="hire"><?php replace($hire_item, $item_options); ?></select>
+<input text="text" class="width100 hire" name="hire_amount" value="<?php echo $hire_amount; ?>" <?php if(!$hireable) { echo 'disabled="disabled" '; } ?>/> <select size="1" name="hire_item" class="hire"<?php if(!$hireable) { echo 'disabled="disabled" '; } ?>><?php replace($hire_item, $item_options); ?></select>
 </td>
 
 </tr>
@@ -91,13 +92,13 @@ foreach($items as $item) {
 </tr>
 <tr>
 <th class="content-subheader">Breeding price in SD</td>
-<td colspan="3"><input class="width100 breed" type='text' name='breed_sd' value="<?php echo $breed_sd; ?>" /></td>
+<td colspan="3"><input class="width100 breed" type='text' name='breed_sd' value="<?php echo $breed_sd; ?>" <?php if(!$breedable) { echo 'disabled="disabled" '; } ?>/></td>
 
 </tr>
 <tr>
 <th class="content-subheader">Breeding price in items</td>
-<td colspan="3"><input text="text" class="width100 breed" name="breed_amount" value="<?php echo $breed_amount; ?>" /> 
-<select size="1" name="breed_item" class="breed"><?php replace($breed_item, $item_options); ?></select>
+<td colspan="3"><input text="text" class="width100 breed" name="breed_amount" value="<?php echo $breed_amount; ?>"<?php if(!$breedable) { echo 'disabled="disabled" '; } ?> /> 
+<select size="1" name="breed_item" class="breed"<?php if(!$breedable) { echo 'disabled="disabled" '; } ?>><?php replace($breed_item, $item_options); ?></select>
 </td>
 
 </tr>

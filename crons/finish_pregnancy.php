@@ -17,6 +17,17 @@ while($info = @mysql_fetch_assoc($result)) {
 	$owner = $info['user_id'];
 	Squffy::createChild($mother, $father, $owner);
 	$mothers .= ', ' . $mother->getID();
+	
+	$rand = mt_rand(0, 350 - $mother->getC5() - $father->getC5());
+	if($rand < 7) {
+		Squffy::createChild($mother, $father, $owner);
+		Squffy::createChild($mother, $father, $owner);
+	} else {
+		$rand = mt_rand(0, 540 - $mother->getC5() - $father->getC5());
+		if($rand < 27) { 
+			Squffy::createChild($mother, $father, $owner);
+		}
+	}
 }
 
 $query = 'DELETE FROM `pregnancies` WHERE TO_DAYS(now()) - TO_DAYS(date_birth) >= 0';

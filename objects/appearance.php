@@ -90,7 +90,7 @@ class Appearance {
 		$kid_g = $mom_rgb[1] + mt_rand(0, $dad_rgb[1] - $mom_rgb[1]);
 		$kid_b = $mom_rgb[2] + mt_rand(0, $dad_rgb[2] - $mom_rgb[2]);
 		
-		return self::rgb2html($kid_r, $kid_g, $kid_b);
+		return strtoupper(self::rgb2html($kid_r, $kid_g, $kid_b));
 	}
 	
 	private static function GetTrait($mom_square, $dad_square, $mid, $mom_c, $dad_c) {

@@ -56,12 +56,12 @@ class Squffy {
 		$c6,
 		$c7,
 		$c8,
-		
-		$breeding_rights, //user id of user with breeding rights
-		$rights_revert, //date and time breeding rights revert to owner
 		$num_items,		
 		$breed_price, //what it costs for non-owners to breed
-		$hire_price; //what it costs for non-owners to hire		
+		$hire_price, //what it costs for non-owners to hire		
+		
+		$breeding_rights, //user id of user with breeding rights
+		$rights_revert; //date and time breeding rights revert to owner
 		
 	//Constructors
 	public function __construct($info) {
@@ -97,6 +97,7 @@ class Squffy {
 		$this->c6 = $info['c6'];
 		$this->c7 = $info['c7'];
 		$this->c8 = $info['c8'];
+		$this->num_items = $info['num_items'];
 		
 		//Costs
 		$cost['id'] = $info['breeding_price_item_id'];
@@ -213,6 +214,7 @@ class Squffy {
 	public function getAppearanceTraits() { return $this->appearance_traits; }
 	public function getPersonalityTraits() { return $this->personality_traits; }
 	public function getItems() { return $this->items; }
+	public function getNumItems() { return $this->num_items; }
 	public function getBreedPrice() { return $this->breed_price; }
 	public function getHirePrice() { return $this->hire_price; }
 	public function getFamily() { return $this->family_tree; }
@@ -585,7 +587,7 @@ class Squffy {
 			INSERT INTO `squffy_appearance` 
 				(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
 			VALUES
-				($id, " . $trait['id'] . ", 'S', '" . $trait['color'] . "', " . $trait['order'] . ")";
+				($id, " . $trait['id'] . ", 'S', '" . strtoupper($trait['color']) . "', " . $trait['order'] . ")";
 			runDBQuery($query);
 		}
 		
