@@ -3,8 +3,7 @@ $selected = "home";
 include("./includes/header.php");
 
 $item_list = Item::getItemList();
-$curr_user = $_SESSION['user'];
-$inventory = $curr_user->getInventory();
+$inventory = $user->getInventory();
 ?>
 
 <div class='text-center width100p'><h1>Item Hoard</h1></div>

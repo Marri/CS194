@@ -15,7 +15,7 @@ if(@mysql_num_rows($result) > 0) {
 	while($info = @mysql_fetch_assoc($result)) {
 		$child = Squffy::getSquffyByID($info['squffy_id']);
 		if($i % 4 == 0) { echo '<tr>'; }
-		echo '<td><img src="' . $child->getThumbnail() . '" /><br>' . $child->getLink() . '</td>';
+		echo '<td class="width150"><img src="' . $child->getThumbnail() . '" /><br>' . $child->getLink() . '</td>';
 		if($i % 4 == 3) { echo '</tr>'; }
 		$i++;
 	}
