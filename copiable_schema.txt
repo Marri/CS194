@@ -658,3 +658,8 @@ INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_pric
 ('First Lot', '2', '1', 'false', '1', '10', '2', 20),
 ('second Lot', '1', '1', 'false', '2', '10', '2', 20),
 ('third Lot', '3', '1', 'false', '3', '10', '2', 20);
+
+INSERT INTO `newbie_packs` (`user_id`) VALUES
+(1),
+(2),
+(3);
