@@ -51,7 +51,7 @@ if(!isset($_POST['use_item'])) {
 				<option value="double_seed">Double Seed </option>
 			</select><br />
 			<input type="hidden" name="free_squffy_type" value="ground" />
-		    <input type="submit" name="free_squffy""value="Make Free Ground Squffy" class="margin-top-small submit-input" />
+		    <input type="submit" name="free_squffy" value="Make Free Ground Squffy" class="margin-top-small submit-input" />
 			</form>
 
 	<?php
@@ -75,6 +75,7 @@ if(!isset($_POST['use_item'])) {
 } elseif(isset($_POST['use_item'])) {
 	$item = $_POST['use_item'];
 	if(isset($_POST['free_squffy'])){
+		$user->usedFreeSquffy($_POST['free_squffy_type']);
 	}
 	$item_info = Item::CustomInfo($item);
 	echo '<form action="custom.php" method="post">
