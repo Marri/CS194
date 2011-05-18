@@ -17,9 +17,10 @@ Some doctor schpiel about how you can heal your squffy here; it will take 1 day 
     <?php
     $query = "SELECT * FROM squffies WHERE squffy_owner = $userid AND health < " . Squffy::SICK;
     $squffies = Squffy::getSquffies($query);
+	$inventory = $user->getInventory();
     if(sizeof($squffies) == 0) {
 		echo '<span class="small-error">You have no sick squffies for me to heal!</span>';
-	} elseif ($user->getInventory()['pecan'] < 2) {
+	} elseif ($inventory['pecan'] < 2) {
 		echo '<span class="small-error">You cannot afford a healing!</span>';
 	} else {	
         echo 'Squffy: <select size="1" name="squffy_id">';

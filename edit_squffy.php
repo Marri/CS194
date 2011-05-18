@@ -10,15 +10,15 @@ $squffy = Squffy::getSquffyByIDExtended
 	array(
 		Squffy::FETCH_FULL_APPEARANCE, 
 		Squffy::FETCH_SPECIES, 
-		/*Squffy::FETCH_FAMILY, 
-		Squffy::FETCH_FULL_APPEARANCE, 
-		Squffy::FETCH_PERSONALITY, 
-		Squffy::FETCH_ITEMS, 
-		Squffy::FETCH_DEGREE*/
 	)
 );
 if($squffy == NULL) { 
 	displayErrors(array("That squffy does not exist."));
+	include('./includes/footer.php');
+	die();
+}
+if($squffy->getOwnerID() != $userid && !$user->isAdmin()) { 
+	displayErrors(array("That is not your squffy."));
 	include('./includes/footer.php');
 	die();
 }

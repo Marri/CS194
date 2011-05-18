@@ -49,6 +49,7 @@ class User {
 	public function getUsername(){ return $this->username; }
 	public function getEmail(){ return $this->email_addr; }
 	public function isActivated(){	return $this->activated; }
+	public function isAdmin() { return $this->level == self::ADMIN_USER; }
 	//Predicates
 	public function canAffordSD($cost) {
 		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
@@ -104,6 +105,36 @@ class User {
 		}
 		return $notification_list;
 	}
+	private function getNoobPack(){
+		$queryString = "SELECT squffy_made FROM newbie_packs WHERE user_id='".$this->id."'";
+		$results = runDBQuery($queryString);
+		return (@mysql_fetch_assoc($results));
+	}
+	public function canMakeFreeGroundSquffy(){
+		$squffy_made = $this->getNoobPack();
+		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'tree')){ return true; }
+		return false;
+	}
+	public function canMakeFreeTreeSquffy(){
+		$squffy_made = $this->getNoobPack();
+		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'ground')){ return true; }
+		return false;
+	}
+	private function updateNoobPack($squffy_type){
+		$queryString = "UPDATE newbie_pack SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
+		runDBQuery($queryString);
+	}
+	public function  usedFreeSquffy($squffy_type){
+		$squffy_made = $this->getNoobPack();
+		$squffy_just_made = "";
+		if(($squffy_made['squffy_made'] == 'none')){
+			 $squffy_just_made = $squffy_type;
+		}else{
+			$squffy_just_made = 'both';
+		}
+		$this->updateNoobPack($squffy_just_made);
+	}
+	
 	/*
 	* function to determine if item in specified amount is owned by the user
 	* and NOT on sale in a current lots
@@ -177,6 +208,12 @@ class User {
 		//otherwise return that the user can't buy the item
 		return "Insufficient funds to buy";
 	}
+	public function migrateAccount($old_username, $old_password){
+		//connect to old database
+		//migrate squffies
+		//migrate items
+		//mark user account as migrated
+	}
 	public static function loginNameTaken($login_name){
 		if($login_name == "") return true;
 		$queryString = "SELECT login_name FROM user_login WHERE login_name='".$login_name."';";
@@ -202,12 +239,18 @@ class User {
 		}
 		return false;
 	}
-
+	private static function AddNewbieItems($user_id){
+		$user = self::getUserByID($user_id);
+		$user->getInventory(); //this will create inventory if not already created elsewhere
+		self::updateInventoryTable($user->getID(), "cashew", 100, "walnuts", 100);
+	}
 	public static function createNewUser($username, $password, $login_name, $email){
 		$salt =  randomString(self::SALT_LEN);
 		$hash = self::secure($password, $salt);
 		$user_id = self::InsertIntoUserTable($username, $email);
 		self::InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash);
+		self::AddNewbieItems($user_id);
+		self::InsertIntoNewbieTable($user_id);
 		return $user_id;
 	}
 	/*
@@ -256,6 +299,7 @@ class User {
 		$id = $info['user_id'];
 		return self::getUserByID($id);
 	}
+	
 	//Private methods
 	private static function secure($password, $salt) {
 		$hash = sha1($password . $salt);
@@ -263,6 +307,15 @@ class User {
 			$hash = sha1($hash);
 		}
 		return $hash;
+	}
+	/*
+	* function to insert new user into newbie_pack table
+	* returns pack_id.
+	*/
+	private static function InsertIntoNewbieTable($user_id){
+		$queryString = "INSERT INTO newbie_packs (user_id) VALUES ('".$user_id."');";
+		$result = runDBQuery($queryString);
+		return mysql_insert_id();
 	}
 	/*
 	* function to insert new user into users table
@@ -300,8 +353,8 @@ class User {
 		}
 	}
 	private static function createEmptyInventory($user_id){
-		$queryString = "INSERT INTO inventory VALUES ('".$user_id."', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');";
-		$query = runDBQuery($queryString); /// we should consider just making the default zero
+		$queryString = "INSERT INTO inventory (user_id) VALUES ('".$user_id."');";
+		$query = runDBQuery($queryString);
 	}
 	private static function updateInventoryTable($user_id, $item1_col, $item1_change, $item2_col, $item2_change){
 		$updateString = "";

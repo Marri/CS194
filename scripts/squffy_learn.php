@@ -40,7 +40,7 @@ if(isset($_POST['teacher_id'])) {
 			$errors[] = "That teacher does not exist.2";
 			$valid = false;
 		} else {
-			if(!$teacher->isAbleToWork($user)) {
+			if(!$teacher->isAbleToWork()) {
 				$errors[] = "That teacher cannot work for you right now.";
 				$valid = false;		
 			}

@@ -33,7 +33,29 @@ if(!isset($_POST['use_item'])) {
 	</select><br />
     <input type="submit" value="Pick a design to create" class="margin-top-small submit-input" />
 	</form>
+	<?php if($user->canMakeFreeTreeSquffy()){ ?>
+	<form action="custom.php" method="post">
+	<select size="1" name="use_item">
+		<option value="single_acorn">Single Acorn</option>
+		<option value="double_acorn">Double Acorn</option>
+	</select><br />
+	<input type="hidden" name="free_squffy_type" value="tree" />
+    <input type="submit" name="free_squffy" value="Make Free Tree Squffy" class="margin-top-small submit-input" />
+	</form>
+	<?php }
+	if($user->canMakeFreeGroundSquffy()){ 
+	?>
+			<form action="custom.php" method="post">
+			<select size="1" name="use_item">
+				<option value="single_seed">Single Seed </option>
+				<option value="double_seed">Double Seed </option>
+			</select><br />
+			<input type="hidden" name="free_squffy_type" value="ground" />
+		    <input type="submit" name="free_squffy""value="Make Free Ground Squffy" class="margin-top-small submit-input" />
+			</form>
+
 	<?php
+		}
 	}
 } elseif(isset($_POST['squffy_name'])) {	
 	//Create squffy
@@ -52,8 +74,9 @@ if(!isset($_POST['use_item'])) {
 	displayNotices(array("Your new custom has just been created! <a href='view_squffy.php?id=$id'>See $name's page here</a>."));
 } elseif(isset($_POST['use_item'])) {
 	$item = $_POST['use_item'];
+	if(isset($_POST['free_squffy'])){
+	}
 	$item_info = Item::CustomInfo($item);
-	
 	echo '<form action="custom.php" method="post">
 	<table class="width100p"><tr><th colspan="4" class="content-header">Pick a Design</th></tr>';
 	if($inventory[$item] > 0) {

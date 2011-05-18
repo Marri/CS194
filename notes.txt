@@ -52,12 +52,16 @@ Fix personality trait picking. Pretty definitely wrong. Must not duplicate trait
 
 Progress for the week:
 Fix all the mutations to only have L not H images
-Hire and breed prices can be updatedon the edit squffy page
-List of all appearance traits on the edit squffy page: eventual reordering
-Chromosome 8 (XX dominance) considered when picking gender
+Added support for current outfit to image generator
+
+Hire and breed prices can be updated on the edit squffy page
+Restricted edit_squffy page to only the user who owns it (or admins)
 Reordering traits feature finished
-View_squffy page revamped: basics, appearance, family and edit added
-Added support for multiple births, affected by fertility gene
-Added support for gender affected by xx dominance gene
-Added support for trait dominance affecting traits being passed on
-Added randomization for species picking at birth
+
+View_squffy page revamped: basics, appearance, personality, history, family and edit added
+
+Multiple births supported
+Chromosome 8 (XX dominance) considered when picking gender
+Chromosome 6 (Heritibility) considered when picking traits being passed on
+Chromosome 5 (Fertility) considered when picking if twins or triplets occur
+Species is now chosen randomly between parents

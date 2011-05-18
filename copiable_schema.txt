@@ -96,7 +96,9 @@ CREATE TABLE IF NOT EXISTS squffies (
 	breeding_price_item_id tinyint unsigned,
 	breeding_price_item_amount smallint unsigned,
 	breeding_rights mediumint unsigned,
-	rights_revert datetime,
+	breeding_rights_revert datetime,
+	hire_rights mediumint unsigned,
+	hire_rights_revert datetime,
 	num_items tinyint unsigned default '0'
 );	
 
@@ -191,6 +193,11 @@ DROP TABLE IF EXISTS inventory;
 CREATE TABLE IF NOT EXISTS inventory (
 	user_id mediumint unsigned,
 	cashew smallint unsigned default '0',
+	pistachio smallint unsigned default '0',
+	chestnut smallint unsigned default '0',
+	pecan smallint unsigned default '0',
+	walnut smallint unsigned default '0',
+	almond smallint unsigned default '0',
 	squffy_dollar smallint unsigned default '0',
 	single_acorn smallint unsigned default '0',
 	double_acorn smallint unsigned default '0',
@@ -461,6 +468,26 @@ CREATE TABLE IF NOT EXISTS lot_items (
 	amount smallint unsigned
 );	
 
+DROP TABLE IF EXISTS log_pregnancies;
+CREATE TABLE IF NOT EXISTS log_pregnancies (
+	log_id int unsigned primary key auto_increment,
+	mom_id int unsigned,
+	dad_id int unsigned,
+	user_id mediumint unsigned,
+	date_sent datetime
+);	
+
+DROP TABLE IF EXISTS log_mates;
+CREATE TABLE IF NOT EXISTS log_mates (
+	log_id int unsigned primary key auto_increment,
+	male_id int unsigned,
+	female_id int unsigned,
+	user_id mediumint unsigned,
+	date_sent datetime
+);
+
+INSERT INTO log_mates VALUES (NULL, 112, 2, 1, '2011-04-07 12:12:12');
+INSERT INTO log_pregnancies  VALUES (NULL, 2, 112, 1, '2011-04-17 12:12:12');
 
 INSERT INTO `appearance_traits` 
 	(`trait_id`, `trait_name`, `trait_title`, `trait_type`, `design_activated`, `activated`)
@@ -581,11 +608,11 @@ VALUES
 	(1, 15);
 
 INSERT INTO `squffies` 
-	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`) 
 VALUES
 	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 1, 3, 'Master', 70, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 2),
 	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 2, 0, NULL, 0, 20, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0),
-	(3,	2, 'seak', 'M',	'2011-04-05 22:16:47',	2,	3,	'Master',	0,	100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3','009900',	'996633', 'true', 'false',	'false', 'false', 'false',	'false', 1, 2, 3, 4,	2, NULL, NULL, 0);
+	(3,	2, 'seak', 'M',	'2011-04-05 22:16:47',	2,	3,	'Master',	0,	100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3','009900',	'996633', 'true', 'false',	'false', 'false', 'false',	'false', 1, 2, 3, 4,	NULL, NULL, NULL, 0);
 	
 INSERT INTO `squffy_appearance` 
 	(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
@@ -601,6 +628,11 @@ INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`)
 VALUES
 	(1, 'Cashew', 1, 'A cashew.'),
+	(20, 'Pistachio', 1, 'A pistachio.'),
+	(21, 'Chestnut', 1, 'A chestnut.'),
+	(22, 'Pecan', 1, 'A pecan.'),
+	(23, 'Walnut', 1, 'A walnut.'),
+	(24, 'Almond', 1, 'An almond.'),
 	(2, 'Squffy Dollar', 2, 'Money.'),
 	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
 	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),
@@ -635,7 +667,7 @@ INSERT INTO `threads`
 VALUES
 	('1', '1', 'first thread', '1', 'first thread of threads', '2011-05-05 08:35:45', '2011-05-05 09:13:31', '0');
 
-INSERT INTO `pregnancies` (`pregnancy_id`, `mother_id`, `father_id`, `user_id`, `date_birth`) VALUES (NULL, '2', '112', '1', NOW());
+INSERT INTO `pregnancies` (`pregnancy_id`, `mother_id`, `father_id`, `user_id`, `date_birth`) VALUES (NULL, '2', '112', '1', NOW()),(NULL, '2', '112', '1', NOW()),(NULL, '2', '112', '1', NOW());
 
 INSERT INTO `designs` (`design_id`, `design_name`, `user_id`, `species_id`, `base_color`, `eye_color`, `foot_color`, `num_traits`) VALUES
 (1, 'Basic', 1, 1, 'F0DDA3', '009900', '886633', 0),
@@ -665,3 +697,8 @@ INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_pric
 INSERT INTO squffy_items (squffy_id, item_id, item_name, item_order) 
 VALUES (112, 18, 'Harvest Witch Hat', 0),
 (112, 19, 'Red Hibiscus',1);
+
+INSERT INTO `newbie_packs` (`user_id`) VALUES
+(1),
+(2),
+(3);

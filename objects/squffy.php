@@ -59,9 +59,10 @@ class Squffy {
 		$num_items,		
 		$breed_price, //what it costs for non-owners to breed
 		$hire_price, //what it costs for non-owners to hire		
-		
+		$hire_rights, //user id of user with breeding rights
+		$hire_rights_revert, //date and time breeding rights revert to owner		
 		$breeding_rights, //user id of user with breeding rights
-		$rights_revert; //date and time breeding rights revert to owner
+		$breeding_rights_revert; //date and time breeding rights revert to owner
 		
 	//Constructors
 	public function __construct($info) {
@@ -98,6 +99,10 @@ class Squffy {
 		$this->c7 = $info['c7'];
 		$this->c8 = $info['c8'];
 		$this->num_items = $info['num_items'];
+		$this->breeding_rights = $info['breeding_rights'];
+		$this->breeding_rights_revert = $info['breeding_rights_revert'];
+		$this->hire_rights = $info['hire_rights'];
+		$this->hire_rights_revert = $info['hire_rights_revert'];
 		
 		//Costs
 		$cost['id'] = $info['breeding_price_item_id'];
@@ -252,6 +257,56 @@ class Squffy {
 		return $img;
 	}
 	
+	public function getHistory() {
+		$map = array();
+		$times = array();
+		
+		$query = 'SELECT * FROM log_pregnancies WHERE ';
+		if($this->gender == 'F') { 
+			$query .= 'mom'; 
+			$o = 'dad';
+		} else { 
+			$query .= 'dad'; 
+			$o = 'mom';
+		}
+		$query .= '_id = ' . $this->id;
+		
+		$result = runDBQuery($query);
+		while($info = @mysql_fetch_assoc($result)) {
+			$time = strtotime($info['date_sent']);
+			$mate = Squffy::getSquffyByID($info[$o.'_id']);
+			$map[$time] = $this->name . ' was bred to ' . $mate->getLink() . '.';
+			$times[] = $time;
+		}
+		
+		$query = 'SELECT * FROM log_mates WHERE ';
+		if($this->gender == 'F') { 
+			$query .= 'female'; 
+			$o = 'male';
+		} else { 
+			$query .= 'male'; 
+			$o = 'female';
+		}
+		$query .= '_id = ' . $this->id;
+		
+		$result = runDBQuery($query);
+		while($info = @mysql_fetch_assoc($result)) {
+			$time = strtotime($info['date_sent']);
+			$mate = Squffy::getSquffyByID($info[$o.'_id']);
+			$map[$time] = $this->name . ' was mated to ' . $mate->getLink() . '.';
+			$times[] = $time;
+		}
+		
+		sort($times);
+		$events = array();
+		foreach($times as $time) {
+			$info = $map[$time];
+			$events[] = array('time' => $time, 'text' => $info);
+		}
+		
+		return $events;
+	}
+	
 	//Predicates
 	public function isPregnant() { return $this->is_pregnant == "true"; }
 	public function isSick() { return $this->health < self::SICK; }
@@ -266,6 +321,16 @@ class Squffy {
 	public function isAdult() { return $this->getAge() >= self::ADULT; }
 	public function isTeenager() { return $this->getAge() >= self::TEEN && !$this->isAdult(); }
 	
+	public function canMateTo($squffy) {
+		if($this->hasMate()) { return false; }
+		if(!$this->isAdult()) { return false; }
+		if($this->getID() == $squffy->getID()) { return false; }
+		if($this->getGender() == $squffy->getGender()) { return false; }
+		if($squffy->hasMate()) { return false; }
+		if(!$squffy->isAdult()) { return false; }
+		return true;
+	}
+	
 	public function hasMate() { return $this->mate_id > 0; }
 	public function hasStrength($trait) { 
 		return $this->personality_traits['strength1'] == $trait || $this->personality_traits['strength2'] == $trait;
@@ -274,13 +339,13 @@ class Squffy {
 		return $this->personality_traits['weakness1'] == $trait || $this->personality_traits['weakness2'] == $trait;
 	}
 	
-	public function isAbleToWork($user) {
+	public function isAbleToWork() {
 		if($this->isPregnant()) { return false; }
 		if($this->isSick()) { return false; }
 		if($this->isWorking()) { return false; }
 		if($this->isHungry()) { return false; }
 		if($this->isStudent()) { return false; }
-		if($this->getOwnerID() != $user->getID() && !$this->isHireable()) { return false; }
+		if(!$this->isAdult()) { return false; }
 		return true;
 	}
 	
@@ -291,6 +356,13 @@ class Squffy {
 		if($this->isHungry()) { return false; }
 		if($this->isStudent()) { return false; }
 		if(!$this->isTeenager() && !$this->isAdult()) { return false; }
+	}
+	
+	public function canWorkFor($userid) {
+		$hire = $this->getOwnerID();
+		if($this->hire_rights != NULL) { $hire = $this->hire_rights; }
+		if($hire == $userid) { return true; }
+		return false;
 	}
 	
 	//Public methods	
@@ -532,7 +604,7 @@ class Squffy {
 		
 		$query = "
 		INSERT INTO `squffies` 
-			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`) 
 		VALUES
 			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, $c1, $c2, $c3, $c4, $c5, $c6, $c7, $c8, '$base', '$eye', '$foot', 'false', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
 		runDBQuery($query);
@@ -580,7 +652,7 @@ class Squffy {
 		
 		$query = "
 		INSERT INTO `squffies` 
-			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`) 
 		VALUES
 			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'true', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
 		runDBQuery($query);
