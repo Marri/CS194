@@ -10,7 +10,8 @@ if($id < 1) {
 }
 
 $query = "SELECT * FROM `squffies` WHERE `squffy_owner` = $id";
-$filter = "all";
+
+$filter = "";
 if(isset($_GET['filter'])) { $filter = $_GET['filter']; }
 if($filter == "hungry") { $query .= ' AND hunger > ' . Squffy::HUNGRY; }
 if($filter == "sick") { $query .= ' AND health < ' . Squffy::SICK; }
@@ -20,12 +21,25 @@ if($filter == "market") { $query .= ' AND is_in_market = "true"'; }
 if($filter == "breedable") { $query .= ' AND is_breedable = "true"'; }
 if($filter == "hireable") { $query .= ' AND is_hireable = "true"'; }
 
+$sort = "";
+if(isset($_GET['sort'])) { $sort = $_GET['sort']; }
+if($sort == "name") { $query .= ' ORDER BY squffy_name ASC'; }
+elseif($sort == "species") { $query .= ' ORDER BY squffy_species ASC'; }
+elseif($sort == "age") { $query .= ' ORDER BY (TO_DAYS(squffy_birthday) + age_offset) ASC'; }
+elseif($sort == "gender") { $query .= ' ORDER BY squffy_gender DESC'; }
+
+
 $squffies = Squffy::getSquffies($query);
 
 $i = 0;
 echo '<table class="width100p"><tr><th colspan="5" class="content-header">Your Squffies</th></tr>';
-echo '<tr><td colspan="3">Sort by: <select size="1"><option>Name</option><option>Age</option><option>Gender</option><option>Species</option></select></td>
-<td colspan="2" class="text-right"><form action="drey.php" method="get">Filter by: 
+echo '<form action="drey.php" method="get">
+<tr><td colspan="3">Sort by: <select size="1" name="sort">
+<option value="name">Name</option>
+<option value="age">Age</option>
+<option value="gender">Gender</option>
+<option value="species">Species</option></select></td>
+<td colspan="2" class="text-right">Filter by: 
 <select size="1" name="filter">
 <option value="all">View all</option>
 <option value="hungry">Hungry</option>

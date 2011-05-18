@@ -2,6 +2,7 @@
 $selected = "help";
 include("./includes/header.php");
 ?>
+<a href="healing_tree.php">Healing tree</a><br />
 <a href="school.php">School</a><br />
 <a href="crons/finish_school.php">Cron: finish school</a><br />
 

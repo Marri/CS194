@@ -1,10 +1,12 @@
 <?php
-function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp = false, $resize = false, $width = 0, $height = 0) {
+function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp = false, $resize = false, $width = 0, $height = 0, $items = array()) {
 	if($dirUp) {
-		$img_dir = './images/generate/' . $species . '/' . $species;
+		$img_dir = './images/generate/' . $species . '/' . $species . 'adult';
+		$item_dir = './images/generate/items/' . $species;
 	} else {
 		include_once("../objects/appearance.php");
-		$img_dir = '../images/generate/' . $species . '/' . $species;
+		$item_dir = '../images/generate/items/' . $species;
+		$img_dir = '../images/generate/' . $species . '/' . $species . 'adult';
 	}
 
 	$design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
@@ -20,6 +22,10 @@ function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp =
 		$design = addToBase($design, $img_dir, $trait, true);
 		$trait['name'] = $name . 'l';
 		$design = addToBase($design, $img_dir, $trait, false);
+	}
+	
+	foreach($items as $item) {
+		$design = addToBase($design, $item_dir, array('name'=>$item), false);
 	}
 
 	if($resize) {
@@ -39,7 +45,7 @@ function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp =
 }
 
 function addToBase($base_image, $img_dir, $trait, $hasColor) {
-	$location = $img_dir . 'adult' . $trait['name'] . '.png';
+	$location = $img_dir . $trait['name'] . '.png';
 	$img = imagecreatefrompng($location);
 	imagesavealpha($img, true);
 	$image_width = imagesx($img);

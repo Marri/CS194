@@ -452,10 +452,10 @@ class Squffy {
 		$this->personality_traits['weakness2_desc'] = $info['w2_desc'];
 	}
 	
-	private function fetchItems() {
+	public function fetchItems() {
 		if($this->items != NULL) { return; }
 		
-		$query = 'SELECT * FROM squffy_items WHERE squffy_id = ' . $this->id;
+		$query = 'SELECT * FROM squffy_items WHERE squffy_id = ' . $this->id . ' ORDER BY item_order ASC';
 		$result = runDBQuery($query);		
 		$this->items = array();
 		
@@ -464,7 +464,7 @@ class Squffy {
 		}		
 	}
 	
-	private function fetchFamily() {
+	public function fetchFamily() {
 		if($this->family_tree != NULL) { return; }
 		if($this->isCustom()) { 
 			$this->family_tree = array();
@@ -504,8 +504,9 @@ class Squffy {
 	
 	private static function GetGenderFromParents($mom, $dad) {
 		$gender = 'M';
-		$max = 400 - $mom->getC8() - $dad->getC8();		
-		if(mt_rand(0, $max) < 40) { $gender = 'F'; }
+		$max = 400 - $mom->getC8() - $dad->getC8();	
+		$rand = mt_rand(0, $max);
+		if($rand < 40) { $gender = 'F'; }
 		return $gender;
 	}
 	
@@ -548,6 +549,7 @@ class Squffy {
 			$i++;
 		}
 		
+		$mother->fetchFamily();
 		$mom_id = $mother->getID();
 		$mom_mom_id = 'NULL';
 		$mom_dad_id = 'NULL';
@@ -556,6 +558,7 @@ class Squffy {
 			$mom_dad_id = $mother->getFatherID();
 		}
 		
+		$father->fetchFamily();
 		$dad_id = $father->getID();
 		$dad_mom_id = 'NULL';
 		$dad_dad_id = 'NULL';

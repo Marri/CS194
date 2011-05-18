@@ -54,6 +54,7 @@ $links = array(
 	array('name'=>'personality', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=personality'),
 	array('name'=>'history', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=history'),
 	array('name'=>'family', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=family'),
+	array('name'=>'interact', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=interact'),
 	array('name'=>'edit squffy', 'url'=>"edit_squffy.php?id=" . $squffy->getID()),
 );
 drawMenuTop($title, $links);

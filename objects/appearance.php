@@ -111,16 +111,15 @@ class Appearance {
 				$rand = mt_rand(0, 700 - $mom_c - $dad_c);
 				if($rand < 350) { return 'S'; }
 				return $mid;
-				
-			//TODO
 			} elseif ($mom_square == $mid) {
-				if($rand == 1) { return $mid; }
-				$rand2 = mt_rand(0, 1);
-				if($rand2 == 1) { return 'N'; }
-				return 'S';
-			} else {
-				if($rand == 1) { return 'N'; }
-				return $mid;
+				$rand = mt_rand(0, 1200 - $mom_c - $dad_c);
+				if($rand < 300) { return 'S'; }
+				if($rand < 900) { return $mid; }
+				return 'N';				
+			} else {				
+				$rand = mt_rand(0, 350 - $dad_c);
+				if($rand < 175) { return $mid; }
+				return 'N';
 			}
 		} else {
 			if($mom_square == 'S') { 			
@@ -129,11 +128,10 @@ class Appearance {
 				if($rand < 10) { return 'S'; }
 				return $mid;
 			}
-			
-			//TODO
-			$rand = mt_rand(0, 1);
-			if($rand == 1) { return 'N'; }
-			return $mid;
+				
+			$rand = mt_rand(0, 350 - $mom_c);
+			if($rand < 175) { return $mid; }
+			return 'N';
 		}
 	}
 	

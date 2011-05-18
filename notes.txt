@@ -1,11 +1,14 @@
+MISSING IMAGES
+fey penguin
+lihtan penguin
+fey harvest witch hat
+all tree items
+
 TODO:
 Check header and footer includes in the mysql error
 Background should extend on F11
 Email staff email if MySQL error
-Write user and cost and food objects
-
 Squffy::heal should be updated with payment
-Squffy::createChild($mom, $dad, $owner) needs to be written
 User::setLevel($levelID) needs to be written
 Add badges to copiable
 
@@ -17,15 +20,19 @@ Precise (good at cooking/baking)
 Energetic (gets tired less quickly)
 Optimistic (gets sad less quickly)
 Nuturing (good at nursemaid and teaching)
+Studious (learns faster)
+Hyper (faster)
 
 Negative traits:
-Abrasive (worse at doctor/midwife)
-Avoids nature (
+Abrasive
+Avoids nature
 Clumsy
 Imprecise
 Lazy
 Pessimistic
 Neglectful
+Slacker
+Placid
 
 Amanda!
 Finish database schema
@@ -39,13 +46,17 @@ Fix all the images to standardize at 375 x 375
 Fix design images: should never return generate_image file as url
 Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
 
+-Finish sort feature on drey page
+-Jobs: teacher (finish), doctor (finish), cook, baker
+-More jobs: farmer, forester, builder, midwife, nursemaid
+
 Progress for the week:
 Fix all the mutations to only have L not H images
 Hire and breed prices can be updatedon the edit squffy page
 List of all appearance traits on the edit squffy page: eventual reordering
 Chromosome 8 (XX dominance) considered when picking gender
 Reordering traits feature finished
-View_squffy page revamped: basics, appearance and edit added
+View_squffy page revamped: basics, appearance, family and edit added
 Added support for multiple births, affected by fertility gene
 Added support for gender affected by xx dominance gene
 Added support for trait dominance affecting traits being passed on

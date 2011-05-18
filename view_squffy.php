@@ -28,19 +28,26 @@ $links = array(
 	array('name'=>'history', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=history'),
 	array('name'=>'family', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=family'),
 	array('name'=>'interact', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=interact'),
-	array('name'=>'edit squffy', 'url'=>"edit_squffy.php?id=" . $squffy->getID()),
 );
+if($squffy->getOwnerID() == $userid) { $links[] = array('name'=>'edit squffy', 'url'=>"edit_squffy.php?id=" . $squffy->getID()); }
 drawMenuTop($title, $links);
-echo '<img src="' . $squffy->getURL() . '" alt="' . $squffy->getName() . '" />';
 
 $view = 'home';
 if(isset($_GET['view'])) { $view = $_GET['view']; }
+
+if($view != 'family') { echo '<img src="' . $squffy->getURL() . '" alt="' . $squffy->getName() . '" />'; }
+
+
 if($view == 'appearance') {
 	include('./squffy_appearance.php');
 	die();
 }
 if($view == 'family') {
 	include('./squffy_family.php');
+	die();
+}
+if($view == 'personality') {
+	include('./squffy_personality.php');
 	die();
 }
 

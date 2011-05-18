@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS squffies (
 	squffy_name varchar(100),
 	squffy_gender enum('M', 'F') default 'M',
 	squffy_birthday datetime,
+	age_offset tinyint default '0',
 	squffy_species tinyint unsigned,
 	squffy_degree tinyint unsigned,
 	degree_type enum('Apprentice', 'Master'),
@@ -528,17 +529,17 @@ VALUES
 	(1, 'Fall', 'true', 'E98430', 10);
 	
 INSERT INTO `personality_traits`
-	(`trait_id`, `trait_good_name`, `trait_bad_name`)
+	(`trait_id`, `trait_good_name`, `trait_bad_name`, trait_good_desc, trait_bad_desc)
 VALUES
-	(1, 'Graceful', 'Clumsy'),
-	(2, 'Soothing', 'Abrasive'),
-	(3, 'Nuturing', 'Neglectful'),
-	(4, 'Energetic', 'Lazy'),
-	(5, 'Optimistic', 'Pessimistic'),
-	(6, 'Choosy', 'Indiscriminate'),
-	(7, 'Appreciative', 'Ungrateful'),
-	(8, 'Studious', 'Slacker'),
-	(9, 'Hyper', 'Placid');
+	(1, 'Graceful', 'Clumsy', 'Graceful squffies are well coordinated and flexible, and tend to do extremely well on obstacle courses. Their agility improves faster than other squffies\' does.', 'Clumsy squffies just can\'t figure out how to get around without tripping over their own paws, and are easily delayed on obstacle courses.  Their agility improves slower than other squffies\' does.'),
+	(2, 'Soothing', 'Abrasive', 'Relaxing to be around.', 'Annoying to be around.'),
+	(3, 'Nuturing', 'Neglectful', 'Good caretaker.', 'Poor caretaker.'),
+	(4, 'Energetic', 'Lazy', 'Super hyped all the time.', 'Likes to lag around.'),
+	(5, 'Optimistic', 'Pessimistic', '', ''),
+	(6, 'Choosy', 'Indiscriminate', '', ''),
+	(7, 'Appreciative', 'Ungrateful', '', ''),
+	(8, 'Studious', 'Slacker', '', ''),
+	(9, 'Hyper', 'Placid', '', '');
 	
 INSERT INTO `species` 
 	(`species_id`, `species_name`, `design_activated`, `activated`) 
@@ -582,8 +583,8 @@ VALUES
 INSERT INTO `squffies` 
 	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `rights_revert`, `num_items`) 
 VALUES
-	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 1, 3, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 0),
-	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 2, 0, NULL, 0, 100, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0),
+	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 1, 3, 'Master', 70, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 2),
+	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 2, 0, NULL, 0, 20, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0),
 	(3,	2, 'seak', 'M',	'2011-04-05 22:16:47',	2,	3,	'Master',	0,	100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3','009900',	'996633', 'true', 'false',	'false', 'false', 'false',	'false', 1, 2, 3, 4,	2, NULL, NULL, 0);
 	
 INSERT INTO `squffy_appearance` 
@@ -615,7 +616,9 @@ VALUES
 	(14, 'Triple Spark', 3, 'Make a lihtan squffy with three appearance traits.'),
 	(15, 'Single Wings', 3, 'Make a fey squffy with one appearance trait.'),
 	(16, 'Double Wings', 3, 'Make a fey squffy with two appearance traits.'),
-	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.');
+	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.'),
+	(18, 'Harvest Witch Hat', 4, 'Spooky yet festive.'),
+	(19, 'Red Hibiscus', 4, 'Floral and spring-like.');
 	
 INSERT into `subforums`
 	(`subforum_id`, `subforum_name`, `subforum_order`)
@@ -658,3 +661,7 @@ INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_pric
 ('First Lot', '2', '1', 'false', '1', '10', '2', 20),
 ('second Lot', '1', '1', 'false', '2', '10', '2', 20),
 ('third Lot', '3', '1', 'false', '3', '10', '2', 20);
+
+INSERT INTO squffy_items (squffy_id, item_id, item_name, item_order) 
+VALUES (112, 18, 'Harvest Witch Hat', 0),
+(112, 19, 'Red Hibiscus',1);

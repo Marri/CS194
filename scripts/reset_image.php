@@ -1,8 +1,17 @@
 <?php
-$species = $squffy->getSpecies();
+$species = strtolower($squffy->getSpecies());
 $base = $squffy->getBaseColor();
 $eye = $squffy->getEyeColor();
 $foot = $squffy->getFootColor();
+
+$items = array();
+if($squffy->getNumItems() > 0) {
+	$squffy->fetchItems();
+	$i = $squffy->getItems();
+	foreach($i as $item) {
+		$items[] = str_replace(" ", "", $item['item_name']);
+	}
+}
 
 $markings = array();
 $mutations = array();
@@ -13,10 +22,11 @@ foreach($squffy->getAppearanceTraits() as $trait) {
 }
 $markings = array_reverse($markings);
 $mutations = array_reverse($mutations);
+$items = array_reverse($items);
 
 if(!isset($dirUp)) { $dirUp = true; }
 include_once('./scripts/generate_image.php');
-$design = makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp);
+$design = makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp, false, 0, 0, $items);
 $img = $squffy->getURL(false);
 imagepng($design, $img, 0);
 

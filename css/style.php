@@ -58,8 +58,10 @@ body, html {
 .width400 { width: 400px; }
 .width450 { width: 450px; }
 
-.male { background-color: #F2F2FF; }
-.female { background-color: #FFF2F2; }
+/*.male { background-color: #F2F2FF; }
+.female { background-color: #FFF2F2; }*/
+.male { background-color: #DDDDFF; }
+.female { background-color: #FFDDDD; }
 
 .div-center { margin: 0px auto; }
 .float-left { float: left; }
@@ -416,4 +418,9 @@ a.menu-link {
     display: block;
     background-image: url(../images/layouts/<?php echo $layout['folder']; ?>/buttonback.png); 
     background-repeat: repeat-x;
+}
+
+.item {
+	width: 50px;
+    height: 50px;
 }
