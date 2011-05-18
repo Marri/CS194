@@ -121,7 +121,7 @@ class User {
 		return false;
 	}
 	private function updateNoobPack($squffy_type){
-		$queryString = "UPDATE newbie_pack SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
+		$queryString = "UPDATE newbie_packs SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
 		runDBQuery($queryString);
 	}
 	public function  usedFreeSquffy($squffy_type){
