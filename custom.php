@@ -34,25 +34,19 @@ if(!isset($_POST['use_item'])) {
     <input type="submit" value="Pick a design to create" class="margin-top-small submit-input" />
 	</form>
 	<?php if($user->canMakeFreeTreeSquffy()){ ?>
-	<form action="custom.php" method="post">
-	<select size="1" name="use_item">
-		<option value="single_acorn">Single Acorn</option>
-		<option value="double_acorn">Double Acorn</option>
-	</select><br />
-	<input type="hidden" name="free_squffy_type" value="tree" />
-    <input type="submit" name="free_squffy" value="Make Free Tree Squffy" class="margin-top-small submit-input" />
-	</form>
+		<form action="custom.php" method="post">
+		<input type="hidden" value="double_acorn" name="use_item" />
+		<input type="hidden" name="free_squffy_type" value="tree" />
+	    <input type="submit" name="free_squffy" value="Make Free Tree Squffy" class="margin-top-small submit-input" />
+		</form>
 	<?php }
 	if($user->canMakeFreeGroundSquffy()){ 
 	?>
-			<form action="custom.php" method="post">
-			<select size="1" name="use_item">
-				<option value="single_seed">Single Seed </option>
-				<option value="double_seed">Double Seed </option>
-			</select><br />
-			<input type="hidden" name="free_squffy_type" value="ground" />
-		    <input type="submit" name="free_squffy" value="Make Free Ground Squffy" class="margin-top-small submit-input" />
-			</form>
+		<form action="custom.php" method="post">
+		<input type="hidden" value="double_seed" name="use_item" />
+		<input type="hidden" name="free_squffy_type" value="ground" />
+	    <input type="submit" name="free_squffy" value="Make Free Ground Squffy" class="margin-top-small submit-input" />
+		</form>
 
 	<?php
 		}
@@ -63,20 +57,25 @@ if(!isset($_POST['use_item'])) {
 	$gender = $_POST['gender'];
 	$design = Design::GetDesign($_POST['design']);
 	$id = Squffy::CreateCustom($name, $gender, $design, $userid);
+	$update_item = true;
 	
-	//Remove item
-	$item = $_POST['use_item'];
-	$inventory[$item] = $inventory[$item] - 1;
-	$user->updateInventory($item, -1);
-	$query = "UPDATE inventory SET $item = $item - 1 WHERE user_id = $userid;";
-	runDBQuery($query);
-	
+	if(isset($_POST['free_squffy'])){
+		$update_item = $user->useFreeSquffy($_POST['free_squffy_type']); //if update_item is true, use user's items from inventory.
+	}
+	if($update_item){
+		//Remove item
+		$item = $_POST['use_item'];
+		$inventory[$item] = $inventory[$item] - 1;
+		$user->updateInventory($item, -1);
+		$user->updateInventoryTable($user_id, $item1_col, $item1_change, "", 0);
+		$query = "UPDATE inventory SET $item = $item - 1 WHERE user_id = $userid;";
+		runDBQuery($query);
+	}
 	displayNotices(array("Your new custom has just been created! <a href='view_squffy.php?id=$id'>See $name's page here</a>."));
 } elseif(isset($_POST['use_item'])) {
 	$item = $_POST['use_item'];
-	if(isset($_POST['free_squffy'])){
-		$user->usedFreeSquffy($_POST['free_squffy_type']);
-	}
+	$update_item = true;
+	
 	$item_info = Item::CustomInfo($item);
 	echo '<form action="custom.php" method="post">
 	<table class="width100p"><tr><th colspan="4" class="content-header">Pick a Design</th></tr>';
@@ -108,8 +107,12 @@ if(!isset($_POST['use_item'])) {
 	Name: <input type="text" class="margin-bottom-small" name="squffy_name" /><br />
 	Gender: <input type="radio" checked class="margin-bottom-small" name="gender" value="M" /> Male <input type="radio" name="gender" value="F" /> Female<br />
 	<input type="submit" class="submit-input margin-top-small" value="Create custom" name="create" />
-	<input type="hidden" name="use_item" value="' . $item . '" />
-	</table></form>';
+	<input type="hidden" name="use_item" value="' . $item . '" />';
+	if(isset($_POST['free_squffy'])){ 
+		echo '<input type="hidden" name="free_squffy" />
+				<input type="hidden" name="free_squffy_type" value="'.$_POST['free_squffy_type'].'" />';
+		}
+	echo '</table></form>';
 }
 
 include('./includes/footer.php');

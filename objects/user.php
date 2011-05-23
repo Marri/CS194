@@ -124,15 +124,21 @@ class User {
 		$queryString = "UPDATE newbie_packs SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
 		runDBQuery($queryString);
 	}
-	public function  usedFreeSquffy($squffy_type){
+	/*
+	 * returns true if free squffy is used
+	 */
+	public function  useFreeSquffy($squffy_type){
 		$squffy_made = $this->getNoobPack();
 		$squffy_just_made = "";
 		if(($squffy_made['squffy_made'] == 'none')){
 			 $squffy_just_made = $squffy_type;
-		}else{
+		}elseif(($squffy_made['squffy_made'] == 'ground') || ($squffy_made['squffy_made'] == 'tree')){
 			$squffy_just_made = 'both';
+		}else{
+			return false;
 		}
 		$this->updateNoobPack($squffy_just_made);
+		return true;
 	}
 	
 	/*
@@ -356,7 +362,7 @@ class User {
 		$queryString = "INSERT INTO inventory (user_id) VALUES ('".$user_id."');";
 		$query = runDBQuery($queryString);
 	}
-	private static function updateInventoryTable($user_id, $item1_col, $item1_change, $item2_col, $item2_change){
+	public static function updateInventoryTable($user_id, $item1_col, $item1_change, $item2_col, $item2_change){
 		$updateString = "";
 		if($item2_change != 0){
 			$selectString = 'SELECT '.$item1_col.','.$item2_col.' FROM `inventory` WHERE `user_id` = ' . $user_id;
