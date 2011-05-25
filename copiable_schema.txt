@@ -394,7 +394,10 @@ CREATE TABLE IF NOT EXISTS items (
 	item_id smallint unsigned primary key auto_increment,
 	item_name varchar(100),
 	item_type tinyint unsigned,
-	item_description text
+	item_description text,
+	chromosome varchar(50),
+	c_increase tinyint unsigned,
+	h_decrease tinyint unsigned
 );
 
 DROP TABLE IF EXISTS notifications;
@@ -596,11 +599,11 @@ VALUES
 
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
+	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
 VALUES
-	(1, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
-	(2, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
-	(3, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
+	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
+	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
+	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -625,14 +628,18 @@ VALUES
 	(2, 15, 'S', 'FF0000', 0);
 	
 INSERT INTO `items`
-	(`item_id`, `item_name`, `item_type`, `item_description`)
+	(`item_id`, `item_name`, `item_type`, `item_description`, `chromosome`, `c_increase`, `h_decrease`)
 VALUES
-	(1, 'Cashew', 1, 'A cashew.'),
-	(20, 'Pistachio', 1, 'A pistachio.'),
-	(21, 'Chestnut', 1, 'A chestnut.'),
-	(22, 'Pecan', 1, 'A pecan.'),
-	(23, 'Walnut', 1, 'A walnut.'),
-	(24, 'Almond', 1, 'An almond.'),
+	(1, 'Cashew', 1, 'A cashew.', NULL, NULL, 2),
+	(20, 'Pistachio', 1, 'A pistachio.', 'c8', 2, 2),
+	(21, 'Chestnut', 1, 'A chestnut.', 'c7', 2, 2),
+	(22, 'Pecan', 1, 'A pecan.', 'c6', 2, 2),
+	(23, 'Walnut', 1, 'A walnut.', NULL, NULL, 2),
+	(24, 'Almond', 1, 'An almond.', 'c5', 2, 2);
+	
+INSERT INTO `items`
+	(`item_id`, `item_name`, `item_type`, `item_description`)
+VALUES	
 	(2, 'Squffy Dollar', 2, 'Money.'),
 	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
 	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),

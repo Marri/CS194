@@ -1,8 +1,9 @@
 <?php
 $valid = true;
+$chargeWalnut = false;
 if(!isset($squffy)) { die(); }
 
-$mate_id = getID("mate_id");
+$mate_id = getID("parent_id");
 if($mate_id == 0) {
 	$errors[] = "This squffy does not exist.";
 	$valid = false;
@@ -85,13 +86,31 @@ if($mate_id == 0) {
 			$errors[] = $male->getName() . " is too young.";
 			$valid = false;
 		}
+		
+		if(!$male->canBreedFor($userid)) {
+			$errors[] = 'You do not have permission to breed to ' . $male->getName(). ".";
+			$valid = false;
+		}
+		
+		if(!$female->canBreedFor($userid)) {
+			$errors[] = 'You do not have permission to breed to ' . $female->getName(). ".";
+			$valid = false;
+		}
+		
+		if(!($male->hasMate() && $male->getMateID() == $female->getID())) {
+			$chargeWalnut = true;
+			$inventory = $user->getInventory();
+			if($inventory['walnut'] < 1) {
+				$errors[] = 'You need a walnut to breed unmated squffies.';
+				$valid = false;
+			}
+		}
 	}
 }
 
-//TODO: user has permission for breeding for both squffies
-//TODO: if necessary, user can afford breeding
 if($valid) {
 	$female->breedTo($male, $userid);
+	if($chargeWalnut) { $user->updateInventory('walnut', -1, true); }
 	$notices[] = "Congratulations! " . $male->getName() . " and " . $female->getName() . " are about to be parents.";
 }	
 ?>

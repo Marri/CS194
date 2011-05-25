@@ -169,7 +169,7 @@ class Appearance {
 			"teal" => "33BBBB",
 			"darkblue" => "000080",
 			"blue" => "0000BB", 
-			"lightblue" => "8888ff",
+			"lightblue" => "8888FF",
 			"purple" => "DD99FF",
 			"gray" => "999999", 
 			"grey" => "999999", 

@@ -32,7 +32,7 @@ elseif($sort == "gender") { $query .= ' ORDER BY squffy_gender DESC'; }
 $squffies = Squffy::getSquffies($query);
 
 $i = 0;
-echo '<table class="width100p"><tr><th colspan="5" class="content-header">Your Squffies</th></tr>';
+echo '<table class="width100p" cellspacing="0"><tr><th colspan="5" class="content-header">Your Squffies</th></tr>';
 echo '<form action="drey.php" method="get">
 <tr><td colspan="3">Sort by: <select size="1" name="sort">
 <option value="name">Name</option>
@@ -50,7 +50,9 @@ echo '<form action="drey.php" method="get">
 <option value="breedable">Available for breeding</option>
 <option value="hireable">Available for hire</option>
 </select>
-<input type="submit" value="Go" /></form></td></tr>';
+<input type="submit" value="Go" /></form></td></tr>
+<tr><td colspan="4"><table class="width100p">
+';
 foreach($squffies as $squffy) {
 	if($i%5 == 0) { echo '<tr>'; }
 	echo '<td class="width150 bordered ';
@@ -63,7 +65,7 @@ foreach($squffies as $squffy) {
 if($i%5 > 0) { 
 while($i%5 > 0) { echo '<td class="width150"></td>'; $i++; }
 echo '</tr>'; }
-echo '</table>';
+echo '</table></td></tr></table>';
 
 include('./includes/footer.php');
 ?>

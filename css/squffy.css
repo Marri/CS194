@@ -9,8 +9,17 @@
 	width: 100%;
 	border: 1px black solid;
 	text-align: center;
+	background-color: #FFFFFF;
 }
 
 .good-percent { background-color: #99FF99; }
-.mid-percent { background-color: #FFFF99; }
-.bad-percent { background-color: #FF9999; }
+.mid-percent { background-color: #FFFF77; }
+.bad-percent { background-color: #FF7777; }
+
+.squffy-table td, .squffy-table th {
+	height: 25px;
+}
+
+.squffy-table td {
+	padding-right: 7px;
+}

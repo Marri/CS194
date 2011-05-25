@@ -38,10 +38,34 @@
 						<input type="submit" class="submit-input" value="Register" />
 					</form>
                     <?php } else { ?>
+                    <a href="#"><b><?php echo $user->getUsername(); ?></b></a> (#<?php echo $user->getID(); ?>)<br />
+					<?php
+                    $inventory = $user->getInventory();
+                    $nuts = $inventory['cashew'] + $inventory['pistachio'] + $inventory['chestnut'] + $inventory['pecan'] + $inventory['walnut'] + $inventory['almond'];
+					$sd = $inventory['squffy_dollar'];
+                    ?>
+                    <span class="float-left">&nbsp;<b><?php echo $nuts; ?></b> Nuts </span><a href="#"><img src="./images/icons/add.png" alt="+" id="nut-toggle" /></a><br />
+                    <div id="nut-holder" class="hidden">
+                    	<?php
+						echo '<b>' . $inventory['cashew'] . '</b> cashews<br />';
+						echo '<b>' . $inventory['pistachio'] . '</b> pistachios<br />';
+						echo '<b>' . $inventory['chestnut'] . '</b> chestnuts<br />';
+						echo '<b>' . $inventory['pecan'] . '</b> pecans<br />';
+						echo '<b>' . $inventory['walnut'] . '</b> walnuts<br />';
+						echo '<b>' . $inventory['almond'] . '</b> almonds<br />';
+						?>
+                    </div>
+                    &nbsp;<b><?php echo $sd; ?></b> SD<br /><br />
+                    <b>Quick Links</b><br />
+                    &nbsp;<a href="drey.php">Drey</a><br />
+                    &nbsp;<a href="hoard.php">Item Hoard</a><br />
+                    &nbsp;<a href="messages.php">Messages</a><br />
+                    &nbsp;<a href="recent.php">Recent Posts</a><br />
+                    &nbsp;<a href="sitemap.php">Sitemap</a><br /><br />
+                    
                     <form action="" method="post">
-						<input type="submit" name="logging_out" class="submit-input" value="Logout" />
+						<input type="submit" name="logging_out" class="submit-input margin-left-small" value="Logout" />
 					</form>
-                    <a href="sitemap.php">Sitemap</a>
                     <?php } ?>
                 </div>
                 <div id='time'>

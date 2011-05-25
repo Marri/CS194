@@ -1,4 +1,4 @@
-<table class="width100p">
+<table class="width100p" cellspacing="0">
 
 <?php 
 if(!$squffy->isCustom()) {
@@ -54,7 +54,7 @@ $query = 'SELECT * FROM squffy_family WHERE ' . $mom_dad . '_id = ' . $squffy->g
 $result = runDBQuery($query);
 if(@mysql_num_rows($result) > 0) {
 	?>
-	<tr><th colspan="4" class="content-subheader">children</th></tr>
+	<tr><th colspan="4" class="content-subheader">Children</th></tr></table><table class="width100p">
 	<?php 
 	$i = 0;
 	while($info = @mysql_fetch_assoc($result)) {

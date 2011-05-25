@@ -22,7 +22,7 @@ if($degree < 1) {
 }
 
 if($squffy != NULL) {
-	if($squffy->isAbleToLearn()) { 
+	if(!$squffy->isAbleToLearn()) { 
 		$errors[] = $squffy->getName() . " cannot go to school right now.";
 		$valid = false;
 	}
@@ -32,36 +32,42 @@ $teacher = NULL;
 if(isset($_POST['teacher_id'])) {
 	$teacher_id = getID("teacher_id");
 	if($teacher_id < 1) {
-		$errors[] = "That teacher does not exist.1";
+		$errors[] = "That teacher does not exist.";
 		$valid = false;
 	} else {
 		$teacher = Squffy::getSquffyByIDExtended($teacher_id, array(Squffy::FETCH_DEGREE));
 		if($teacher == NULL) {
-			$errors[] = "That teacher does not exist.2";
+			$errors[] = "That teacher does not exist.";
 			$valid = false;
 		} else {
 			if(!$teacher->isAbleToWork()) {
 				$errors[] = "That teacher cannot work for you right now.";
 				$valid = false;		
 			}
-			if($teacher->getDegreeName() != "Teacher") {
-				$errors[] = "That squffy is not qualified as a teacher.";
-				$valid = false;		
-			}
 		}
 	}
 }
 
-//TODO pay for schooling from Official School
+$teaching = false;
 if(isset($_POST['learn'])) {
 	$days = 5;
+	$inventory = $user->getInventory();
+	if($inventory['pecan'] < 1) {
+		$valid = false;
+		$errors[] = "You cannot afford the pecan it costs to send your squffy to school.";
+	}
+	$teaching = true;
 
+//Learn from teacher
 } else if(isset($_POST['taught'])) {
 	$days = 4;
 	if($teacher == NULL) {
-			$errors[] = "That teacher does not exist.3";
-			$valid = false;
-		}
+		$errors[] = "That teacher does not exist.";
+		$valid = false;
+	}
+	if($teacher->getDegreeName() == "Teacher") { $days--; }
+	if($teacher->hasStrength(Personality::TEACHING_TRAIT)) { $days--; }
+	if($teacher->hasWeakness(Personality::TEACHING_TRAIT)) { $days++; }
 } else {
 	$errors[] = "Your request was sent improperly.";
 	$valid = false;
@@ -71,8 +77,10 @@ if($valid) {
 	$days = -1; //TODO change to actual values but testing is cool
 	$squffy->startDegree($degree, $days);
 	$notices[] = $squffy->getName() . " has been sent to school.";
-	if($teacher != NULL) {
-		//TODO set as working
+	if($teacher != NULL) {		
+		$query = 'UPDATE `squffies` SET `is_working` = \'true\' WHERE `squffy_id` = ' . $teacher->getID();
+	}
+	if($teaching) {
 	}
 }	
 ?>

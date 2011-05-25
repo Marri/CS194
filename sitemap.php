@@ -4,7 +4,7 @@ include("./includes/header.php");
 ?>
 <a href="healing_tree.php">Healing tree</a><br />
 <a href="school.php">School</a><br />
-<a href="crons/finish_school.php">Cron: finish school</a><br />
+<a href="kitchen.php">Kitchen</a><br />
 
 <a href="notifications.php">Notifications</a><br />
 <a href="thanks.php">SD purchase landing page</a><br />
@@ -16,7 +16,10 @@ include("./includes/header.php");
 <a href="customs.php">Custom squffy options</a><br />
 <a href="design.php">Design custom squffy</a><br />
 <a href="custom.php">Create custom squffy</a><br />
+
 <a href="crons/finish_pregnancy.php">Cron: finish pregnancy</a><br />
+<a href="crons/finish_school.php">Cron: finish school</a><br />
+<a href="crons/reset_rights.php">Cron: reset rights</a><br />
 
 <a href="market.php">Market</a><br />
 

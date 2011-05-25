@@ -41,25 +41,24 @@ class User {
 	//Getters and setters
 	public function getID() { return $this->id; }
 	public function getHash() { return $this->hash; }
-	public function getInventory() {
-		if($this->inventory == NULL) { $this->fetchInventory(); }
-		return $this->inventory;
-	}
 	public function getLayout() { return $this->layout_id; }
 	public function getUsername(){ return $this->username; }
 	public function getEmail(){ return $this->email_addr; }
 	public function isActivated(){	return $this->activated; }
 	public function isAdmin() { return $this->level == self::ADMIN_USER; }
+	public function getInventory() {
+		if($this->inventory == NULL) { $this->fetchInventory(); }
+		return $this->inventory;
+	}
+	
 	//Predicates
 	public function canAffordSD($cost) {
 		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
 		return false;
 	}
-	/*
-	 * requires an alternative Item.
-	 */
+	
 	public function canAffordItem($cost) {
-		$itemName = $cost->getItemName();
+		$itemName = $cost->getColumnName();
 		if($this->inventory["$itemName"] >= $cost->getItemPrice()) { return true; }
 		return false;
 	}
@@ -86,15 +85,22 @@ class User {
 		}
 	}
 	
-	public function updateInventory($col, $change) {
-		$this->inventory[$col] = $this->inventory[$col] + $change;
-		return $this->inventory[$col];
+	public function updateInventory($col, $change, $changeDB = false) {
+		if($this->inventory != NULL) {
+			$this->inventory[$col] = $this->inventory[$col] + $change;
+		}
+		
+		if($changeDB == true) {
+			$query = "UPDATE inventory SET $col = $col + $change WHERE user_id = " . $this->id;
+			runDBQuery($query);
+		}
 	}	
 		
     public function seenNow() {
 		$queryString = 'UPDATE `users` SET `date_last_seen` = now() where `user_id` = ' . $this->id;
         runDBQuery($queryString);
     }	
+	
 	public function getNotifications(){
 		$notification_list = array();		
 		$queryString = "SELECT * FROM notifications WHERE user_id = '".$this->id."';";
@@ -105,28 +111,31 @@ class User {
 		}
 		return $notification_list;
 	}
+	
 	private function getNoobPack(){
 		$queryString = "SELECT squffy_made FROM newbie_packs WHERE user_id='".$this->id."'";
 		$results = runDBQuery($queryString);
 		return (@mysql_fetch_assoc($results));
 	}
+	
 	public function canMakeFreeGroundSquffy(){
 		$squffy_made = $this->getNoobPack();
 		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'tree')){ return true; }
 		return false;
 	}
+	
 	public function canMakeFreeTreeSquffy(){
 		$squffy_made = $this->getNoobPack();
 		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'ground')){ return true; }
 		return false;
 	}
+	
 	private function updateNoobPack($squffy_type){
 		$queryString = "UPDATE newbie_packs SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
 		runDBQuery($queryString);
 	}
-	/*
-	 * returns true if free squffy is used
-	 */
+	
+	/* returns true if free squffy is used */
 	public function  useFreeSquffy($squffy_type){
 		$squffy_made = $this->getNoobPack();
 		$squffy_just_made = "";

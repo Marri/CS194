@@ -64,17 +64,17 @@ function displayNotices($notices) {
 }
 
 function drawMenuTop($title, $links) {
-	echo '<table class="width100p">
+	echo '<table class="width100p" cellspacing="0">
 	<tr>
 	<th class="content-header width200">Menu</th>
 	<th class="content-header">' . $title . '</th>
 	</tr>
 	<tr>
-	<td class="vertical-top">';
+	<td class="vertical-top" style="background-color: #fff3ba; height: 773px">';
 	foreach($links as $link) {
 		echo '<a class="menu-link" href="' . $link['url'] . '">' . $link['name'] . '</a>';
 	}
 	echo '</td>
-	<td class="text-center vertical-top">';
+	<td class="text-center vertical-top" style="padding: 0px;">';
 }
 ?>

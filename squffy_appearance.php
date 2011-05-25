@@ -7,22 +7,24 @@ foreach($t as $trait) {
 	else { $carried[] = $trait; }
 }
 ?>
-<table class="width100p">
-<tr><th colspan="5" class="content-subheader">standard colors</th></tr>
-<tr><td class="content-subheader width150">Base</td>
+<table class="width100p squffy-table" cellspacing="0">
+<tr><th colspan="5" class="content-subheader">Standard Colors</th></tr>
+<tr class="even"><td class="content-miniheader width150">Base</td>
 <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $squffy->getBaseColor(); ?>"></div></td>
 <td class="text-left" colspan="3"><?php echo $squffy->getBaseColor(); ?></td></tr>
-<tr><td class="content-subheader width150">Eye</td>
+<tr class="odd"><td class="content-miniheader width150">Eye</td>
 <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $squffy->getEyeColor(); ?>"></div></td>
 <td class="text-left" colspan="3"><?php echo $squffy->getEyeColor(); ?></td></tr>
-<tr><td class="content-subheader width150">Feet & Ears</td>
+<tr class="even"><td class="content-miniheader width150">Feet & Ears</td>
 <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $squffy->getFootColor(); ?>"></div></td>
 <td class="text-left" colspan="3"><?php echo $squffy->getFootColor(); ?></td></tr>
-<?php if(sizeof($visible) > 0) { ?>
-<tr><th colspan="5" class="content-subheader">visible traits</th></tr>
+<?php 
+$cur = "odd";
+if(sizeof($visible) > 0) { ?>
+<tr><th colspan="5" class="content-subheader">Visible Traits</th></tr>
 <?php foreach($visible as $trait) { ?>
-<tr>
-    <td class="content-subheader width150"><?php echo $trait->getTitle(); ?></td> 
+<tr<?php $cur = row($cur); ?>>
+    <td class="content-miniheader width150"><?php echo $trait->getTitle(); ?></td> 
     <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $trait->getColor(); ?>"></div></td>
     <td class="text-left" colspan="3"><?php echo $trait->getColor(); ?></td>
 </tr>
@@ -30,8 +32,8 @@ foreach($t as $trait) {
 <?php if(sizeof($carried) > 0) { ?>
 <tr><th colspan="5" class="content-subheader">carried traits</th></tr>
 <?php foreach($carried as $trait) { ?>
-<tr>
-    <td class="content-subheader width150"><?php echo $trait->getTitle(); ?></td>        
+<tr<?php $cur = row($cur); ?>>
+    <td class="content-miniheader width150"><?php echo $trait->getTitle(); ?></td>        
     <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $trait->getColor(); ?>"></div></td>
     <td class="text-left" colspan="3"><?php echo $trait->getColor(); ?></td>
 </tr>
@@ -63,5 +65,10 @@ if($num > 0) {
 </table>
 
 <?php
+function row($cur) {
+	echo ' class="' . $cur . '"';
+	return $cur == "odd" ? "even" : "odd";
+}
+
 include('./includes/footer.php');
 ?>

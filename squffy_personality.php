@@ -1,4 +1,4 @@
-<table class="width100p">
+<table class="width100p" cellspacing="0">
 <?php
 $traits = $squffy->getPersonalityTraits();
 ?>

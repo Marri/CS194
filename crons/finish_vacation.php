@@ -2,6 +2,7 @@
 include('../includes/connect.php');
 include('../objects/squffy.php');
 
+//TODO start vacation page
 $query = 'SELECT * FROM `vacations` WHERE TO_DAYS(now()) - TO_DAYS(date_return) >= 0';
 $result = runDBQuery($query);
 

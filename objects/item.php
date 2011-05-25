@@ -17,8 +17,11 @@ class Item{
 	public function getName(){ return $this->name; }
 	public function getColumnName(){ return $this->column_name; }
 	public function getDescription(){ return $this->description; }
+	
 	public function canMakeCustom() { return $this->type == 3; }
-
+	public function isFood() { return $this->type == 1; }
+	public function isClothing() { return $this->type == 4; }
+	public function isBackground() { return $this->type == 5; }
 		
 	public static function getItemList(){
 		$item_list = array();
@@ -64,13 +67,28 @@ class Item{
 		
 		$info['species'] = $species;
 		return $info;
-	}	
-	public static function getItemNameFromID($item_id){
-		$queryString = "SELECT item_name FROM items WHERE item_id='".$item_id."'";
+	}
+	
+	public static function getItemByID($id) {
+		$queryString = "SELECT * FROM items WHERE item_id='".$id."'";
 		$query = runDBQuery($queryString);
 		if(@mysql_num_rows($query) < 1) { return NULL; }
-		$item_names = @mysql_fetch_assoc($query);
-		return $item_names['item_name'];
+		$items = @mysql_fetch_assoc($query);
+		$item = new Item();
+		$item->id = $items['item_id'];
+		$item->column_name = self::convertItemName($items['item_name']);
+		$item->name = $items['item_name'];
+		$item->type = $items['item_type'];
+		$item->description = $items['item_description'];
+		if(!$item->isFood()) { return $item; }
+		$food = Food::makeFood($items);
+		return $food;
+	}
+		
+	public static function getItemNameFromID($item_id){
+		$item = self::getItemByID($item_id);
+		if($item == NULL) { return NULL; }
+		return $item->getName();
 	}
 }
 ?>

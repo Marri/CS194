@@ -1,24 +1,190 @@
-<table class="width100p">
+<table class="width100p squffy-table" cellspacing="0">
 <tr><th colspan="2" class="content-subheader">Interact with <?php echo $squffy->getName(); ?></th></tr>
+<form action="view_squffy.php?id=<?php echo $id; ?>&view=interact" method="post">
 
 <?php 
-//Allow user to purchase hire rights if available
-if(!$squffy->canWorkFor($userid) && $squffy->isHireable()) { ?>
-    <tr>
-    <th class="content-subheader width150">Hire</th>
-    <td class="text-left"><input type="submit" class="submit-input" value="Purchase right to hire" /></td> </tr>
-    <tr><td colspan="2" class="text-left"><span class="small">Squffy must be assigned to a job within 30 minutes.</span><br /><br /></td></tr>
+$cur = "even";
+if($squffy->getOwnerID() == $userid) { 
+	$item_list = Item::getItemList();
+	
+	$query = "SELECT * FROM squffies WHERE squffy_owner = $userid OR hire_rights = $userid";
+	$squffies = Squffy::getSquffies($query);
+	$worker_options = "";
+	foreach($squffies as $worker) {
+		if(!$worker->canWorkFor($userid)) { continue; }
+		if(!$worker->isAbleToWork()) { continue; }
+		if($worker->getID() == $id) { continue; }
+		$worker_options .= '<option value="' . $worker->getID() . '">' . $worker->getName() . '</option>';
+	}
+	
+	//Feed them
+	$inventory = $user->getInventory();
+	$items = "";
+	foreach($item_list as $item) { 
+		if($item->isFood()) {
+			if(isset($inventory[$item->getColumnName()]) && $inventory[$item->getColumnName()] > 0) {
+				$items .= '<option value="' . $item->getID() . '">' . $item->getName() . '</option>';
+			}
+		}
+	}
+	
+	echo '<tr';
+	$cur = row($cur);
+	echo '>
+	<th class="content-miniheader width150">Feed</th>
+	<td class="text-left">';
+	
+	if(!$squffy->isHungry()) {
+		echo '<span class="small-error">Your squffy is already full.</span>';
+	} elseif(strlen($items) < 1) {
+		echo '<span class="small-error">You have no available food.</span>';
+	} else {
+		echo 'Food: <select size="1" name="food_id">
+		' . $items . '
+		</select>
+		<input type="submit" class="submit-input" name="feed" value="Feed" /></td>
+		</tr>';
+	}
+	
+	//If they are sick, allow healing.
+	echo '<tr';
+	$cur = row($cur);
+	echo '>
+	<th class="content-miniheader width150">Heal</th>
+	<td class="text-left">';
+	if($squffy->getHealth() >= 100) {
+		echo '<span class="small-error">Your squffy is already healthy.</span>';
+	} elseif(strlen($worker_options) < 1) {
+		echo '<span class="small-error">You have no squffies available to act as doctor.</span>';
+	} else {
+		echo 'Doctor: <select size="1" name="doctor_id">
+		' . $worker_options . '
+		</select>
+		<input type="submit" class="submit-input" name="heal" value="Heal" />';
+	}    
+	echo '</td></tr>';
+	
+	//Dress
+	echo '<tr';
+	$cur = row($cur);
+	echo '><th class="content-miniheader width150">Dress</th>
+	<td class="text-left">';
+	$options = '';
+	foreach($item_list as $item) { if($item->isClothing() || $item->isBackground()) { $options .= '<option value="">' . $item->getName() . '</option>'; } }
+	if(strlen($options) > 0) {
+		echo '<select name="" size="1">' . $options . '</select> <input type="submit" class="submit-input" value="Put on" />';
+	} else {
+		echo '<span class="small-error">You have no clothing or backgrounds available.</span>';
+	}
+	echo '</td></tr>';
+	
+	//If they can be taught, allow teaching.
+	echo '<tr';
+	$cur = row($cur);
+	echo '>
+	<th class="content-miniheader width150">Learn</th>
+	<td class="text-left">';
+	if($squffy->isStudent()) {
+		echo '<span class="small-error">Your squffy is already in school.</span>';
+	} elseif(!$squffy->isAbleToLearn()) {
+		echo '<span class="small-error">Your squffy cannot go to school right now.</span>';
+	} elseif(strlen($worker_options) < 1) {
+		echo '<span class="small-error">You have no squffies available to act as teacher.</span>';
+	} else {
+		echo 'Teacher: <select size="1" name="teacher_id">
+		' . $worker_options . '
+		</select>
+		Degree: <select size="1" name="degree_id">';
+		$query = "SELECT * FROM degrees";
+		$result = runDBQuery($query);
+		while($d = @mysql_fetch_assoc($result)) {
+			echo '<option value="' . $d['degree_id'] . '">' . $d['degree_name'] . '</option>';
+		}
+		echo '</select>
+		<input type="submit" class="submit-input" name="taught" value="Teach" />';
+		if($squffy->isTaught()) {
+        	echo '</td></tr><tr class="' . ($cur == "odd" ? "even" : "odd") . '"><td></td><td class="text-left"><span class="small"><b>Note</b>: This squffy is already a 
+			<b>' . $squffy->getDegreeName() . '</b>. You would be replacing the old degree.</span>';
+		}
+	}    
+	echo '</td></tr>';
+}
+
+//Allow user to purchase hire rights if: not already owned, hiring available, and able to work
+if(!$squffy->canWorkFor($userid)) { ?>
+    <tr<?php $cur = row($cur); ?>>
+    <th class="content-miniheader width150">Hire</th>
+    <td class="text-left">
+    <?php  if($squffy->isHireable() && $squffy->isAbleToWork()) {
+		$price = $squffy->getHirePrice();
+	 ?>
+    	<input type="radio" name="h_cost" value="item" checked /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName(); ?>s
+    	<input type="radio" name="h_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars
+        
+        <input type="submit" class="submit-input" name="buy_hire" value="Purchase right to hire" /></td> </tr>
+        <tr><td></td><td class="text-left"><span class="small"><b>Note</b>: Squffy must be assigned to a job within 30 minutes.</span><br /><br />
+    <?php } elseif (!$squffy->isHireable()) {
+		echo '<span class="small-error">This squffy is not available for hire.</span>';
+	} elseif(!$squffy->isAbleToWork()) {
+		echo '<span class="small-error">This squffy cannot work right now.</span>';
+	}
+	?>
+    </td></tr>
 <?php 
 } 
 
-//Allow user to purchase breeding rights if available
-if($squffy->getOwnerID() != $userid) { ?>
-    <tr>
-    <th class="content-subheader width150">breed to</th>
-    <td class="text-left"><input type="submit" class="submit-input" value="Purchase right to breed" /></td> </tr>
-    <tr><td colspan="2" class="text-left"><span class="small">Squffy must be bred within 30 minutes.</span><br /><br /></td></tr>
+//Allow user to purchase breeding rights if: not already owned, breeding available, and able to breed
+if(!$squffy->canBreedFor($userid)) { ?>
+    <tr<?php $cur = row($cur); ?>>
+    <th class="content-miniheader width150">breed to</th>
+    <td class="text-left">
+    <?php  if($squffy->isBreedable() && $squffy->isAbleToWork()) {
+		$price = $squffy->getBreedPrice(); ?>
+    	<input type="radio" name="b_cost" value="item" checked /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName(); ?>s
+    	<input type="radio" name="b_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars
+        <input type="submit" class="submit-input" name="buy_breed" value="Purchase right to breed" /></td> </tr>
+        <tr><td></td><td class="text-left"><span class="small"><b>Note</b>: Squffy must be bred within 30 minutes.</span><br /><br />
+    <?php } elseif (!$squffy->isBreedable()) {
+		echo '<span class="small-error">This squffy is not available for breeding.</span>';
+	} elseif(!$squffy->isAbleToWork()) {
+		echo '<span class="small-error">This squffy cannot breed right now.</span>';
+	}
+	?>
+    </td></tr>
 <?php 
 } 
+
+else { ?>
+    <tr<?php $cur = row($cur); ?>>
+    <th class="content-miniheader width150">breed to</th>
+    <td class="text-left">
+    <?php
+	$query = "SELECT * FROM squffies WHERE squffy_owner = $userid OR breeding_rights = $userid";
+	$squffies = Squffy::getSquffies($query);
+	$breed_options = "";
+	foreach($squffies as $worker) {
+		if(!$worker->canBreedFor($userid)) { continue; }
+		if(!$worker->isAbleToWork()) { continue; }
+		if($worker->getID() == $id) { continue; }
+		if($worker->getGender() == $squffy->getGender()) { continue; }
+		if($worker->hasMate() && $worker->getMateID() != $id) { continue; }
+		if($squffy->hasMate() && $squffy->getMateID() != $worker->getID()) { continue; }
+		$breed_options .= '<option value="' . $worker->getID() . '">' . $worker->getName() . '</option>';
+	}
+	
+	if(strlen($breed_options) > 0) {
+	?>
+		<select name="parent_id" size="1"><?php echo $breed_options; ?></select> <input type="submit" class="submit-input" name="breed" value="Breed" />
+    <?php
+    } elseif(strlen($breed_options) < 1) {
+		echo '<span class="small-error">You have no squffies available to breed with ' . $squffy->getName() . '.</span>';
+    } elseif(!$squffy->isAbleToWork()) {
+		echo '<span class="small-error">This squffy cannot breed right now.</span>';
+	}
+	?>
+    </td></tr>
+
+<?php }
 
 //Allow user to request as mate, if available
 if(!$squffy->hasMate()) { 
@@ -27,44 +193,26 @@ if(!$squffy->hasMate()) {
 	$options = "";
 	foreach($squffies as $mate) {
 		if(!$squffy->canMateTo($mate)) { continue; }
-		$options .= '<option value="">' . $mate->getName() . '</option>';
+		$options .= '<option value="' . $mate->getID() . '">' . $mate->getName() . '</option>';
 	}
-
+	?>    
+    <tr<?php $cur = row($cur); ?>>
+    <th class="content-miniheader width150">Mate to</th>
+    <td class="text-left">
+	<?php
 	if(strlen($options) > 0) {
-		?>
-		<tr>
-		<th class="content-subheader width150">Mate to</th>
-		<td class="text-left">
-		<select size="1">
-		<?php echo $options; ?>
+		echo '
+		<select size="1" name="mate_id">
+		' . $options . '
 		</select>
-		<input type="submit" class="submit-input" value="<?php echo ($squffy->getOwnerID() == $userid ? 'Set as mate' : 'Request as mate'); ?>" /></td>
-		</tr>
-<?php 
-	} 
-} else { 
-$query = "SELECT * FROM squffies WHERE squffy_owner = $userid OR hire_rights = $userid";
-$squffies = Squffy::getSquffies($query);
-$worker_options = "";
-foreach($squffies as $worker) {
-	if(!$worker->canWorkFor($userid)) { continue; }
-	if(!$worker->isAbleToWork()) { continue; }
-	if($worker->getID() == $id) { continue; }
-	$worker_options .= '<option value="">' . $worker->getName() . '</option>';
+		<input type="submit" name="set_mate" class="submit-input" value="' . ($squffy->getOwnerID() == $userid ? 'Set as mate' : 'Request as mate'). '" />';
+	} else {
+		echo '<span class="small-error">You have no squffies available as mates.</span>';
+	}
+    echo '</td></tr>';
 }
-
-if(strlen($worker_options) > 0 && $squffy->isSick()) {
 ?>
-<tr>
-<th class="content-subheader width150">Heal</th>
-<td class="text-left pad-left-small">
-Doctor: <select size="1">
-<?php echo $worker_options; ?>
-</select>
-<input type="submit" class="submit-input" value="Heal" /></td>
-</tr>
-<?php } } ?>
-
+</form>
 </table>
 
 </td>
@@ -72,105 +220,10 @@ Doctor: <select size="1">
 </table>
 
 <?php
-
-/*
-echo '<h1>' . $squffy->getLink() . '</h1>';
-$img = $squffy->getURL();
-if(!file_exists($img)) { 
-	$thumb = $squffy->getThumbnail();
-	include('./scripts/reset_image.php');
+function row($cur) {
+	echo ' class="' . $cur . '"';
+	return $cur == "odd" ? "even" : "odd";
 }
-echo "<img src='$img' alt='Squffy' /><br />";
-
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-ID: <input type="text" name="mate_id" length="10" />
-<input type="submit" name="breed" value="Breed to" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-ID: <input type="text" name="mate_id" length="10" />
-<input type="submit" name="set_mate" value="Set mate" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-ID: <input type="text" name="doctor_id" length="10" />
-<input type="submit" name="heal" value="Get healed by" />
-</form>';
-
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-Teacher ID: <input type="text" name="teacher_id" length="10" />
-Degree: <select size="1" name="degree_id">';
-$query = "SELECT * FROM degrees";
-$result = runDBQuery($query);
-while($d = mysql_fetch_assoc($result)) {
-	echo '<option value="' . $d['degree_id'] . '">' . $d['degree_name'] . '</option>';
-}
-echo '</select>
-<input type="submit" name="taught" value="Start degree with teacher" /></form>';
-/*
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="farming" value="Set as farmer" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="foresting" value="Set as forester" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="teaching" value="Set as teacher" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="nursemaiding" value="Set as nursemaid" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="doctoring" value="Set as doctor" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="midwifeing" value="Set as midwife" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="cooking" value="Set as cook" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="baking" value="Set as baker" />
-</form>';
-echo '<form action="view_squffy.php?id=' . $id . '" method="post">
-<input type="submit" name="building" value="Set as builder" />
-</form>';*//*
-
-//Debug
-echo '<br><br><br>';
-echo '<h1>Info</h1>';
-echo 'id '. $squffy->getID() . '<br>';
-echo 'health '. $squffy->getHealth() . '<br>';
-if($squffy->getMateID()) {
-echo 'mate ';
-$mate = Squffy::getSquffyByID($squffy->getMateID());
-echo $mate->getLink() . '<br>';
-}
-echo 'age '. $squffy->getAge() . '<br>';
-echo 'species id '. $squffy->getSpeciesID() . '<br>';
-echo 'species '. $squffy->getSpecies() . '<br>';
-echo 'bday '. date("m-d-y", strtotime($squffy->getBirthday())) . '<br>';
-echo 'gender '.$squffy->getGender() .'<br>';
-echo 'degree '.$squffy->getDegreeType() .' '.$squffy->getDegreeName() .'<br>';
-echo 'pregnant '.$squffy->isPregnant() .'<br>';
-echo 'working '.$squffy->isWorking() .'<br>';
-echo 'breedable '.$squffy->isBreedable() .'<br>';
-echo 'for sale '.$squffy->isInMarket() .'<br>';
-echo 'hireable '.$squffy->isHireable() .'<br>';
-echo 'custom '.$squffy->isCustom() .'<br><br>appearance:<br>';
-print_r($squffy->getAppearanceTraits());
-echo '<br><br>personality:<br>';
-print_r($squffy->getPersonalityTraits());
-echo '<br><br>items:<br>';
-print_r($squffy->getItems());
-
-if(!$squffy->isCustom()) {
-	echo '<br><br>family:<br>';
-	$family = $squffy->getFamily();
-	foreach($family as $relation => $rel_id) {
-		if($rel_id == NULL) { continue; }
-		$rel = Squffy::getSquffyByID($rel_id);
-		echo $relation . ': ' . $rel->getLink() . '<br>';
-	}
-}*/
 
 include('./includes/footer.php');
 ?>

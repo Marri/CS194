@@ -2,66 +2,82 @@ MISSING IMAGES
 fey penguin
 lihtan penguin
 fey harvest witch hat
-all tree items
+all tree and ground items
+new tree squffy
+new ground mutations
+new markings: lihtan/fey/sand
 
 TODO:
 Check header and footer includes in the mysql error
-Background should extend on F11
+Background should extend on F11: Come up with a way to extend the #content box to the full min-height.
 Email staff email if MySQL error
-Squffy::heal should be updated with payment
 User::setLevel($levelID) needs to be written
-Add badges to copiable
-
-Traits:
-Soothing presence (better at doctor and midwife)
-Nature lover (better at farming)
-Graceful (agile)
-Precise (good at cooking/baking)
-Energetic (gets tired less quickly)
-Optimistic (gets sad less quickly)
-Nuturing (good at nursemaid and teaching)
-Studious (learns faster)
-Hyper (faster)
-
-Negative traits:
-Abrasive
-Avoids nature
-Clumsy
-Imprecise
-Lazy
-Pessimistic
-Neglectful
-Slacker
-Placid
-
-Amanda!
 Finish database schema
 Update all current features to Look Pretty with layout
-Finish edit_squffy page
 Add edit/delete design page
-Add restrictions and error checking for design creation/editing
+Add restrictions for design creation
 Add support for dominant traits (all currently recessive)
 How handling eggs...?
 Fix all the images to standardize at 375 x 375
 Fix design images: should never return generate_image file as url
 Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
 
--Finish sort feature on drey page
--Jobs: teacher (finish), doctor (finish), cook, baker
--More jobs: farmer, forester, builder, midwife, nursemaid
+GOOD TRAITS
+Soothing presence (better at doctor and midwife)
+Nature lover (better at farming/foresting)
+Encouraging (good trainer)
+Artistic (good artist / tailor)
+Rational (carpenter/builder)
+Precise (good at cooking/baking)
+Nuturing (good at nursemaid and teaching)
+Graceful (agile)
+Energetic (gets tired less quickly)
+Optimistic (gets sad less quickly)
+Studious (learns faster)
+Hyper (faster)
+need: endurance, strength, hunger, health
 
-Progress for the week:
-Fix all the mutations to only have L not H images
-Added support for current outfit to image generator
+BAD TRAITS:
+Abrasive
+Avoids nature
+Discouraging
+Logical
+Irrational
+Imprecise
+Neglectful
+Clumsy
+Lazy
+Pessimistic
+Slacker
+Placid
 
-Hire and breed prices can be updated on the edit squffy page
-Restricted edit_squffy page to only the user who owns it (or admins)
-Reordering traits feature finished
+Jobs:
+-Jobs: teacher (degree), doctor (health), cook (hunger), baker (genes)
+-More jobs: farmer (food), forester (wood), midwife (pregnancies), nursemaid (eggs)
+-Making jobs: builder/carpenter (buildings), tailor (accessories), artist (backgrounds)
+-Ideas: trainer (build c1-c4), herder (raise animals for food and clothing?), carpenter (make tools)
+wood for building, what for clothes and art?
 
-View_squffy page revamped: basics, appearance, personality, history, family and edit added
+Quick todo list for the rest of the quarter:
+Finish database schema
+Edit/delete design page
+Finish squffy_interact hookups
+-Mate setting/requesting
+Finish kitchen jobs
+Finish growing jobs
+Finish builders at least for dreys
+Finish age stuff (egg > hatchling > child/teen > adult, egg tending/nursemaid, midwife)
+Deal with images: leave out anything missing anything.
+Build tournaments
 
-Multiple births supported
-Chromosome 8 (XX dominance) considered when picking gender
-Chromosome 6 (Heritibility) considered when picking traits being passed on
-Chromosome 5 (Fertility) considered when picking if twins or triplets occur
-Species is now chosen randomly between parents
+Past two weeks:
+Chromosomes factored into births
+Multiple birth support added
+Outfit support added
+View and edit squffy pages finished
+Added food information to the database
+Added basic error checking to the design saving feature
+Cron to reset hire and breeding rights
+
+To finish this week:
+Design feature

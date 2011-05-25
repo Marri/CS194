@@ -1,10 +1,4 @@
 <?php
-if(isset($_POST['save'])) {
-	$save_valid = true;
-	include('./save_design.php');
-	die();
-}
-
 $selected = "squffies";
 $js[] = "design";
 $js[] = "colorpicker";
@@ -12,12 +6,19 @@ $css[] = "design";
 $css[] = "colorpicker";
 include("./includes/header.php");
 
+if(isset($_POST['save'])) {
+	$save_valid = true;
+	include('./save_design.php');
+}
+
 displayColors();
 
 $traitlist = trait_options($con);
 $numTraits = (isset($_POST['numTraits']) ? $_POST['numTraits'] : 1);
 if($numTraits < 1) { $numTraits = 1; }
 
+displayNotices($notices);
+displayErrors($errors);
 ?>
 <form action="./design.php" method="post" name="design_form">
 <table cellspacing="4" class="content-table" id="contentTable">
@@ -98,10 +99,22 @@ if($numTraits < 1) { $numTraits = 1; }
         <th class="content-subheader" colspan="2">Appearance Trait Color</th>
 		<td rowspan="' . ($numTraits + 1) . '" class="vertical-top" id="buttons">
 		<input id="add-trait" type="button" class="submit-input" value="Add another trait" /><br /><br />
-		<input type="submit" class="submit-input" value="Generate Preview" name="preview" /><br /><br />
-		Design name:<br/> <input class="margin-top-small margin-bottom-small" type="text" name="design_name" size="20" maxlength="50" /><br />
-		<input type="submit" class="submit-input margin-top-small" value="Save Design" name="save" />
-		</td>
+		<input type="submit" class="submit-input" value="Generate Preview" name="preview" /><br /><br />';
+		if($loggedin) {
+			echo 'Design name:<br/> <input class="margin-top-small margin-bottom-small" type="text" name="design_name" size="20" maxlength="50" /><br />
+			<input type="submit" class="submit-input margin-top-small" value="Save Design" name="save" /><br /><br />';
+			$query = "SELECT * FROM designs WHERE user_id = $userid";
+			$result = runDBQuery($query);
+			if(@mysql_num_rows($result) > 0) {
+				echo 'Design:<br/> <select name="design" size="1">';
+				while($info = @mysql_fetch_assoc($result)) {
+					echo '<option value="' . $info['design_id'] . '">' . $info['design_name'] . '</option>';
+				}
+				echo '</select><br /><input type="submit" class="submit-input margin-top-small" value="Overwrite Design" name="overwrite" />';
+			}
+		}
+		
+		echo '</td>
 	</tr>';
 	for($i = 1; $i <= $numTraits; $i++) {
 		echo '<tr id="traitRow' . $i . '">
@@ -125,11 +138,6 @@ if($numTraits < 1) { $numTraits = 1; }
 			echo '</td>
 		</tr>';
 	}
-	/*echo '<tr>
-		<td colspan="4" align="right" id="addRow">
-			<input id="add-trait" type="button" class="submit-input" value="Add another trait" /> &nbsp;&nbsp;&nbsp; <input type="submit" class="submit-input" value="Generate Preview" />
-		</td>
-		</tr>';*/
 	echo '</table></form>';
 
 function trait_dropdown($fieldname, $optionlist){

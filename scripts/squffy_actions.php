@@ -16,6 +16,16 @@ if(isset($_POST['breed'])) {
 	include('./scripts/squffy_breed.php'); 
 }
 
+//Buy breed rights
+if(isset($_POST['buy_breed'])) {
+	include('./scripts/squffy_breed_rights.php');
+}
+
+//Buy hire rights
+if(isset($_POST['buy_hire'])) {
+	include('./scripts/squffy_hire_rights.php');
+}
+
 //Learn from teacher
 if(isset($_POST['taught'])) {
 	$days = 4;
@@ -42,9 +52,36 @@ if(isset($_POST['heal'])) {
 	} else {
 		$doctor_id = $_POST['doctor_id'];
 		$doctor = Squffy::getSquffyByID($doctor_id);
-		$squffy->heal($doctor);
-		$change = $squffy->getHealth() - $original;
-		$notices[] = pluralize($squffy->getName()) . " health has increased by $change.";
+		if($doctor->getEnergy() < 5) { 
+			$errors[] = $doctor->getName() . " must have at least 5 energy to heal.";
+		} else {
+			$squffy->heal($doctor);
+			$change = $squffy->getHealth() - $original;
+			$notices[] = pluralize($squffy->getName()) . " health has increased by $change.";
+		}
+	}
+}
+
+//Feed
+if(isset($_POST['feed'])) {
+	$original = $squffy->getHunger();
+	if($original < 1) {
+		$errors[] = $squffy->getName() . " does not need feeding right now.";
+	} else {
+		$food = $_POST['food_id'];
+		$item = Item::getItemByID($food);
+		$inventory = $user->getInventory();
+		$col = $item->getColumnName();
+		
+		if($inventory[$col] < 1) {
+			$errors[] = 'You do not have enough ' . strtolower($item->getName()) . 's.';
+		} else {
+			$old = $squffy->getHunger();
+			$squffy->feed($item);
+			$user->updateInventory($col, -1, true);
+			$change = $old - $squffy->getHunger();
+			$notices[] = pluralize($squffy->getName()) . ' hunger has decreased by ' . $change . '.';
+		}
 	}
 }
 ?>

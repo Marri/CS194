@@ -23,6 +23,6 @@ foreach($history as $event) {
 include('./includes/footer.php');
 
 function history($date) {
-	return date("M d, Y h:m A", $date);
+	return date("M d, Y g:i A", $date);
 }
 ?>

@@ -1,5 +1,12 @@
 $(document).ready( function() {
 	displayTabMenu($("#menu a.active"));
+	
+	$("#nut-toggle").click(function() {
+		$("#nut-holder").toggleClass('hidden');
+		var src = $(this).attr("src");
+		if(src == "./images/icons/add.png") { $(this).attr("src", "./images/icons/delete.png"); }
+		else { $(this).attr("src", "./images/icons/add.png"); }
+	});
 							
 	//Create menu style
 	$("#menu a").click( function () {

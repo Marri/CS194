@@ -3,7 +3,7 @@ date_default_timezone_set("America/Los_Angeles");
 $errors = array();
 $notices = array();
 
-$objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy');
+$objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy', 'food');
 foreach($objects as $object) {
 	include('./objects/' . $object . '.php');
 }

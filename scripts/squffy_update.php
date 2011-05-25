@@ -17,6 +17,13 @@ $newBI = $_POST['breed_item'];
 $newBIA = $_POST['breed_amount'];
 }
 
+if($newHire && !$newHIA && !$newHSD) {
+	if(!($newHIA === "0" || $newHSD === "0")) {
+		$errors[] = "You must set a price to hire your squffy.";
+		$valid = false;
+	}
+}
+
 if(!$newName) {
 	$errors[] = "You must choose a name for your squffy.";
 	$valid = false;
@@ -33,7 +40,7 @@ if($newHire != $hireable) {
 	$hireable = $newHire;
 }
 if($newHire && $newHSD != $hire_sd) {
-	$changes .= ', hire_price_sd = ' . $newHSD;
+	$changes .= ', hire_price_sd = \'' . $newHSD . "'";
 	$hire_sd = $newHSD;
 }
 if($newHire && $newHI != $hire_item) {
@@ -41,7 +48,7 @@ if($newHire && $newHI != $hire_item) {
 	$hire_item = $newHI;
 }
 if($newHire && $newHIA != $hire_amount) {
-	$changes .= ', hire_price_item_amount = ' . $newHIA;
+	$changes .= ', hire_price_item_amount = \'' . $newHIA . '\'';
 	$hire_amount = $newHIA;
 }
 
@@ -50,7 +57,7 @@ if($newBreed != $breedable) {
 	$breedable = $newBreed;
 }
 if($newBreed && $newBSD != $breed_sd) {
-	$changes .= ', breeding_price_sd = ' . $newBSD;
+	$changes .= ', breeding_price_sd = \'' . $newBSD . '\'';
 	$breed_sd = $newBSD;
 }
 if($newBreed && $newBI != $breed_item) {
@@ -58,8 +65,13 @@ if($newBreed && $newBI != $breed_item) {
 	$breed_item = $newBI;
 }
 if($newBreed && $newBIA != $breed_amount) {
-	$changes .= ', breeding_price_item_amount = ' . $newBIA;
+	$changes .= ', breeding_price_item_amount = \'' . $newBIA . '\'';
 	$breed_amount = $newBIA;
+}
+
+if($newBreed && !$newBIA && !$newBSD) {
+	$errors[] = "You must set a price to breed to your squffy.";
+	$valid = false;
 }
 
 if($valid) {
