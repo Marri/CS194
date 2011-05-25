@@ -67,7 +67,6 @@ if(!isset($_POST['use_item'])) {
 		$item = $_POST['use_item'];
 		$inventory[$item] = $inventory[$item] - 1;
 		$user->updateInventory($item, -1);
-		$user->updateInventoryTable($user_id, $item1_col, $item1_change, "", 0);
 		$query = "UPDATE inventory SET $item = $item - 1 WHERE user_id = $userid;";
 		runDBQuery($query);
 	}
