@@ -82,6 +82,7 @@ body, html {
 .pad-left-small { padding-left: 5px; }
 .no-margin { margin: 0px; }
 .padding-10 { padding: 10px; }
+.padding-5 { padding: 5px; }
 
 .thumbnail { 
 	width: 50px; 
@@ -93,7 +94,7 @@ body, html {
 	width: 300px;
     height: 300px;
     border: 2px #000000 solid;
-    margin: 0px auto 10px;
+    margin: 5px auto 10px;
 }
 
 input, select, textarea { 
@@ -358,6 +359,7 @@ body > #left-column {
     width: 13px;
     margin-left: 4px;
     margin-top: 2px;
+    border: 0px !important;
 }
 
 /* FOOTER INFORMATION */

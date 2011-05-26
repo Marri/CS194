@@ -81,6 +81,7 @@ if($valid) {
 		$query = 'UPDATE `squffies` SET `is_working` = \'true\' WHERE `squffy_id` = ' . $teacher->getID();
 	}
 	if($teaching) {
+		$user->updateInventory('pecan', -1, true);
 	}
 }	
 ?>

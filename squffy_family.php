@@ -1,4 +1,4 @@
-<table class="width100p" cellspacing="0">
+<table class="width100p" cellspacing="0"><tr><td colspan="4"></td></tr>
 
 <?php 
 if(!$squffy->isCustom()) {

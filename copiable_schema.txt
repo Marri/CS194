@@ -213,7 +213,10 @@ CREATE TABLE IF NOT EXISTS inventory (
 	triple_spark smallint unsigned default '0',
 	single_wings smallint unsigned default '0',
 	double_wings smallint unsigned default '0',
-	triple_wings smallint unsigned default '0'
+	triple_wings smallint unsigned default '0',
+	nutcake smallint unsigned default '0',
+	chocolate smallint unsigned default '0',
+	chocolate_almonds smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -489,6 +492,25 @@ CREATE TABLE IF NOT EXISTS log_mates (
 	date_sent datetime
 );
 
+DROP TABLE IF EXISTS recipes;
+CREATE TABLE IF NOT EXISTS recipes (
+	recipe_id tinyint unsigned primary key auto_increment,
+	recipe_name varchar(50),
+	ing1 smallint unsigned,
+	ing1_amount tinyint unsigned,
+	ing2 smallint unsigned,
+	ing2_amount tinyint unsigned,
+	ing3 smallint unsigned,
+	ing3_amount tinyint unsigned,
+	ing4 smallint unsigned,
+	ing4_amount tinyint unsigned,
+	makes smallint unsigned
+);
+
+INSERT INTO recipes VALUES
+(NULL, 'Nutcake', 1, 3, 20, 2, NULL, NULL, NULL, NULL, 25),
+(NULL, 'Chocolate Almonds', 24, 2, 26, 1, NULL, NULL, NULL, NULL, 26);
+
 INSERT INTO log_mates VALUES (NULL, 112, 2, 1, '2011-04-07 12:12:12');
 INSERT INTO log_pregnancies  VALUES (NULL, 2, 112, 1, '2011-04-17 12:12:12');
 
@@ -595,15 +617,12 @@ VALUES
 	('dagclo', 2, 'c7197f6ead8d1c3955113ba6c6f504fc51f5435c', 'AL6sUrvu3wTlHkN'),
 	('user1', 3, '4f85334c66baffb440a5b26bbd2e410a787dab03', 'c7h6g9Npv3Rx96j');
 	
-	
-
-	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`)
+	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`)
 VALUES
-	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
-	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5),
-	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5);
+	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0),
+	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0),
+	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -635,7 +654,10 @@ VALUES
 	(21, 'Chestnut', 1, 'A chestnut.', 'c7', 2, 2),
 	(22, 'Pecan', 1, 'A pecan.', 'c6', 2, 2),
 	(23, 'Walnut', 1, 'A walnut.', NULL, NULL, 2),
-	(24, 'Almond', 1, 'An almond.', 'c5', 2, 2);
+	(24, 'Almond', 1, 'An almond.', 'c5', 2, 2),
+	(25, 'Nutcake', 6, 'A sweet nutty treat.', 'c8', 3, 15),
+	(26, 'Chocolate', 7, 'Nom. Chocolate nom.', NULL, NULL, 5),
+	(27, 'Chocolate Almonds', 6, 'DELICIOUS.', 'c5', 5, 12);
 	
 INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`)

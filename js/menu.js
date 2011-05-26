@@ -6,6 +6,7 @@ $(document).ready( function() {
 		var src = $(this).attr("src");
 		if(src == "./images/icons/add.png") { $(this).attr("src", "./images/icons/delete.png"); }
 		else { $(this).attr("src", "./images/icons/add.png"); }
+		return false;
 	});
 							
 	//Create menu style

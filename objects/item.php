@@ -5,6 +5,7 @@ class Item{
 	//type 3 makes customs
 	//type 4 are accessories
 	//type 5 are backgrounds
+	//type 6 is recipe based food
 	
 	private
 		$id,

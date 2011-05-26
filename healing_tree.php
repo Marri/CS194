@@ -8,7 +8,7 @@ if(isset($_POST['learn'])) {
 displayErrors($errors);
 displayNotices($notices);
 ?>
-
+<div class="content-header width100p"><b>Healing Tree</b></div>
 <div class='npc'>Doctor squffy</div>
 Some doctor schpiel about how you can heal your squffy here; it will take 1 day and cost 2 pecans.<br /><br />
 

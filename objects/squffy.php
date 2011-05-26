@@ -518,6 +518,7 @@ class Squffy {
 	
 	public function fetchDegree() {
 		if($this->degree_name != NULL) { return; }
+		if($this->degree_id == NULL) { $this->degree_name = ""; return; }
 		$query = "SELECT degree_name FROM degrees WHERE degree_id = " . $this->degree_id;
 		$result = runDBQuery($query);
 		$info = @mysql_fetch_assoc($result);

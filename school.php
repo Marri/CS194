@@ -9,7 +9,7 @@ if(isset($_POST['learn'])) {
 displayErrors($errors);
 displayNotices($notices);
 ?>
-
+<div class="content-header width100p"><b>Public School</b></div>
 <div class='npc'>Teacher squffy</div>
 Some teacher schpiel about how you can learn a trade here and it will take 5 days and costs 1 pecan.<br /><br />
 
