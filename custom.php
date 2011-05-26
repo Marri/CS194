@@ -100,8 +100,9 @@ if(!isset($_POST['use_item'])) {
 			$i++;
 			if($i % 4 == 0) { echo '</tr>'; }
 		}
+		if($num %4 > 0) { echo $add . '</tr>'; }
 	}
-	if($num %4 > 0) { echo $add . '</tr>'; }
+	
 	echo '<tr><td colspan="4">
 	Name: <input type="text" class="margin-bottom-small" name="squffy_name" /><br />
 	Gender: <input type="radio" checked class="margin-bottom-small" name="gender" value="M" /> Male <input type="radio" name="gender" value="F" /> Female<br />
