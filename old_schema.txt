@@ -97,7 +97,6 @@ CREATE TABLE `farminfo` (
 
 --
 -- Table structure for table `farms`
---
 
 DROP TABLE IF EXISTS `farms`;
 CREATE TABLE `farms` (
@@ -141,7 +140,7 @@ CREATE TABLE `ipaddresses` (
 
 --
 -- Table structure for table `item`
---
+-- use group by based on owner id, transfer only items on list
 
 DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
@@ -167,6 +166,9 @@ CREATE TABLE `item` (
 --
 -- Table structure for table `iteminfo`
 --
+-- cols not using: pawn cols, uses, wuffyid, storeprice, pending, trading, stocked, bank
+-- all cols map to same items columns
+
 
 DROP TABLE IF EXISTS `iteminfo`;
 CREATE TABLE `iteminfo` (
@@ -288,7 +290,7 @@ CREATE TABLE `nutbreedings` (
 
 --
 -- Table structure for table `nutpile`
---
+-- add up each section and add to inventory
 
 DROP TABLE IF EXISTS `nutpile`;
 CREATE TABLE `nutpile` (
@@ -804,6 +806,31 @@ CREATE TABLE `snowdreys` (
 --
 -- Table structure for table `squffies`
 --
+-- cols not using: title, subdreyid, description,pregnant, pregfor, pregby, pregdate, sale, saleprice, saleitemname, saleitemnum
+-- cols may not use: luck, hunger, pregnant
+-- col equivalency: (example column name (new conditions) = new_table.new_column)
+-- 	age=squffies.squffy_birthday
+-- 	generation (if 1 then custom) = squffies.is_custom
+-- 	momid = squffy_family.mother_id
+-- 	dadid = squffy_family.father_id
+--  mateid = squffy.mate_id
+--  strength = squffies.c1
+--  speed = squffies.c2
+--  agility = squffies.c3
+--  endurance = squffies.c4
+--  fertile = squffies.c5
+--  traitd = squffies.c6
+--  geneticd = squffies.c7
+--  xx = squffies.c8
+--  breedprice = squffies.breeding_price_sd
+--  breeditemname = squffies.breeding_price_item_id (after remapping)
+--  breeditemnum = squffies.breeding_price_item_amount
+--  basec = squffies.base_color
+--  eyec = squffies.eye_color
+--  feetearc = squffies.foot_color
+--  all the trait "s" columns: 5 means set squffy_appearance.trait_square = C and 10=S means the same.
+--  all trait 'c' columns: set squffy_appearance.trait_color to value
+--	php foreach is suggested
 
 DROP TABLE IF EXISTS `squffies`;
 CREATE TABLE `squffies` (

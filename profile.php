@@ -1,5 +1,5 @@
 <?php
-$selected = "home";
+$forLoggedIn = true;
 include("./includes/header.php");
 ?>
 <?php
@@ -19,5 +19,6 @@ if(!isset($_POST['migrate'])){ ?>
 <?php }else{
 			?><h1> Migration Failed </h1> <?php
 		}
+	}
 include('./includes/footer.php');
 ?>

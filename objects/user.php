@@ -223,9 +223,222 @@ class User {
 		//otherwise return that the user can't buy the item
 		return "Insufficient funds to buy";
 	}
-	public function migrateAccount($old_username, $old_password){
-		//connect to old database
-		//migrate squffies
+	public static function getOldUserID($login_name, $password){
+		$hashword = sha1($password);
+		$queryString = "SELECT userid WHERE loginname='".$login_name."' AND hashword='".$hashword."'";
+		$result = runDBQuery($queryString);
+		if(@mysql_num_rows($result) > 0) {
+			$user_id = mysql_fetch_assoc($result);
+			return $user_id['userid'];
+		}
+		return NULL;
+	}
+	private function migrateOldSquffies($old_user_id){
+		$queryString = "SELECT * FROM old_squffies WHERE ownerid = '".$old_user_id."'";
+		$result = runDBQuery($queryString);
+		while($old_squffies = @mysql_fetch_assoc($result)){
+			$squffy = array();
+			foreach($old_squffies as $col=>$val){
+				switch(col)
+				{
+					case "age":
+						break;
+					case "generation":
+						break;
+					case "momid":
+						break;
+					case "dadid":
+						break;
+					case "mateid":
+						break;
+					case "strength":
+						break;
+					case "speed":
+						break;
+					case "agility":
+						break;
+					case "endurance":
+						break;
+					case "fertile":
+						break;
+					case "traitd":
+						break;
+					case "geneticd":
+						break;
+					case "xx":
+						break;
+					case "breedprice":
+						break;
+					case "breeditemname":
+						break;
+					case "breeditemnum":
+						break;
+					case "basec":
+						break;
+					case "eyec":
+						break;
+					case "feetearc":
+						break;
+					case "bellyc":
+						break;
+					case "bellys":
+						break;
+					case "cheetahc":
+						break;
+					case "cheetahs":
+						break;
+					case "maskc":
+						break;
+					case "masks":
+						break;
+					case "socksc":
+						break;
+					case "sockss":
+						break;
+					case "hennac":
+						break;
+					case "hennas":
+						break;
+					case "leopardc":
+						break;
+					case "leopards":
+						break;
+					case "stripesc":
+						break;
+					case "stripess":
+						break;
+					case "rainc":
+						break;
+					case "rains":
+						break;
+					case "skunkc":
+						break;
+					case "skunks":
+						break;
+					case "hoodc":
+						break;
+					case "hoods":
+						break;
+					case "paints":
+						break;
+					case "paintc":
+						break;
+					case "lemurc":
+						break;
+					case "lemurs":
+						break;
+					case "giraffec":
+						break;
+					case "giraffes":
+						break;
+					case "vines":
+						break;
+					case "vinec":
+						break;
+					case "patchesc":
+						break;
+					case "patchess":
+						break;
+					case "siamesec":
+						break;
+					case "siameses":
+						break;
+					case "wolfc":
+						break;
+					case "wolfs":
+						break;
+					case "eartipsc":
+						break;
+					case "eartipss":
+						break;
+					case "frecklesc":
+						break;
+					case "freckless":
+						break;
+					case "linec":
+						break;
+					case "lines":
+						break;
+					case "weavec":
+						break;
+					case "weaveo":
+						break;
+					case "sunc":
+						break;
+					case "suns":
+						break;
+					case "tattoos":
+						break;
+					case "tattooc":
+						break;
+					case "rootsc":
+						break;
+					case "rootss":
+						break;
+					case "harlequinc":
+						break;
+					case "harlequins":
+						break;
+					case "swirlc":
+						break;
+					case "swirls":
+						break;
+					case "marblec":
+						break;
+					case "marbles":
+						break;
+					case "burnc":
+						break;
+					case "burns":
+						break;
+					case "clawc":
+						break;
+					case "claws":
+						break;
+					case "birdwings":
+						break;
+					case "birdwingc":
+						break;
+					case "hornss":
+						break;
+					case "hornsc":
+						break;
+					case "pixiec":
+						break;
+					case "pixies":
+						break;
+					case "manec":
+						break;
+					case "manes":
+						break;
+					case "antennac":
+						break;
+					case "antennas":
+						break;
+					case "beardc":
+						break;
+					case "beards":
+						break;
+					case "whiskerc":
+						break;
+					case "whiskers":
+						break;
+					case "kirinc":
+						break;
+					case "kirins":
+						break;
+					case "antlerc":
+						break;
+					case "antlers":
+						break;
+					default:
+						break; //do nothing in the default case		
+			}
+		}
+	}
+	public function migrateAccount($old_loginname, $old_password){
+		$old_user_id = self::getOldUserID($old_loginname, $old_password);
+		$this->migrateOldSquffies($old_user_id);//migrate squffies
 		//migrate items
 		//mark user account as migrated
 	}
