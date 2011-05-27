@@ -291,6 +291,7 @@ CREATE TABLE `nutbreedings` (
 --
 -- Table structure for table `nutpile`
 -- add up each section and add to inventory
+-- ignore prefix
 
 DROP TABLE IF EXISTS `nutpile`;
 CREATE TABLE `nutpile` (

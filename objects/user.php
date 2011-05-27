@@ -234,7 +234,9 @@ class User {
 		return NULL;
 	}
 	private function calcBirthday($age, $today_date){
-		return $today_date; //update later
+		$birthday = strtotime ( '-'.$age.' day' , strtotime ( $today_date ) ) ;
+		$birthday = date ( "Y-m-d H:i:s" , $birthday );
+		return $birthday;
 	}
 	private function setTraitColor(&$squffy_array, $trait, $color){
 		if($color != NULL) $squffy_array[$trait] = $color;
@@ -250,7 +252,7 @@ class User {
 			$squffy_array[$trait] = $value;
 		}
 	}
-	private function insertSquffy(&$squffy, &$squffy_appearance){
+	private function insertSquffy(&$squffy, &$squffy_appearance, &trait_ids){
 		$personality = Personality::RandomTraits();
 		$squffyInsert = 'INSERT INTO squffies 
 					(squffy_owner, squffy_name, squffy_gender, squffy_birthday, squffy_species, c1, c2, c3, c4, c5, c6, c7, c8, base_color, eye_color, foot_color, is_custom, strength1_id, strength2_id, weakness1_id, weakness2_id, mate_id, breeding_price_sd, breeding_price_item_id, breeding_price_item_amount)
@@ -259,7 +261,6 @@ class User {
 					, "'.$squffy['breeding_price_item_amount'].'");';
 		runDBQuery($squffyInsert);
 		$squffy_id = @mysql_insert_id();
-		$trait_ids = Appearance::getTraitIdNameMap();
 		$trait_order = 0;
 		foreach ($squffy_appearance as $col=>$val){
 			switch(substr($col,-2))
@@ -269,7 +270,7 @@ class User {
 					$id = $trait_ids[$trait_name];
 					$trait_order++;
 					$trait_color = $squffy_appearance[$trait_name.'c'];
-					$appearanceInsert = "INSERT INTO squffy_appearance VALUES ('".$squffy_id."', '".$trait_id."', '".$val."', '".$trait_color."', ".$trait_order.");";
+					$appearanceInsert = "INSERT INTO squffy_appearance VALUES ('".$squffy_id."', '".$id."', '".$val."', '".$trait_color."', ".$trait_order.");";
 					runDBQuery($appearanceInsert);
 					break;
 				default:
@@ -281,7 +282,8 @@ class User {
 		$queryString = "SELECT * FROM old_squffies WHERE ownerid = '".$old_user_id."'";
 		$result = runDBQuery($queryString);
 		$today_date = date("Y-m-d H:i:s");
-		
+		$trait_ids = Appearance::getTraitIdNameMap();
+
 		while($old_squffies = @mysql_fetch_assoc($result)){
 			$squffy = array();
 			$squffy_appearance = array();
@@ -587,13 +589,50 @@ class User {
 						break; //do nothing in the default case
 				}
 			}
-			$this->insertSquffy($squffy, $squffy_appearance);
+			$this->insertSquffy($squffy, $squffy_appearance, $trait_ids);
 		}
+	}
+	private function getOldItems($user_id){
+		$old_items = array();
+		$queryString = "SELECT itemname FROM old_items WHERE ownerid='".$user_id."'";
+		$items = runDBQuery($queryString);
+		while($item = @mysql_fetch_assoc($items)){
+			if(!isset($old_items[$item['itemname']]){
+				$old_items[$item['itemname']] = 0;
+			}else{
+				$old_items[$item['itemname']]++;
+			}
+		}
+		return $old_items;
+	}
+	private function getOldNuts($user_id){
+		$old_nuts = array();
+		$queryString = "SELECT * FROM old_nutpile WHERE userid='".$user_id."'";
+		$result = runDBQuery($queryString);
+		$nuts = @mysql_fetch_assoc($result));
+		foreach($nuts as $col=>$val){
+			if($col != 'userid'){
+				$nut = substr($col, 1,strlen($col)-2);
+				if(!isset($old_nuts[$nut])){
+					$old_nuts[$nut] = $val;
+				}else{
+					$old_nuts[$nut] = $old_nuts[$nut] + $val;
+				}
+			}
+		}
+		return $old_nuts;
+	}
+	private function migrateItemsAndNuts($user_id){
+		$inventory = $this->getInventory();
+		$old_items = $this->getOldItems($user_id);//get items
+		$old_nuts = $this->getOldNuts($user_id)//get nuts
+		//add nuts and items to inventory in massive update string
 	}
 	public function migrateAccount($old_loginname, $old_password){
 		$old_user_id = self::getOldUserID($old_loginname, $old_password);
 		$this->migrateOldSquffies($old_user_id);//migrate squffies
-		//migrate items
+		$this->migrateItemsAndNuts($old_user_id);//migrate items
+		//migrate farms
 		//mark user account as migrated
 	}
 	public static function loginNameTaken($login_name){
