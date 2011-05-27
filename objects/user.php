@@ -237,11 +237,9 @@ class User {
 		return $today_date; //update later
 	}
 	private function setTraitColor(&$squffy_array, $trait, $color){
-		$trait_name = substr($trait, 0, strlen($trait)-1);
-		if($color != NULL) $squffy_array[$trait_name."_color"] = $color;
+		if($color != NULL) $squffy_array[$trait] = $color;
 	}
 	private function setTraitStrength(&$squffy_array, $trait, $strength){
-		$trait_name = substr($trait, 0, strlen($trait)-1);
 		if($strength > 0){
 			$value = "";
 			if($strength == 5){
@@ -249,22 +247,58 @@ class User {
 			}else{
 				$value= "S";
 			}
-			$squffy_array[$trait_name."_strength"] = $value;
+			$squffy_array[$trait] = $value;
+		}
+	}
+	private function insertSquffy(&$squffy, &$squffy_appearance){
+		$personality = Personality::RandomTraits();
+		$squffyInsert = 'INSERT INTO squffies 
+					(squffy_owner, squffy_name, squffy_gender, squffy_birthday, squffy_species, c1, c2, c3, c4, c5, c6, c7, c8, base_color, eye_color, foot_color, is_custom, strength1_id, strength2_id, weakness1_id, weakness2_id, mate_id, breeding_price_sd, breeding_price_item_id, breeding_price_item_amount)
+					 VALUES ("'.$this->id.'", "'.$squffy['squffy_name'].'", "'.$squffy['squffy_gender'].'", "'.$squffy['squffy_birthday'].'", "'.$squffy['squffy_species'].'", "'.$squffy['c1'].'", "'.$squffy['c2'].'", "'.$squffy['c3'].'", "'.$squffy['c4'].'", "'.$squffy['c5'].'", "'.$squffy['c6'].'", "'.$squffy['c7'].'", "'.$squffy['c8'].'",
+					"'.$squffy['base_color'].'", "'.$squffy['eye_color'].'", "'.$squffy['foot_color'].'", "'.$squffy['is_custom'].'", "'.$personality['strength1'].'", "'.$personality['strength2'].'", "'.$personality['weakness1'].'", "'.$personality['weakness2'].'", "'.$squffy['mate_id'].'", "'.$squffy['breeding_price_sd'].'", "'.$squffy['breeding_price_item_id'].'"
+					, "'.$squffy['breeding_price_item_amount'].'");';
+		runDBQuery($squffyInsert);
+		$squffy_id = @mysql_insert_id();
+		$trait_ids = Appearance::getTraitIdNameMap();
+		$trait_order = 0;
+		foreach ($squffy_appearance as $col=>$val){
+			switch(substr($col,-2))
+			{
+				case "s":
+					$trait_name = substr($col,0,strlen($col)-1);
+					$id = $trait_ids[$trait_name];
+					$trait_order++;
+					$trait_color = $squffy_appearance[$trait_name.'c'];
+					$appearanceInsert = "INSERT INTO squffy_appearance VALUES ('".$squffy_id."', '".$trait_id."', '".$val."', '".$trait_color."', ".$trait_order.");";
+					runDBQuery($appearanceInsert);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	private function migrateOldSquffies($old_user_id){
 		$queryString = "SELECT * FROM old_squffies WHERE ownerid = '".$old_user_id."'";
 		$result = runDBQuery($queryString);
-		
 		$today_date = date("Y-m-d H:i:s");
 		
 		while($old_squffies = @mysql_fetch_assoc($result)){
 			$squffy = array();
+			$squffy_appearance = array();
 			foreach($old_squffies as $col=>$val){
 				switch(col)
 				{
 					case "age":
-						$squffy['birthday'] = $this->calcBirthday($val, $today_date);
+						$squffy['squffy_birthday'] = $this->calcBirthday($val, $today_date);
+						break;
+					case "name":
+						$squffy['squffy_name'] = $val;
+						break;
+					case "gender":
+						$squffy['squffy_gender'] = $val;
+						break;
+					case "species":
+						$squffy['squffy_species'] = $val;
 						break;
 					case "generation":
 						if($val == 1) $squffy['is_custom'] = true;
@@ -322,234 +356,238 @@ class User {
 						$squffy['foot_color'] = $val;
 						break;
 					case "bellyc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "bellys":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "cheetahc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "cheetahs":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "maskc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "masks":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "socksc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "sockss":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "hennac":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "hennas":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "leopardc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "leopards":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "stripesc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "stripess":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "rainc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "rains":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "skunkc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "skunks":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "hoodc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "hoods":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "paints":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "paintc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "lemurc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "lemurs":
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "giraffec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "giraffes":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "vines":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "vinec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "patchesc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "patchess":
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "siamesec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "siameses":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "wolfc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "wolfs":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "eartipsc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "eartipss":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "frecklesc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "freckless":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "linec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "lines":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "weavec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "weaveo":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "sunc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "suns":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "tattoos":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "tattooc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "rootsc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "rootss":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "harlequinc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "harlequins":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "swirlc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "swirls":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "marblec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "marbles":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "burnc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "burns":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "clawc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "claws":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "birdwings":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "birdwingc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "hornss":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "hornsc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "pixiec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "pixies":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "manec":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "manes":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "antennac":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "antennas":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "beardc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "beards":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "whiskerc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "whiskers":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "kirinc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "kirins":
-						$this->setTraitStrength($squffy, $col, $val);
+						$this->setTraitStrength($squffy_appearance, $col, $val);
 						break;
 					case "antlerc":
-						$this->setTraitColor($squffy, $col, $val);
+						$this->setTraitColor($squffy_appearance, $col, $val);
 						break;
 					case "antlers":
-						$this->setTraitStrength($squffy, $col, $val);
-						break;
+						$this->setTraitStrength($squffy_appearance, $col, $val);
+						break;	
 					default:
-						break; //do nothing in the default case		
+						break; //do nothing in the default case
+				}
 			}
+			$this->insertSquffy($squffy, $squffy_appearance);
 		}
 	}
 	public function migrateAccount($old_loginname, $old_password){
