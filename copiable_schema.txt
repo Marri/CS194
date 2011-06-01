@@ -439,7 +439,10 @@ CREATE TABLE IF NOT EXISTS notifications (
 	notification_id int unsigned primary key auto_increment,
 	notification_type tinyint unsigned,
 	user_id mediumint unsigned,
-	unread enum('true', 'false') default 'false'
+	unread enum('true', 'false') default 'false',
+	other_id mediumint unsigned,
+	other_squffy int unsigned,
+	your_squffy int unsigned
 );
 
 DROP TABLE IF EXISTS payments;
@@ -680,6 +683,7 @@ VALUES
 	(3, 2, 'seak', 'M', '2011-04-05 22:16:47', 20, 2, 1, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'true', 'false', 'true', 1, 2, 3, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 	(113, 1, 'Pretend x Jeremy', 'M', '2011-05-30 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 2, 12, 22, 36, 47, 56, 70, 71, 'FBEAA6', '003844', 'AF7A3A', 'false', 'false', 'false', 'false', 'false', 'false', 1, 7, 11, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 	(114, 1, 'Pretend x Jeremy', 'M', '2011-05-25 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 8, 16, 20, 36, 48, 59, 66, 77, 'F8FECA', '00932F', 'DD7F3C', 'false', 'false', 'false', 'false', 'false', 'false', 0, 7, 8, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+	(116, 1, 'Tigra', 'F', '2011-06-01 08:33:44', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'FF8800', '0000BB', '886633', 'true', 'false', 'false', 'false', 'false', 'false', 0, 2, 3, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 	(115, 1, 'Pretend x Jeremy', 'M', '2011-05-20 02:49:46', 0, 1, NULL, NULL, 0, 100, 100, 100, 0, 6, 11, 26, 39, 46, 54, 63, 73, 'F8EEDB', '004330', 'C09D3D', 'false', 'false', 'false', 'false', 'false', 'false', 1, 6, 11, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 INSERT INTO `squffy_family`
@@ -708,7 +712,9 @@ VALUES
 	(115, 33, 'C', 'EAD47A', 0),
 	(115, 23, 'C', 'FFFFEB', 1),
 	(115, 17, 'S', 'FEFCF0', 2),
-	(115, 15, 'S', 'FF83D1', 3);
+	(115, 15, 'S', 'FF83D1', 3),
+	(116, 9, 'S', '000000', 1),
+	(116, 16, 'S', '000000', 0);
 	
 INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`, `chromosome`, `c_increase`, `h_decrease`)
@@ -820,3 +826,5 @@ INSERT INTO `newbie_packs` (`user_id`) VALUES
 (3);
 
 INSERT INTO `cache_changed` VALUES (1), (2), (3);
+
+INSERT INTO notifications VALUES (NULL, 1, 1, 'false', 2, 3, 114), (NULL, 1, 1, 'true', 2, 3, 116);

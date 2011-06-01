@@ -48,6 +48,7 @@ class User {
 		if($this->inventory == NULL) { $this->fetchInventory(); }
 		return $this->inventory;
 	}
+	public function getLink() { return '<a href="profile.php?id=' . $this->id . '">' . $this->username . '</a>'; }
 	
 	//Predicates
 	public function isActivated(){	return $this->activated; }
