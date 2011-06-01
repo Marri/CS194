@@ -291,6 +291,7 @@ CREATE TABLE `nutbreedings` (
 --
 -- Table structure for table `nutpile`
 -- add up each section and add to inventory
+-- ignore prefix
 
 DROP TABLE IF EXISTS `nutpile`;
 CREATE TABLE `nutpile` (
@@ -828,7 +829,7 @@ CREATE TABLE `snowdreys` (
 --  basec = squffies.base_color
 --  eyec = squffies.eye_color
 --  feetearc = squffies.foot_color
---  all the trait "s" columns: 5 means set squffy_appearance.trait_square = C and 10=S means the same.
+--  all the trait "s" columns: 5 means set squffy_appearance.trait_square = C and 10=S means the same, 0 means they don't have.
 --  all trait 'c' columns: set squffy_appearance.trait_color to value
 --	php foreach is suggested
 

@@ -178,5 +178,14 @@ class Appearance {
 			"white" => "FFFFFF"
 		);
 	}
+	public static function getTraitIdNameMap(){
+		$queryString = "SELECT trait_id, trait_name FROM appearance_traits";
+		$result = runDBQuery($queryString);
+		
+		$trait_map = array();
+		while($traits = @mysql_fetch_assoc($result)){
+			$trait_map[$traits['trait_name']] = traits['trait_id'];
+		}
+		return $trait_map;
 }
 ?>
