@@ -244,7 +244,7 @@ class User {
 		return $birthday;
 	}
 	private function setTraitColor(&$squffy_array, $trait, $color){
-		if($color != NULL) $squffy_array[$trait] = $color;
+		if($color != NULL) { $squffy_array[$trait] = $color; }
 	}
 	private function setTraitStrength(&$squffy_array, $trait, $strength){
 		if($strength > 0){
@@ -257,7 +257,8 @@ class User {
 			$squffy_array[$trait] = $value;
 		}
 	}
-	private function insertSquffy(&$squffy, &$squffy_appearance, &trait_ids){
+	
+	private function insertSquffy(&$squffy, &$squffy_appearance, &$trait_ids){
 		$personality = Personality::RandomTraits();
 		$squffyInsert = 'INSERT INTO squffies 
 					(squffy_owner, squffy_name, squffy_gender, squffy_birthday, squffy_species, c1, c2, c3, c4, c5, c6, c7, c8, base_color, eye_color, foot_color, is_custom, strength1_id, strength2_id, weakness1_id, weakness2_id, mate_id, breeding_price_sd, breeding_price_item_id, breeding_price_item_amount)
@@ -602,7 +603,7 @@ class User {
 		$queryString = "SELECT itemname FROM old_items WHERE ownerid='".$user_id."'";
 		$items = runDBQuery($queryString);
 		while($item = @mysql_fetch_assoc($items)){
-			if(!isset($old_items[$item['itemname']]){
+			if(!isset($old_items[$item['itemname']])){
 				$old_items[$item['itemname']] = 0;
 			}else{
 				$old_items[$item['itemname']]++;
@@ -614,7 +615,7 @@ class User {
 		$old_nuts = array();
 		$queryString = "SELECT * FROM old_nutpile WHERE userid='".$user_id."'";
 		$result = runDBQuery($queryString);
-		$nuts = @mysql_fetch_assoc($result));
+		$nuts = @mysql_fetch_assoc($result);
 		foreach($nuts as $col=>$val){
 			if($col != 'userid'){
 				$nut = substr($col, 1,strlen($col)-2);
@@ -630,7 +631,7 @@ class User {
 	private function migrateItemsAndNuts($user_id){
 		$inventory = $this->getInventory();
 		$old_items = $this->getOldItems($user_id);//get items
-		$old_nuts = $this->getOldNuts($user_id)//get nuts
+		$old_nuts = $this->getOldNuts($user_id);//get nuts
 		//add nuts and items to inventory in massive update string
 	}
 	public function migrateAccount($old_loginname, $old_password){
