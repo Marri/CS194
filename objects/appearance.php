@@ -184,8 +184,9 @@ class Appearance {
 		
 		$trait_map = array();
 		while($traits = @mysql_fetch_assoc($result)){
-			$trait_map[$traits['trait_name']] = traits['trait_id'];
+			$trait_map[$traits['trait_name']] = $traits['trait_id'];
 		}
 		return $trait_map;
+	}	
 }
 ?>
