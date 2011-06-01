@@ -16,7 +16,7 @@ include("./includes/header.php");
 ?>
 
 <a href='design.php'>Design a custom squffy</a><br />
-<a href='customs.php?view=designs'>Your saved designs</a><br />
+<a href='designs.php'>Your saved designs</a><br />
 <a href='custom.php'>Create a custom squffy</a><br />
 
 <?php

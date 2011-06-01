@@ -4,7 +4,7 @@ include("../objects/appearance.php");
 include("../objects/design.php");
 
 $id = $_GET['design'];
-$design = Design::GetDesign($id);
+$design = Design::getDesignByID($id);
 $design->fetchSpecies();
 $species = $design->getSpeciesName();
 $base = $design->getBase();

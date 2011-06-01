@@ -1,26 +1,35 @@
 <?php
-
+$selected = 'interact';
 include("./includes/header.php");
 
-$notifications = $user->getNotifications();
-
+//$notifications = $user->getNotifications();
+$notifications = Notification::getNotificationsByUser($userid);
+$cur = 'odd';
 ?>
 
-<div class='text-center width100p'><h1>Notifications</h1></div>
+<div class='text-center width100p content-header'><b>Notifications</b></div>
 
-<table>
-	<tr><th>Notification Type</th><th>unread</th></tr>
+<table cellspacing="0" class="width100p">
 	<?php
-	for($i = 0; $i < count($notifications); $i++){
-	
-		$curr_note = $notifications[$i];
+	foreach($notifications as $curr_note) {
 		?>
-		<tr><td><?php echo $curr_note->getNoteType() ?></td><td><?php echo $curr_note->unread(); ?></td></tr>
+		<tr<?php $cur = row($cur); ?>>
+        	<td class="width50 text-center">
+            	<?php if($curr_note->unread()) { ?><img src="./images/icons/star.png" alt="*" /> <?php } ?>
+            </td>
+        	<td class="width300"><?php echo $curr_note->getType() ?></td>
+            <td class="width300">Date will go here</td>
+            <td><a href="#">Respond</a></td>
+        </tr>
 		<?php
 	}
 ?>
 </table>
 
 <?php
+function row($cur) {
+	echo ' class="' . $cur . '"';
+	return $cur == "odd" ? "even" : "odd";
+}
 include('./includes/footer.php');
 ?>

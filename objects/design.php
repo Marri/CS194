@@ -1,5 +1,8 @@
 <?php
 class Design {	
+	const MAX_NORMAL = 4;
+	const MAX_UPGRADE = 8;
+	
 	private
 		$id,
 		$name,
@@ -36,6 +39,15 @@ class Design {
 	public function getFoot(){ return $this->foot; }
 	public function getUser(){ return $this->user; }
 	public function getNumTraits() { return $this->num_traits; }
+	public function getTraitColor($index) { 
+		$trait = $this->traits[$this->num_traits - 1 - $index];
+		return $trait['color'];
+	}
+	public function getTraitName($index) { 
+		$trait = $this->traits[$this->num_traits - 1 - $index];
+		if($trait['type'] == 2) { return 'mut' . $trait['name']; }
+		return $trait['name'];
+	}
 	
 	public function getImage() {
 		$img = './images/designs/' . floor($this->id / 1000) . '/' . $this->id . '.png';
@@ -62,9 +74,11 @@ class Design {
 		return $designs;
 	}
 	
-	public static function GetDesign($id) {
+	public static function getDesignByID($id) {
+		if($id < 1) { return NULL; }
 		$query = "SELECT * FROM designs WHERE design_id = $id";
 		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
 		$info = @mysql_fetch_assoc($result);
 		$design = new Design($info);
 		return $design;
@@ -98,6 +112,13 @@ class Design {
 		$result = runDBQuery($query);
 		$info = @mysql_fetch_assoc($result);
 		$this->species_name = $info['species_name'];
+	}
+	
+	public function delete() {
+		$query = 'DELETE FROM design_traits WHERE design_id = ' . $this->id;
+		runDBQuery($query);
+		$query = 'DELETE FROM designs WHERE design_id = ' . $this->id;
+		runDBQuery($query);
 	}
 }
 ?>

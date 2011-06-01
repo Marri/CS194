@@ -28,12 +28,15 @@ $links = array(
 	array('name'=>'history', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=history'),
 	array('name'=>'family', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=family'),
 );
+
 if($loggedin) {
 	$links[] = array('name'=>'interact', 'url'=>"view_squffy.php?id=" . $squffy->getID() . '&view=interact');
 	if($squffy->getOwnerID() == $userid || $user->isAdmin()) { 
 		$links[] = array('name'=>'edit squffy', 'url'=>"edit_squffy.php?id=" . $squffy->getID()); 
 	}
 }
+
+$cur = "odd";
 drawMenuTop($title, $links);
 
 $view = 'home';
@@ -66,17 +69,29 @@ if($view != 'home') { die(); }
 ?>
 <table class="width100p squffy-table" cellspacing="0" cellpadding="0">
 <tr><th colspan="4" class="content-subheader">General Information</th></tr>
-<tr class="even">
+<tr class="odd">
 <th class="content-miniheader">Name</th>
 <td class="text-left pad-left-small"><?php echo $squffy->getName(); ?></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <th class="content-miniheader">Gender</th>
 <td class="text-left pad-left-small"><?php echo $squffy->getGenderDisplay(); ?></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <th class="content-miniheader">Age</th>
-<td class="text-left pad-left-small"><?php echo $squffy->getAge(); ?> days old</td>
+<td class="text-left pad-left-small"><?php
+if(!$squffy->isEgg()) {
+ echo $squffy->getAge() . ' days old';
+} else { echo 'Egg'; }
+?>
+</td>
+</tr>
+<tr class="even">
+<th class="content-miniheader">Birthday</th>
+<td class="text-left pad-left-small"><?php 
+$date = strtotime($squffy->getBirthday());
+if(!$squffy->isCustom()) { $date += 60 * 60 * 24 * 5; }
+echo date("F j, Y",  $date); ?></td>
 </tr>
 <tr class="odd">
 <th class="content-miniheader">Species</th>
@@ -176,6 +191,11 @@ function drawBar($percent, $highIsGood = true) {
 			' . $percent . '%
 		</div>
 	</div>';
+}
+
+function row($cur) {
+	echo ' class="' . $cur . '"';
+	return $cur == "odd" ? "even" : "odd";
 }
 
 include('./includes/footer.php');

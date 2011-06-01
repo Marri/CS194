@@ -57,7 +57,7 @@ body, html {
 .width250 { width: 250px; }
 .width300 { width: 300px; }
 .width400 { width: 400px; }
-.width450 { width: 450px; }
+.width450 { width: 450px !important; }
 
 /*.male { background-color: #F2F2FF; }
 .female { background-color: #FFF2F2; }*/

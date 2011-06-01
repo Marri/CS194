@@ -23,6 +23,17 @@ if($newHire && !$newHIA && !$newHSD) {
 		$valid = false;
 	}
 }
+if($newHIA === "0" && !$newHSD) { $newHSD = 'NULL'; }
+if($newHSD === "0" && !$newHIA) { $newHIA = 'NULL'; }
+
+if($newBreed && !$newBIA && !$newBSD) {
+	if(!($newBIA === "0" || $newBSD === "0")) {
+		$errors[] = "You must set a price to breed to your squffy.";
+		$valid = false;
+	}
+}
+if($newBIA === "0" && !$newBSD) { $newBSD = 'NULL'; }
+if($newBSD === "0" && !$newBIA) { $newBIA = 'NULL'; }
 
 if(!$newName) {
 	$errors[] = "You must choose a name for your squffy.";
@@ -40,7 +51,7 @@ if($newHire != $hireable) {
 	$hireable = $newHire;
 }
 if($newHire && $newHSD != $hire_sd) {
-	$changes .= ', hire_price_sd = \'' . $newHSD . "'";
+	$changes .= ', hire_price_sd = ' . $newHSD . '';
 	$hire_sd = $newHSD;
 }
 if($newHire && $newHI != $hire_item) {
@@ -48,7 +59,7 @@ if($newHire && $newHI != $hire_item) {
 	$hire_item = $newHI;
 }
 if($newHire && $newHIA != $hire_amount) {
-	$changes .= ', hire_price_item_amount = \'' . $newHIA . '\'';
+	$changes .= ', hire_price_item_amount = ' . $newHIA . '';
 	$hire_amount = $newHIA;
 }
 
@@ -57,7 +68,7 @@ if($newBreed != $breedable) {
 	$breedable = $newBreed;
 }
 if($newBreed && $newBSD != $breed_sd) {
-	$changes .= ', breeding_price_sd = \'' . $newBSD . '\'';
+	$changes .= ', breeding_price_sd = ' . $newBSD . '';
 	$breed_sd = $newBSD;
 }
 if($newBreed && $newBI != $breed_item) {
@@ -65,13 +76,8 @@ if($newBreed && $newBI != $breed_item) {
 	$breed_item = $newBI;
 }
 if($newBreed && $newBIA != $breed_amount) {
-	$changes .= ', breeding_price_item_amount = \'' . $newBIA . '\'';
+	$changes .= ', breeding_price_item_amount = ' . $newBIA . '';
 	$breed_amount = $newBIA;
-}
-
-if($newBreed && !$newBIA && !$newBSD) {
-	$errors[] = "You must set a price to breed to your squffy.";
-	$valid = false;
 }
 
 if($valid) {

@@ -57,7 +57,7 @@ if(isset($_POST['heal'])) {
 		} else {
 			$squffy->heal($doctor);
 			$change = $squffy->getHealth() - $original;
-			$notices[] = pluralize($squffy->getName()) . " health has increased by $change.";
+			$notices[] = possessive($squffy->getName()) . " health has increased by $change.";
 		}
 	}
 }
@@ -80,8 +80,69 @@ if(isset($_POST['feed'])) {
 			$squffy->feed($item);
 			$user->updateInventory($col, -1, true);
 			$change = $old - $squffy->getHunger();
-			$notices[] = pluralize($squffy->getName()) . ' hunger has decreased by ' . $change . '.';
+			$notices[] = possessive($squffy->getName()) . ' hunger has decreased by ' . $change . '.';
 		}
 	}
+}
+
+//Undress
+if(isset($_POST['remove_item'])) {
+	$squffy->fetchItems();
+	$items = $squffy->getItems();
+	$iid = getID('remove_item');
+	$item = Item::getItemByID($iid);
+	
+	$wearing = -1;
+	for($i = 0; $i < sizeof($items); $i++) {
+		$tmp = $items[$i];
+		if($tmp->getID() == $iid) {  $wearing = $i; }
+	}
+	
+	if($item == NULL) {
+		$errors[] = "You must pick an item to remove.";
+	} else {
+		if($wearing < 0) {
+			$errors[] = "Your squffy is not wearing this item.";
+		} else {
+			$squffy->removeItem($item, $wearing);
+			$user->updateInventory($item->getColumnName(), 1, true);
+			include('./scripts/reset_image.php');
+		}
+	}
+}
+
+//Dress
+if(isset($_POST['dress'])) {
+	$iid = getID('outfit_id');
+	$item = Item::getItemByID($iid);
+	$inventory = $user->getInventory();
+	$squffy->fetchItems();
+	$items = $squffy->getItems();
+	
+	if($item == NULL) {
+		$errors[] = "You must pick an item to put on.";
+	} else {
+		$name = $item->getName();
+		$col = $item->getColumnName();
+		if($inventory[$col] < 1) {
+			$errors[] = 'You do not have any ' . pluralize($name) .' to put on.';
+		} else {
+			$hasB = false;
+			$sameItem = false;
+			foreach($items as $i) { 
+				if($i->isBackground()) { $hasB = true; } 
+				if($i->getID() == $iid) { $sameItem = true; }
+			}
+			if($hasB && $item->isBackground()) {
+				$errors[] = 'You already have a background on this squffy.';
+			} elseif($sameItem) {
+				$errors[] = 'You already have this item on this squffy.';
+			} else {
+				$user->updateInventory($col, -1, true);
+				$squffy->addItem($item);
+				include('./scripts/reset_image.php');
+			}
+		}
+	}	
 }
 ?>

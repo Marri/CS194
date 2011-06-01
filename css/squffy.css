@@ -23,3 +23,11 @@
 .squffy-table td {
 	padding-right: 7px;
 }
+
+.info-box {
+	float: right;
+	width: 100px;
+	height: 100px;
+	padding: 2px;
+	font-size: 11px;
+}

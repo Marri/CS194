@@ -1,11 +1,10 @@
 MISSING IMAGES
-fey penguin
-lihtan penguin
-fey harvest witch hat
-all tree and ground items
-new tree squffy
+new tree
 new ground mutations
-new markings: lihtan/fey/sand
+many items for fey
+all items for new tree and new ground
+holiday tree background for all
+new markings: lihtan/sand/fey
 
 TODO:
 Check header and footer includes in the mysql error
@@ -14,10 +13,8 @@ Email staff email if MySQL error
 User::setLevel($levelID) needs to be written
 Finish database schema
 Update all current features to Look Pretty with layout
-Add edit/delete design page
 Add restrictions for design creation
 Add support for dominant traits (all currently recessive)
-How handling eggs...?
 Fix all the images to standardize at 375 x 375
 Fix design images: should never return generate_image file as url
 Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
@@ -52,9 +49,9 @@ Slacker
 Placid
 
 Jobs:
--Jobs: teacher (degree), doctor (health), cook (hunger), baker (genes)
--More jobs: farmer (food), forester (wood), midwife (pregnancies), nursemaid (eggs)
--Making jobs: builder/carpenter (buildings), tailor (accessories), artist (backgrounds)
+-Jobs: teacher (degree), doctor (health), cook (hunger)
+-More jobs: farmer (food), forester (wood), midwife (shortening pregnancies), nursemaid (tending eggs)
+-Making jobs: carpenter (buildings), tailor (accessories), artist (backgrounds), blacksmith (metal tools), miner (ore), woodcarver (wood tools)
 -Ideas: trainer (build c1-c4), herder (raise animals for food and clothing?), carpenter (make tools)
 wood for building, what for clothes and art?
 
@@ -79,5 +76,26 @@ Added food information to the database
 Added basic error checking to the design saving feature
 Cron to reset hire and breeding rights
 
-To finish this week:
-Design feature
+Progress this week:
+Imported lots of images (hatchling images, child images, healing tree/market/seymose/olivia)
+Kitchen (batches, display)
+Woodshop, Smithy (duplicates of kitchen)
+Healing tree functionality done
+Adding and removing items to a squffy is now done
+Functionality for overwrite design, edit design, delete design
+Image generators can handle backgrounds
+Age differences implemented (nursery, images, viewing page)
+
+Finish this week:
+Pantry
+Child images for not-tree
+Seymose and Olivia
+Notifications
+Farms
+
+Finish next week:
+UI
+-Hoard
+-Messages
+-Notifications
+-Forums

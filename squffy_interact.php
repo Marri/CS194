@@ -3,7 +3,6 @@
 <form action="view_squffy.php?id=<?php echo $id; ?>&view=interact" method="post">
 
 <?php 
-$cur = "even";
 if($squffy->getOwnerID() == $userid) { 
 	$item_list = Item::getItemList();
 	
@@ -34,7 +33,7 @@ if($squffy->getOwnerID() == $userid) {
 	<th class="content-miniheader width150">Feed</th>
 	<td class="text-left">';
 	
-	if(!$squffy->isHungry()) {
+	if($squffy->getHunger() < 1) {
 		echo '<span class="small-error">Your squffy is already full.</span>';
 	} elseif(strlen($items) < 1) {
 		echo '<span class="small-error">You have no available food.</span>';
@@ -70,9 +69,11 @@ if($squffy->getOwnerID() == $userid) {
 	echo '><th class="content-miniheader width150">Dress</th>
 	<td class="text-left">';
 	$options = '';
-	foreach($item_list as $item) { if($item->isClothing() || $item->isBackground()) { $options .= '<option value="">' . $item->getName() . '</option>'; } }
+	foreach($item_list as $item) { 
+		if($item->isClothing() || $item->isBackground()) { $options .= '<option value="' . $item->getID() . '">' . $item->getName() . '</option>'; } 
+	}
 	if(strlen($options) > 0) {
-		echo '<select name="" size="1">' . $options . '</select> <input type="submit" class="submit-input" value="Put on" />';
+		echo '<select name="outfit_id" size="1">' . $options . '</select> <input type="submit" class="submit-input" name="dress" value="Put on" />';
 	} else {
 		echo '<span class="small-error">You have no clothing or backgrounds available.</span>';
 	}
@@ -117,9 +118,14 @@ if(!$squffy->canWorkFor($userid)) { ?>
     <td class="text-left">
     <?php  if($squffy->isHireable() && $squffy->isAbleToWork()) {
 		$price = $squffy->getHirePrice();
-	 ?>
-    	<input type="radio" name="h_cost" value="item" checked /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName(); ?>s
-    	<input type="radio" name="h_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars
+		
+		if($price->getItemPrice() || $price->getItemPrice() === "0") {
+		 ?>
+			<input type="radio" name="h_cost" value="item" /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName() . 's'; 
+		}
+		if($price->getSDPrice() || $price->getSDPrice() === "0") {?>
+    		<input type="radio" name="h_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars
+        <?php } ?>
         
         <input type="submit" class="submit-input" name="buy_hire" value="Purchase right to hire" /></td> </tr>
         <tr><td></td><td class="text-left"><span class="small"><b>Note</b>: Squffy must be assigned to a job within 30 minutes.</span><br /><br />
@@ -139,9 +145,12 @@ if(!$squffy->canBreedFor($userid)) { ?>
     <th class="content-miniheader width150">breed to</th>
     <td class="text-left">
     <?php  if($squffy->isBreedable() && $squffy->isAbleToWork()) {
-		$price = $squffy->getBreedPrice(); ?>
-    	<input type="radio" name="b_cost" value="item" checked /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName(); ?>s
-    	<input type="radio" name="b_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars
+		$price = $squffy->getBreedPrice(); 
+		if($price->getItemPrice() || $price->getItemPrice() === "0") {?>
+    	<input type="radio" name="b_cost" value="item" /> <?php echo $price->getItemPrice() . ' ' . $price->getItemName() . 's'; 
+		}
+		if($price->getSDPrice() || $price->getSDPrice() === "0") {?>
+    	<input type="radio" name="b_cost" value="sd" /> <?php echo $price->getSDPrice(); ?> Squffy Dollars<?php } ?>
         <input type="submit" class="submit-input" name="buy_breed" value="Purchase right to breed" /></td> </tr>
         <tr><td></td><td class="text-left"><span class="small"><b>Note</b>: Squffy must be bred within 30 minutes.</span><br /><br />
     <?php } elseif (!$squffy->isBreedable()) {
@@ -220,10 +229,5 @@ if(!$squffy->hasMate()) {
 </table>
 
 <?php
-function row($cur) {
-	echo ' class="' . $cur . '"';
-	return $cur == "odd" ? "even" : "odd";
-}
-
 include('./includes/footer.php');
 ?>

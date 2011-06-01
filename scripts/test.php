@@ -1,5 +1,19 @@
 <?php
 include('../includes/connect.php');
+$objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy', 'food', 'recipe');
+foreach($objects as $object) {
+	include('../objects/' . $object . '.php');
+}
+
+//reset all
+function resetAll() {
+	$squffies = Squffy::getSquffies("SELECT * FROM squffies");
+	foreach($squffies as $squffy) {
+		include('./reset_image.php');
+	}
+}
+
+/*
 $objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy');
 foreach($objects as $object) {
 	include('../objects/' . $object . '.php');

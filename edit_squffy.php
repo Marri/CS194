@@ -48,6 +48,11 @@ include('./scripts/squffy_actions.php');
 displayErrors($errors);
 displayNotices($notices);
 
+if($hire_sd == 'NULL') { $hire_sd = ''; }
+if($hire_amount == 'NULL') { $hire_amount = ''; }
+if($breed_amount == 'NULL') { $breed_amount = ''; }
+if($breed_sd == 'NULL') { $breed_sd = ''; }
+
 $title = 'Edit '.$squffy->getName();
 $links = array(
 	array('name'=>'basics', 'url'=>"view_squffy.php?id=" . $squffy->getID()),
@@ -81,9 +86,11 @@ $cur = "even";
         <th class="content-subheader" colspan="4">update information</th>
     </tr>
     <tr<?php $cur = row($cur); ?>>
-        <th class="content-miniheader">Name</th>
+        <th class="width250 content-miniheader">Name</th>
         <td colspan="3"><input class="width100p" type='text' name="squffy_name" value="<?php echo $name; ?>" /></td>
     </tr>
+    
+    <?php if($squffy->isAdult()) { ?>
     <tr<?php $cur = row($cur); ?>>
         <th class="width250 content-miniheader">Available for hire?</th>
         <td class="text-left" colspan="3"><input type='radio' name="hireable" class="hireable" value='y'<?php checked($hireable); ?> /> Yes <input type='radio' name="hireable" class="hireable" value='n'<?php checked(!$hireable); ?> /> No</td>
@@ -116,6 +123,7 @@ $cur = "even";
     	<td></td>
         <td colspan="3" class="small"><b>Note</b>: Leave blank to disallow an option. Put 0 to allow free breeding.</td>
     </tr>
+    <?php } ?>
 	<tr<?php $cur = row($cur); ?>>
     	<td></td>
         <td colspan="3"><input class="submit-input margin-bottom-small margin-top-small" type='submit' name='update_squffy' value='Update <?php echo $name; ?>' /></td>

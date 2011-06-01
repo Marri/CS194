@@ -1,5 +1,6 @@
 <?php
-$selected = "squffies";
+$selected = 'squffies';
+$css[] = 'squffy';
 include("./includes/header.php");
 
 $id = getID("id", $userid);
@@ -54,17 +55,30 @@ echo '<form action="drey.php" method="get">
 <tr><td colspan="4"><table class="width100p">
 ';
 foreach($squffies as $squffy) {
-	if($i%5 == 0) { echo '<tr>'; }
-	echo '<td class="width150 bordered ';
+	if($squffy->isEgg()) { continue; }
+	if($i%4 == 0) { echo '<tr>'; }
+	echo '<td class="vertical-top width150 bordered ';
 	if($squffy->getGender() == 'F') { echo 'fe'; }
-	echo 'male text-center"><img src="' . $squffy->getThumbnail() . '" /><br>';
-	echo $squffy->getLink() . '</td>';
-	if($i%5 == 4) { echo '</tr>'; }
+	echo 'male text-center"><div class="float-left width100">
+	<a href="view_squffy.php?id=' . $squffy->getID() .'">
+	<img src="' . $squffy->getThumbnail() . '" /><br>';
+	echo $squffy->getName() . '</a></div>
+	<div class="info-box">';	
+	if($squffy->isSick()) { echo '<img src="./images/icons/sick.png" title="Sick" /> Sick<br />'; }
+	if($squffy->isHungry()) { echo '<img src="./images/icons/hungry.png" title="Hungry" /> Hungry<br />'; }
+	if($squffy->isSick() || $squffy->isHungry()) { echo '<br />'; }
+	//if($squffy->isForSale()) { echo '<img src="./images/icons/sale.png" title="For sale" /> '; }
+	if($squffy->isBreedable()) { echo '<img src="./images/icons/heart.png" title="For breeding" /> Breedable<br />'; }
+	if($squffy->isPregnant()) { echo '<img src="./images/icons/egg.png" title="Pregnant" /> Pregnant<br />'; }
+	if($squffy->isWorking()) { echo '<img src="./images/icons/clock.png" title="Working" /> Working<br />'; }
+	echo '</div></td>';
+	if($i%4 == 3) { echo '</tr>'; }
 	$i++;
 }
-if($i%5 > 0) { 
-while($i%5 > 0) { echo '<td class="width150"></td>'; $i++; }
-echo '</tr>'; }
+if($i%4 > 0) { 
+	while($i%4 > 0) { echo '<td class="width150"></td>'; $i++; }
+	echo '</tr>'; 
+}
 echo '</table></td></tr></table>';
 
 include('./includes/footer.php');

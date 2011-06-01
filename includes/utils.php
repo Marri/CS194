@@ -1,6 +1,13 @@
 <?php
 function pluralize($string) {
 	$lastChar = substr($string, -1);
+	if($lastChar == 'y') { return substr($string, 0, strlen($string) - 1) . 'ies'; }
+	if($lastChar == 's') { return $string; }
+	return $string . 's';
+}
+
+function possessive($string) {
+	$lastChar = substr($string, -1);
 	if($lastChar == 's') { return $string . "'"; }
 	return $string . "'s";
 }

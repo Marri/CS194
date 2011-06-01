@@ -8,20 +8,53 @@ include("./includes/header.php");
 
 if(isset($_POST['save'])) {
 	$save_valid = true;
-	include('./save_design.php');
+	include('./scripts/save_design.php');
+}
+
+if(isset($_POST['overwrite'])) {
+	$save_valid = true;
+	include('./scripts/overwrite_design.php');
 }
 
 displayColors();
 
 $traitlist = trait_options($con);
-$numTraits = (isset($_POST['numTraits']) ? $_POST['numTraits'] : 1);
-if($numTraits < 1) { $numTraits = 1; }
 
 displayNotices($notices);
 displayErrors($errors);
+
+$design_id = getID('design');
+$design = NULL;
+if($design_id > 0) {
+	$design = Design::getDesignByID($design_id);
+	$design->fetchSpecies();
+	$design->fetchTraits();
+}
+
+$species = "tree";
+if(isset($_POST['species'])) { $species = $_POST['species']; }
+elseif($design != NULL) { $species = strtolower($design->getSpeciesName()); }
+
+$base = "F0DDA3";
+if(isset($_POST['base_color'])) { $base = $_POST['base_color']; }
+elseif($design != NULL) { $base = $design->getBase(); }
+
+$eye = "green";
+if(isset($_POST['eye_color'])) { $eye = $_POST['eye_color']; }
+elseif($design != NULL) { $eye = $design->getEye(); }
+
+$foot = "brown";
+if(isset($_POST['feet_ear_color'])) { $foot = $_POST['feet_ear_color']; }
+elseif($design != NULL) { $foot = $design->getFoot(); }
+
+$numTraits = 0;
+if(isset($_POST['numTraits'])) { $numTraits = $_POST['numTraits']; }
+elseif($design != NULL) { $numTraits = $design->getNumTraits(); }
+if($numTraits < 1) { $numTraits = 1; }
+
 ?>
 <form action="./design.php" method="post" name="design_form">
-<table cellspacing="4" class="content-table" id="contentTable">
+<table cellspacing="0" class="content-table" id="contentTable">
 	<tr><td class="width150"></td><td class="width150"></td><td class="width150"></td><td class="width150"></td></tr>
 	<tr>
     	<th class="content-header" colspan="4">Design Custom Squffy</th>
@@ -32,7 +65,7 @@ displayErrors($errors);
 	</tr>
     <tr>
     	<td colspan="3" class="width450 text-center">
-            <?php echo generateImage(); ?>			
+            <?php echo generateImage($design); ?>			
         </td>
         <td class="vertical-top small width150">
             Add as many traits as you like; trait 1 appears on top of trait 2, etc.<br /><br />
@@ -55,16 +88,16 @@ displayErrors($errors);
         	<select name="species" size="1" class="width125">';
 				$queryString = "SELECT * FROM `species` WHERE `design_activated` = 'true';";
 				$query = runDBQuery($queryString);
-				while($species = @mysql_fetch_assoc($query)) {
-					echo '<option value="' . strtolower($species['species_name']) . '"';
-					if(isset($_POST['species']) && $_POST['species']== strtolower($species['species_name'])) { echo ' selected'; }
-					echo '>' . $species['species_name'] . '</option>';
+				while($spec = @mysql_fetch_assoc($query)) {
+					echo '<option value="' . strtolower($spec['species_name']) . '"';
+					if($species == strtolower($spec['species_name'])) { echo ' selected'; }
+					echo '>' . $spec['species_name'] . '</option>';
 				}
             echo '</select>
 		</td>
         <td align="center" class="width150">
 		<input type="text" value="';
-		echo (isset($_POST['base_color']) ? $_POST['base_color'] : "F0DDA3");
+		echo $base;
 		echo '" id="baseColor" class="width100 float-left" name="base_color" />
 		<div class="baseColorSelector colorSelector">
 			<div class="baseBackgroundSelector backgroundSelector" style="background-color: rgb(255, 255, 255);">
@@ -73,7 +106,7 @@ displayErrors($errors);
         </td>
         <td align="center" class="width150">
 		<input type="text" value="';
-		echo (isset($_POST['eye_color']) ? $_POST['eye_color'] : "green");
+		echo $eye;
 		echo '" id="eyeColor" class="width100 float-left" name="eye_color" />
 		<div class="eyeColorSelector colorSelector">
 			<div class="eyeBackgroundSelector backgroundSelector" style="background-color: rgb(255, 255, 255);">
@@ -82,7 +115,7 @@ displayErrors($errors);
         </td>
         <td align="center" class="width150">
 		<input type="text" value="';
-		echo (isset($_POST['feet_ear_color']) ? $_POST['feet_ear_color'] : "brown");
+		echo $foot;
 		echo '" id="feetearColor" class="width100 float-left" name="feet_ear_color" />
 		<div class="feetearColorSelector colorSelector">
 			<div class="feetearBackgroundSelector backgroundSelector" style="background-color: rgb(255, 255, 255);">
@@ -103,12 +136,13 @@ displayErrors($errors);
 		if($loggedin) {
 			echo 'Design name:<br/> <input class="margin-top-small margin-bottom-small" type="text" name="design_name" size="20" maxlength="50" /><br />
 			<input type="submit" class="submit-input margin-top-small" value="Save Design" name="save" /><br /><br />';
-			$query = "SELECT * FROM designs WHERE user_id = $userid";
-			$result = runDBQuery($query);
-			if(@mysql_num_rows($result) > 0) {
-				echo 'Design:<br/> <select name="design" size="1">';
-				while($info = @mysql_fetch_assoc($result)) {
-					echo '<option value="' . $info['design_id'] . '">' . $info['design_name'] . '</option>';
+			$designs = Design::GetUserDesigns($userid);
+			if(sizeof($designs) > 0) {
+				echo 'Design:<br/> <select name="design_id" size="1">';
+				foreach($designs as $des) {
+					echo '<option value="' . $des->getID() . '"';
+					if($design != NULL && $design->getID() == $des->getID()) { echo ' selected'; }
+					echo '>' . $des->getName() . '</option>';
 				}
 				echo '</select><br /><input type="submit" class="submit-input margin-top-small" value="Overwrite Design" name="overwrite" />';
 			}
@@ -117,13 +151,17 @@ displayErrors($errors);
 		echo '</td>
 	</tr>';
 	for($i = 1; $i <= $numTraits; $i++) {
+		$trait_c = "FFFFFF";
+		if(isset($_POST['trait' . $i . '_color'])) { $trait_c = $_POST['trait' . $i . '_color']; }
+		elseif($design != NULL && $design->getNumTraits() > 0) { $trait_c = $design->getTraitColor($i - 1); }
+	
 		echo '<tr id="traitRow' . $i . '">
 			<td align="center" class="vertical-top" colspan="1">';
-				trait_dropdown("trait" . $i, $traitlist);
+				trait_dropdown("trait" . $i, $traitlist, $design, $i - 1);
 			echo '</td>
 			<td colspan="2" class="text-center vertical-top">
 				<input type="text" value="';
-				echo (isset($_POST['trait' . $i . '_color']) ? $_POST['trait' . $i . '_color'] : "FFFFFF");
+				echo $trait_c;
 				echo '" id="trait' . $i . 'Color" class="width100 float-left" name="trait' . $i . '_color" />
 				<div class="trait' . $i . 'ColorSelector colorSelector">
 					<div class="trait' . $i . 'BackgroundSelector backgroundSelector" style="background-color: rgb(255, 255, 255);">
@@ -138,10 +176,12 @@ displayErrors($errors);
 			echo '</td>
 		</tr>';
 	}
-	echo '</table></form>';
+	echo '</table></form><br />';
 
-function trait_dropdown($fieldname, $optionlist){
-  $html = (isset($_POST["$fieldname"]) ? $_POST["$fieldname"] : "none");
+function trait_dropdown($fieldname, $optionlist, $design = NULL, $index = 0){
+	$html = "none";
+	if(isset($_POST[$fieldname])) { $html = $_POST[$fieldname]; }
+	elseif($design != NULL && $design->getNumTraits() > 0) { $html = $design->getTraitName($index); }
   echo "<select class='width100 traitDropdown' name='$fieldname' size='1'>" . str_replace('value="' . $html . '"','value="' . $html . '" selected', $optionlist) . "</select>";
 };
 
@@ -157,29 +197,36 @@ function trait_options($con) {
 	return $list;
 };
 
-function generateImage() {
+function generateImage($design = NULL) {
 	$url = "";
 		
 	if(isset($_POST['species'])) { $url .= "&species=" . $_POST['species']; }
-	if(isset($_POST['base_color_text'])) { $url .= "&baseColor=" . $_POST['base_color_text']; }
-	elseif(isset($_POST['base_color'])) { $url .= "&baseColor=" . $_POST['base_color']; }
-	if(isset($_POST['eye_color_text'])) { $url .= "&eyeColor=" . $_POST['eye_color_text']; }
-	elseif(isset($_POST['eye_color'])) { $url .= "&eyeColor=" . $_POST['eye_color']; }
-	if(isset($_POST['feet_ear_color_text'])) { $url .= "&feetEarColor=" . $_POST['feet_ear_color_text']; }
-	elseif(isset($_POST['feet_ear_color'])) { $url .= "&feetEarColor=" . $_POST['feet_ear_color']; }
+	elseif($design != NULL) { $url .= "&species=" . strtolower($design->getSpeciesName()); }
 	
-	$numTraits = (isset($_POST['numTraits']) ? $_POST['numTraits'] : 0);	
-	if($numTraits > 0) { $url .= "&numTraits=" . $numTraits; }
+	if(isset($_POST['base_color'])) { $url .= "&baseColor=" . $_POST['base_color']; }
+	elseif($design != NULL) { $url .= "&baseColor=" . $design->getBase(); }
+	
+	if(isset($_POST['eye_color'])) { $url .= "&eyeColor=" . $_POST['eye_color']; }
+	elseif($design != NULL) { $url .= "&eyeColor=" . $design->getEye(); }
+	
+	if(isset($_POST['feet_ear_color'])) { $url .= "&feetEarColor=" . $_POST['feet_ear_color']; }
+	elseif($design != NULL) { $url .= "&feetEarColor=" . $design->getFoot(); }
+	
+	$numTraits = 0;
+	if(isset($_POST['numTraits'])) { $numTraits = $_POST['numTraits']; }
+	elseif($design != NULL) { $numTraits = $design->getNumTraits(); }
+	if($numTraits > 0) { $url .= "&numTraits=$numTraits"; }
+	
 	for($i = 1; $i <= $numTraits; $i++) {
 		$trait = "trait$i";
 		$trait_color = $trait . '_color';
 		$trait_color_text = $trait . '_color_text';
-		if(isset($_POST["$trait"])) { 
-			if(isset($_POST["$trait_color_text"])) { 
-				$url .= "&$trait=" . $_POST["$trait"] . "&$trait" . "Color=" . $_POST["$trait_color_text"]; 
-			} elseif(isset($_POST["$trait_color"])) { 
-				$url .= "&$trait=" . $_POST["$trait"] . "&$trait" . "Color=" . $_POST["$trait_color"]; 
-			}
+		if(isset($_POST["$trait"]) && isset($_POST["$trait_color"])) { 
+			$url .= "&$trait=" . $_POST["$trait"] . "&$trait" . "Color=" . $_POST["$trait_color"]; 
+		} elseif($design != NULL) {
+			$trait_n = $design->getTraitName($i - 1);
+			$trait_c = $design->getTraitColor($i - 1);
+			$url .= "&$trait=" . $trait_n . "&$trait" . "Color=" . $trait_c; 
 		}
 	}
 	
