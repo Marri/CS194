@@ -1,4 +1,10 @@
 <?php
+if($squffy->isEgg()) {
+	echo '<br /><span class="small-error">You cannot tell what a squffy looks like while it is still in its egg!</span></td></tr></table>';
+	include('./includes/footer.php');
+	die();
+}	
+
 $t = $squffy->getAppearanceTraits();
 $visible = array();
 $carried = array();
@@ -19,7 +25,6 @@ foreach($t as $trait) {
 <td class="width80 text-center"><div class="color-box" style="background-color: #<?php echo $squffy->getFootColor(); ?>"></div></td>
 <td class="text-left" colspan="3"><?php echo $squffy->getFootColor(); ?></td></tr>
 <?php 
-$cur = "odd";
 if(sizeof($visible) > 0) { ?>
 <tr><th colspan="5" class="content-subheader">Visible Traits</th></tr>
 <?php foreach($visible as $trait) { ?>
@@ -50,13 +55,21 @@ if($num > 0) {
 	for($i = 0; $i < $num; $i++) {
 		$item = $items[$i];
 		if($i % 4 == 0) { echo '<tr>'; }
-		echo '<td class="width150">
-		<img class="item" src="./images/items/' . str_replace(" ", "", $item['item_name']) . '.png">
-		<br />' . $item['item_name'] . '</td>';
+		echo '<td class="width150">';
+		if($squffy->getOwnerID() == $userid) { 
+			echo '<form action="view_squffy.php?view=appearance&id='.$id.'" method="post">
+			<input type="hidden" value="' . $item->getID() . '" name="remove_item" />
+			<input type="image" src="./images/icons/cross.png" alt="x" name="remove-item" class="float-right no-border" />
+			</form>'; 
+		}
+		echo '<img class="item" src="./images/items/' . str_replace("_", "", $item->getColumnName()) . '.png">
+		<br />' . $item->getName() . '</td>';
 		if($i % 4 == 3) { echo '</tr>'; }
 	}
-	while($i % 4 != 0) { echo '<td></td>'; $i++; }
-	echo '</tr>';
+	if($i % 4 != 0) {
+		while($i % 4 != 0) { echo '<td></td>'; $i++; }
+		echo '</tr>';
+	}
 } ?>
 </table>
 
@@ -65,10 +78,5 @@ if($num > 0) {
 </table>
 
 <?php
-function row($cur) {
-	echo ' class="' . $cur . '"';
-	return $cur == "odd" ? "even" : "odd";
-}
-
 include('./includes/footer.php');
 ?>

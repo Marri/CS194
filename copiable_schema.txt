@@ -216,13 +216,39 @@ CREATE TABLE IF NOT EXISTS inventory (
 	triple_wings smallint unsigned default '0',
 	nutcake smallint unsigned default '0',
 	chocolate smallint unsigned default '0',
-	chocolate_almonds smallint unsigned default '0'
+	chocolate_almonds smallint unsigned default '0',
+	chocolate_covered_strawberry smallint unsigned default '0',
+	strawberry smallint unsigned default '0',
+	water_pail smallint unsigned default '0',
+	iron_ore smallint unsigned default '0',
+	oak_planks smallint unsigned default '0',
+	wooden_dolls smallint unsigned default '0',
+	shovel smallint unsigned default '0',
+	autumn_hills_background smallint unsigned default '0',
+	broken_hearts_background smallint unsigned default '0',
+	camping_at_night_background smallint unsigned default '0',
+	forest_clearing_background smallint unsigned default '0',
+	hearts_background smallint unsigned default '0',
+	pond_background smallint unsigned default '0',
+	winter_nights_background smallint unsigned default '0',
+	sunny_wuffy smallint unsigned default '0',
+	clover_patch smallint unsigned default '0',
+	daffodils smallint unsigned default '0',
+	flower_bracelet smallint unsigned default '0',
+	flower_headband smallint unsigned default '0',
+	fuzzy_chick smallint unsigned default '0',
+	red_hibiscus smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS pantry;
 CREATE TABLE IF NOT EXISTS pantry (
 	user_id mediumint unsigned,
-	cashew smallint unsigned
+	cashew smallint unsigned,
+	pistachio smallint unsigned default '0',
+	chestnut smallint unsigned default '0',
+	pecan smallint unsigned default '0',
+	walnut smallint unsigned default '0',
+	almond smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS messages;
@@ -400,7 +426,12 @@ CREATE TABLE IF NOT EXISTS items (
 	item_description text,
 	chromosome varchar(50),
 	c_increase tinyint unsigned,
-	h_decrease tinyint unsigned
+	h_decrease tinyint unsigned,
+	is_seymose enum('true', 'false') default 'false',
+	seymose_price tinyint unsigned,
+	seymose_item smallint unsigned,
+	is_olivia enum('true', 'false') default 'false',
+	olivia_price tinyint unsigned
 );
 
 DROP TABLE IF EXISTS notifications;
@@ -504,12 +535,28 @@ CREATE TABLE IF NOT EXISTS recipes (
 	ing3_amount tinyint unsigned,
 	ing4 smallint unsigned,
 	ing4_amount tinyint unsigned,
-	makes smallint unsigned
+	makes smallint unsigned,
+	hours tinyint unsigned,
+	energy tinyint unsigned,
+	loc enum('kitchen', 'woodshop', 'smithy')
+);
+
+DROP TABLE IF EXISTS jobs_cooking;
+CREATE TABLE IF NOT EXISTS jobs_cooking (
+	squffy_id int unsigned,
+	user_id mediumint unsigned,
+	recipe_id tinyint unsigned,
+	date_finished datetime,
+	amount tinyint unsigned default '1'
 );
 
 INSERT INTO recipes VALUES
-(NULL, 'Nutcake', 1, 3, 20, 2, NULL, NULL, NULL, NULL, 25),
-(NULL, 'Chocolate Almonds', 24, 2, 26, 1, NULL, NULL, NULL, NULL, 26);
+(NULL, 'Shovel', 31, 2, 32, 1, NULL, NULL, NULL, NULL, 34, 4, 15, 'smithy'),
+(NULL, 'Water Pail', 31, 4, NULL, NULL, NULL, NULL, NULL, NULL, 30, 5, 20, 'smithy'),
+(NULL, 'Wooden Dolls', 32, 3, NULL, NULL, NULL, NULL, NULL, NULL, 33, 4, 15, 'woodshop'),
+(NULL, 'Nutcake', 1, 3, 20, 2, NULL, NULL, NULL, NULL, 25, 2, 5, 'kitchen'),
+(NULL, 'Chocolate Covered Strawberry', 29, 1, 26, 2, NULL, NULL, NULL, NULL, 28, 2, 10, 'kitchen'),
+(NULL, 'Chocolate Almonds', 24, 2, 26, 1, NULL, NULL, NULL, NULL, 26, 3, 10, 'kitchen');
 
 INSERT INTO log_mates VALUES (NULL, 112, 2, 1, '2011-04-07 12:12:12');
 INSERT INTO log_pregnancies  VALUES (NULL, 2, 112, 1, '2011-04-17 12:12:12');
@@ -566,14 +613,10 @@ INSERT INTO `degrees`
 	(`degree_id`, `degree_name`) 
 VALUES
 	(1, 'Teacher'),
-	(2, 'Medic'),
-	(3, 'Midwife'),
-	(4, 'Cook'),
-	(5, 'Baker'),
-	(6, 'Carpenter'),
-	(7, 'Farmer'),
-	(8, 'Nursemaid'),
-	(9, 'Forester');
+	(2, 'Doctor'),
+	(3, 'Cook'),
+	(4, 'Carpenter'),
+	(5, 'Blacksmith');
 	
 INSERT INTO `layouts`
 	(`layout_id`, `layout_name`, `is_default`, `background_color`, `level_id`)
@@ -618,11 +661,11 @@ VALUES
 	('user1', 3, '4f85334c66baffb440a5b26bbd2e410a787dab03', 'c7h6g9Npv3Rx96j');
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`)
+	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`, `chocolate_covered_strawberry`, `strawberry`, `water_pail`, `iron_ore`, `wooden_dolls`, `oak_planks`, `shovel`, `autumn_hills_background`, `broken_hearts_background`, `camping_at_night_background`, `forest_clearing_background`, `hearts_background`, `pond_background`, `winter_nights_background`, `sunny_wuffy`, `clover_patch`, `daffodils`, `flower_bracelet`, `flower_headband`, `fuzzy_chick`, `red_hibiscus`)
 VALUES
-	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0),
-	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0),
-	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0);
+	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 3, 10, 3, 3, 10, 400, 400, 400, 400, 400, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -630,21 +673,42 @@ VALUES
 	(1, 15);
 
 INSERT INTO `squffies` 
-	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`) 
+	(`squffy_id`, `squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `age_offset`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_in_market`, `is_hireable`, `is_working`, `is_breedable`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `hire_price_sd`, `hire_price_item_id`, `hire_price_item_amount`, `breeding_price_sd`, `breeding_price_item_id`, `breeding_price_item_amount`, `breeding_rights`, `breeding_rights_revert`, `hire_rights`, `hire_rights_revert`, `num_items`) 
 VALUES
-	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 1, 3, 'Master', 70, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, 2),
-	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 2, 0, NULL, 0, 20, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, 0),
-	(3,	2, 'seak', 'M',	'2011-04-05 22:16:47',	2,	3,	'Master',	0,	100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3','009900',	'996633', 'true', 'false',	'false', 'false', 'false',	'false', 1, 2, 3, 4,	NULL, NULL, NULL, 0);
+	(112, 1, 'Jeremy', 'M', '2011-04-05 22:16:47', 20, 1, 1, 'Master', 70, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+	(2, 1, 'Pretend', 'F', '2011-03-03 10:00:00', 20, 2, 0, NULL, 0, 20, 100, 100, 0, 0, 10, 20, 30, 40, 50, 60, 70, 'FFFFFF', '000099', 'e6a33e', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 112, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+	(3, 2, 'seak', 'M', '2011-04-05 22:16:47', 20, 2, 1, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'F0DDA3', '009900', '996633', 'true', 'false', 'false', 'true', 'false', 'true', 1, 2, 3, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+	(113, 1, 'Pretend x Jeremy', 'M', '2011-05-30 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 2, 12, 22, 36, 47, 56, 70, 71, 'FBEAA6', '003844', 'AF7A3A', 'false', 'false', 'false', 'false', 'false', 'false', 1, 7, 11, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+	(114, 1, 'Pretend x Jeremy', 'M', '2011-05-25 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 8, 16, 20, 36, 48, 59, 66, 77, 'F8FECA', '00932F', 'DD7F3C', 'false', 'false', 'false', 'false', 'false', 'false', 0, 7, 8, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+	(115, 1, 'Pretend x Jeremy', 'M', '2011-05-20 02:49:46', 0, 1, NULL, NULL, 0, 100, 100, 100, 0, 6, 11, 26, 39, 46, 54, 63, 73, 'F8EEDB', '004330', 'C09D3D', 'false', 'false', 'false', 'false', 'false', 'false', 1, 6, 11, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+
+INSERT INTO `squffy_family`
+VALUES 
+	(113, 2, 112, NULL, NULL, NULL, NULL),
+	(113, 2, 112, NULL, NULL, NULL, NULL),
+	(113, 2, 112, NULL, NULL, NULL, NULL);
 	
 INSERT INTO `squffy_appearance` 
 	(`squffy_id`, `trait_id`, `trait_square`, `trait_color`, `trait_order`) 
 VALUES
 	(112, 23, 'S', 'FFF6D4', 1),
-	(112, 33, 'S', '907F66', 2),
-	(112, 17, 'S', 'EEE5D4', 3),
-	(112, 15, 'C', 'FFFFFF', 0),
+	(112, 33, 'S', '907F66', 0),
+	(112, 17, 'S', 'EEE5D4', 2),
+	(112, 15, 'C', 'FFFFFF', 3),
 	(2, 17, 'S', 'FFFFFF', 3),
-	(2, 15, 'S', 'FF0000', 0);
+	(2, 15, 'S', 'FF0000', 0),
+	(113, 33, 'S', 'EDDADA', 0),
+	(113, 23, 'C', 'FFFFFB', 1),
+	(113, 17, 'S', 'F6E7EF', 2),
+	(113, 15, 'C', 'FF80C7', 3),
+	(114, 33, 'C', 'F29880', 0),
+	(114, 23, 'C', 'FFFEE4', 1),
+	(114, 17, 'S', 'F4FAD8', 2),
+	(114, 15, 'C', 'FF0E43', 3),
+	(115, 33, 'C', 'EAD47A', 0),
+	(115, 23, 'C', 'FFFFEB', 1),
+	(115, 17, 'S', 'FEFCF0', 2),
+	(115, 15, 'S', 'FF83D1', 3);
 	
 INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`, `chromosome`, `c_increase`, `h_decrease`)
@@ -655,14 +719,21 @@ VALUES
 	(22, 'Pecan', 1, 'A pecan.', 'c6', 2, 2),
 	(23, 'Walnut', 1, 'A walnut.', NULL, NULL, 2),
 	(24, 'Almond', 1, 'An almond.', 'c5', 2, 2),
-	(25, 'Nutcake', 6, 'A sweet nutty treat.', 'c8', 3, 15),
+	(25, 'Nutcake', 6, 'A sweet nutty treat.', 'c8', 5, 15),
 	(26, 'Chocolate', 7, 'Nom. Chocolate nom.', NULL, NULL, 5),
-	(27, 'Chocolate Almonds', 6, 'DELICIOUS.', 'c5', 5, 12);
+	(27, 'Chocolate Almonds', 7, 'DELICIOUS.', 'c5', 5, 12),
+	(28, 'Chocolate Covered Strawberry', 7, 'NOAR DELICIOUS.', NULL, NULL, 18),
+	(29, 'Strawberry', 6, 'Fruity goodness.', NULL, NULL, 4);
 	
 INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`)
 VALUES	
 	(2, 'Squffy Dollar', 2, 'Money.'),
+	(30, 'Water Pail', 10, 'Water the thirsty plants on your farms.'),
+	(31, 'Iron Ore', 8, 'A box of iron ore nuggets. Perfect for use at the smithy.'),
+	(32, 'Oak Planks', 8, 'A stack of oak planks. Perfect for use at the woodshop.'),
+	(33, 'Wooden Dolls', 9, 'What a cute toy!'),
+	(34, 'Shovel', 10, 'Helps you plant on your farms.'),
 	(3, 'Single Acorn', 3, 'Make a tree squffy with one appearance trait.'),
 	(4, 'Double Acorn', 3, 'Make a tree squffy with two appearance traits.'),
 	(5, 'Triple Acorn', 3, 'Make a tree squffy with three appearance traits.'),
@@ -677,9 +748,25 @@ VALUES
 	(14, 'Triple Spark', 3, 'Make a lihtan squffy with three appearance traits.'),
 	(15, 'Single Wings', 3, 'Make a fey squffy with one appearance trait.'),
 	(16, 'Double Wings', 3, 'Make a fey squffy with two appearance traits.'),
-	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.'),
-	(18, 'Harvest Witch Hat', 4, 'Spooky yet festive.'),
-	(19, 'Red Hibiscus', 4, 'Floral and spring-like.');
+	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.');
+	
+INSERT INTO `items`
+	(`item_id`, `item_name`, `item_type`, `item_description`, `is_seymose`, `seymose_price`, `seymose_item`, `is_olivia`, `olivia_price`)
+VALUES
+	(42, 'Broken Hearts Background', 5, 'Feeling sad this Valentine\'s day? Then this wallpaper should fit your mood perfectly.', 'true', 1, 2, 'false', NULL),
+	(43, 'Camping at Night Background', 5, 'Isn\'t sleeping under the stars the best?', 'true', 1, 2, 'false', NULL),
+	(44, 'Forest Clearing Background', 5, 'What a lovely clearing in the woods. It makes a perfect wallpaper.', 'true', 1, 2, 'false', NULL),
+	(45, 'Hearts Background', 5, 'Celebrate Valentine\'s day with this cheery wallpaper.', 'true', 1, 2, 'false', NULL),
+	(46, 'Pond Background', 5, 'Samson stumbled across a hidden pond one day and painted this lovely picture of it. Shame he can\'t remember how to get back there again.', 'true', 1, 2, 'false', NULL),
+	(41, 'Winter Nights Background', 5, 'It\'s chilly out there. Be sure to take a scarf.', 'true', 1, 2, 'false', NULL),
+	(40, 'Autumn Hills Background', 5, 'As autumn approaches, the leaves begin to turn. Why not take a walk and enjoy the sight?', 'true', 1, 2, 'false', NULL),
+	(18, 'Sunny Wuffy', 4, 'After saving her from the weeds, she decided to stay with you.', 'true', 1, 2, 'false', NULL),
+	(35, 'Clover Patch', 4, 'If you search long enough, you might find a four leaf clover.', 'true', 1, 3, 'false', NULL),
+	(36, 'Daffodils', 4, 'Some lovely flowers to decorate your squffy\'s space.', 'true', 1, 4, 'false', NULL),
+	(37, 'Flower Bracelet', 4, 'Tied around the wrist, this blossom makes a nice bracelet.', 'true', 20, 2, 'false', NULL),
+	(38, 'Flower Headband', 4, 'What a lovely headband.', 'true', 20, 3, 'false', NULL),
+	(39, 'Fuzzy Chick', 4, 'Fuzzy Plushie chicks make great companions on your adventures.', 'true', 20, 4, 'false', NULL),
+	(19, 'Red Hibiscus', 4, 'A lovely tropical flower to wear by your ear.', 'false', NULL, NULL, 'true', 1);
 	
 INSERT into `subforums`
 	(`subforum_id`, `subforum_name`, `subforum_order`)
@@ -724,10 +811,12 @@ INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_pric
 ('third Lot', '3', '1', 'false', '3', '10', '2', 20);
 
 INSERT INTO squffy_items (squffy_id, item_id, item_name, item_order) 
-VALUES (112, 18, 'Harvest Witch Hat', 0),
-(112, 19, 'Red Hibiscus',1);
+VALUES (112, 18, 'Sunny Wuffy', 0),
+(2, 19, 'Red Hibiscus',1);
 
 INSERT INTO `newbie_packs` (`user_id`) VALUES
 (1),
 (2),
 (3);
+
+INSERT INTO `cache_changed` VALUES (1), (2), (3);

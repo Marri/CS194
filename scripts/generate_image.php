@@ -1,31 +1,40 @@
 <?php
-function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp = false, $resize = false, $width = 0, $height = 0, $items = array()) {
+function makeImage($species, $markings, $mutations, $base, $eye, $foot, $dirUp = false, $resize = false, $width = 0, $height = 0, $items = array(), $background = '', $stage = 'adult') {
 	if($dirUp) {
-		$img_dir = './images/generate/' . $species . '/' . $species . 'adult';
+		$img_dir = './images/generate/' . $species . '/' . $species . $stage;
 		$item_dir = './images/generate/items/' . $species;
 	} else {
 		include_once("../objects/appearance.php");
 		$item_dir = '../images/generate/items/' . $species;
-		$img_dir = '../images/generate/' . $species . '/' . $species . 'adult';
+		$img_dir = '../images/generate/' . $species . '/' . $species . $stage;
 	}
 
-	$design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
-	foreach($markings as $trait) {
-		$design = addToBase($design, $img_dir, $trait, true);
+	if(strlen($background) > 0 && $stage == 'adult') {
+		$design = addToBase(NULL, $item_dir, array('name'=>$background), false);
+		$design = addToBase($design, $img_dir, array('name'=>'base', 'color'=>$base), true);
+	} else {
+		$design = addToBase(NULL, $img_dir, array('name'=>'base', 'color'=>$base), true);
+	}
+	if($stage == 'adult') {
+		foreach($markings as $trait) {
+			$design = addToBase($design, $img_dir, $trait, true);
+		}
 	}
 	$design = addToBase($design, $img_dir, array('name'=>'feetear', 'color'=>$foot), true);
 	$design = addToBase($design, $img_dir, array('name'=>'eye', 'color'=>$eye), true);
 	$design = addToBase($design, $img_dir, array('name'=>'standard'), false);
-	foreach($mutations as $trait) {
-		$name = $trait['name'];
-		$trait['name'] = $name . 'c';
-		$design = addToBase($design, $img_dir, $trait, true);
-		$trait['name'] = $name . 'l';
-		$design = addToBase($design, $img_dir, $trait, false);
-	}
+	if($stage == 'adult') {
+		foreach($mutations as $trait) {
+			$name = $trait['name'];
+			$trait['name'] = $name . 'c';
+			$design = addToBase($design, $img_dir, $trait, true);
+			$trait['name'] = $name . 'l';
+			$design = addToBase($design, $img_dir, $trait, false);
+		}
 	
-	foreach($items as $item) {
-		$design = addToBase($design, $item_dir, array('name'=>$item), false);
+		foreach($items as $item) {
+			$design = addToBase($design, $item_dir, array('name'=>$item), false);
+		}
 	}
 
 	if($resize) {

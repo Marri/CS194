@@ -44,14 +44,19 @@ class User {
 	public function getLayout() { return $this->layout_id; }
 	public function getUsername(){ return $this->username; }
 	public function getEmail(){ return $this->email_addr; }
-	public function isActivated(){	return $this->activated; }
-	public function isAdmin() { return $this->level == self::ADMIN_USER; }
 	public function getInventory() {
 		if($this->inventory == NULL) { $this->fetchInventory(); }
 		return $this->inventory;
 	}
 	
 	//Predicates
+	public function isActivated(){	return $this->activated; }
+	public function isAdmin() { return $this->level == self::ADMIN_USER; }
+	public function isMod() { return $this->level == self::MOD_USER; }
+	public function isPermUpgraded() { return $this->level == self::PERM_UPGRADE_USER; }
+	public function isUpgraded() { return $this->level == self::UPGRADE_USER; }
+	public function isUpgradedPlus() { return $this->isAdmin() || $this->isMod() || $this->isPermUpgraded() || $this->isUpgraded(); }
+	
 	public function canAffordSD($cost) {
 		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
 		return false;
@@ -548,7 +553,8 @@ class User {
 						$this->setTraitStrength($squffy, $col, $val);
 						break;
 					default:
-						break; //do nothing in the default case		
+						break; //do nothing in the default case	
+				}	
 			}
 		}
 	}

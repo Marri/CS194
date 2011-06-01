@@ -55,7 +55,7 @@ if(!isset($_POST['use_item'])) {
 	//Create squffy
 	$name = $_POST['squffy_name'];
 	$gender = $_POST['gender'];
-	$design = Design::GetDesign($_POST['design']);
+	$design = Design::getDesignByID($_POST['design']);
 	$id = Squffy::CreateCustom($name, $gender, $design, $userid);
 	$update_item = true;
 	

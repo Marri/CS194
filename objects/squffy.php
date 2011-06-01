@@ -4,8 +4,9 @@ class Squffy {
 	const SICK = 50;
 	const HUNGRY = 50;
 	const DAYS_PREG = 5;
-	const ADULT = 20;
-	const TEEN = 15;
+	const ADULT = 10;
+	const TEEN = 5;
+	const HATCHLING = 0;
 	
 	const FETCH_APPEARANCE = 1;
 	const FETCH_FULL_APPEARANCE = 6;
@@ -146,8 +147,9 @@ class Squffy {
 		}
 		
 		//Calculate age
-		$this->age = floor((time() - strtotime($this->birthday)) / (24 * 3600));
+		$this->age = floor((time() - strtotime($this->birthday)) / (24 * 3600)) + $info['age_offset'];
 		if($this->isCustom()) { $this->age += 20; }
+		$this->age -= 5;
 	}
 	
 	public static function getSquffies($query) {
@@ -236,6 +238,7 @@ class Squffy {
 	
 	public function getLink() { return '<a href="view_squffy.php?id=' . $this->id . '">' . $this->name . '</a>'; }
 	public function getURL($make = true) { 
+		if($this->isEgg()) { return './images/squffies/egg.png'; }
 		$img = './images/squffies/' . floor($this->id / 1000) . '/' . $this->id . '.png'; 
 		if($make && !file_exists($img)) {
 			$this->fetchFullAppearance();
@@ -247,6 +250,7 @@ class Squffy {
 		return $img;
 	}
 	public function getThumbnail($make = true) { 
+		if($this->isEgg()) { return './images/squffies/egg.png'; }
 		$img = './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png'; 
 		if($make && !file_exists($img)) {
 			$this->fetchFullAppearance();
@@ -256,6 +260,12 @@ class Squffy {
 		}
 		$img = './images/squffies/' . floor($this->id / 1000) . '/t' . $this->id . '.png';
 		return $img;
+	}
+	
+	public function getStage() {
+		if($this->isHatchling()) { return 'hatchling'; }
+		if($this->isTeenager()) { return 'child'; }
+		return 'adult';
 	}
 	
 	public function getHistory() {
@@ -320,6 +330,8 @@ class Squffy {
 	public function isTaught() { return $this->degree_name != NULL && !$this->isStudent(); }
 	public function isAdult() { return $this->getAge() >= self::ADULT; }
 	public function isTeenager() { return $this->getAge() >= self::TEEN && !$this->isAdult(); }
+	public function isHatchling() { return $this->getAge() < self::TEEN && !$this->isEgg(); }
+	public function isEgg() { return $this->getAge() < self::HATCHLING; }
 	
 	public function canMateTo($squffy) {
 		if($this->hasMate()) { return false; }
@@ -363,7 +375,7 @@ class Squffy {
 	
 	public function canWorkFor($userid) {
 		if($this->hire_rights != NULL) { 
-			if(time() - strtotime($this->hire_rights_revert) < 0) { 
+			if(time() - strtotime($this->hire_rights_revert) > 0) { 
 				if($this->getOwnerID() == $userid) { return true; }
 				return false; 
 			}
@@ -375,7 +387,7 @@ class Squffy {
 	}	
 	public function canBreedFor($userid) {
 		if($this->breeding_rights != NULL) { 
-			if(time() - strtotime($this->breeding_rights_revert) < 0) { 
+			if(time() - strtotime($this->breeding_rights_revert) > 0) { 
 				if($this->getOwnerID() == $userid) { return true; }
 				return false; 
 			}
@@ -389,7 +401,7 @@ class Squffy {
 	//Public methods	
 	public function setHireRights($user) {
 		$rightsUntil = time() + 60 * 30;
-		$date = date("Y-m-d h:i:s",$rightsUntil);
+		$date = date("Y-m-d H:i:s",$rightsUntil);
 		$id = $user->getID();
 		$query = "UPDATE `squffies` SET `hire_rights` = '$id', `hire_rights_revert` = '$date' WHERE `squffy_id` = " . $this->id;
 		runDBQuery($query);
@@ -399,9 +411,10 @@ class Squffy {
 	
 	public function setBreedRights($user) {
 		$rightsUntil = time() + 60 * 30;
-		$date = date("Y-m-d h:i:s",$rightsUntil);
+		$date = date("Y-m-d H:i:s",$rightsUntil);
 		$id = $user->getID();
 		$query = "UPDATE `squffies` SET `breeding_rights` = '$id', `breeding_rights_revert` = '$date' WHERE `squffy_id` = " . $this->id;
+		echo $query;
 		runDBQuery($query);
 		$this->breeding_rights = $user->getID();
 		$this->breeding_rights_revert = $date;
@@ -410,7 +423,7 @@ class Squffy {
 	public function breedTo($male, $userid) {
 		if(!$this->getGender() == 'F') { return; }
 		$dateOfBirth = time() + 60 * 60 * 24 * self::DAYS_PREG;
-		$date = date("Y-m-d h:i:s",$dateOfBirth);
+		$date = date("Y-m-d H:i:s",$dateOfBirth);
 		$query = 
 			"INSERT INTO `pregnancies` (mother_id, father_id, user_id, date_birth)
 			VALUES (" . $this->id . ", " . $male->getID() . ", $userid, '$date')";
@@ -445,7 +458,7 @@ class Squffy {
 		$date = time() + 60 * 60 * 24 * $days;
 		if($this->hasStrength(Personality::SCHOOL_TRAIT)) { $date -= Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
 		if($this->hasWeakness(Personality::SCHOOL_TRAIT)) { $date += Personality::SCHOOL_CHANGE * 60 * 60 * 24; }
-		$query = 'INSERT INTO `degree_progress` (squffy_id, date_finished) VALUES (' . $this->id . ', \'' . date("Y-m-d h:i:s",$date) . '\')';
+		$query = 'INSERT INTO `degree_progress` (squffy_id, date_finished) VALUES (' . $this->id . ', \'' . date("Y-m-d H:i:s",$date) . '\')';
 		runDBQuery($query);
 	}
 	
@@ -588,7 +601,7 @@ class Squffy {
 		$this->items = array();
 		
 		while($info = @mysql_fetch_assoc($result)) {
-			$this->items[] = $info;
+			$this->items[] = Item::getItemByID($info['item_id']);
 		}		
 	}
 	
@@ -614,6 +627,33 @@ class Squffy {
 		$this->family_tree['mother_father'] = $info['mother_father_id'];
 		$this->family_tree['father_mother'] = $info['father_mother_id'];
 		$this->family_tree['father_father'] = $info['father_father_id'];
+	}
+	
+	public function addItem($item) {
+		$itemid = $item->getID();
+		$order = $this->getNumItems() + 1;
+		$id = $this->id;
+		$name = $item->getName();
+		
+		$query = "INSERT INTO squffy_items VALUES ($id, $itemid, '$name', $order)";
+		runDBQuery($query);
+		$query = "UPDATE squffies SET num_items = $order WHERE squffy_id = $id";
+		runDBQuery($query);
+		
+		array_push($this->items, $item);
+	}
+	
+	public function removeItem($item, $offset) {
+		$order = $this->getNumItems() - 1;
+		$id = $this->id;
+		$itemid = $item->getID();
+		
+		$query = "UPDATE squffies SET num_items = $order WHERE squffy_id = $id";
+		runDBQuery($query);
+		$query = "DELETE FROM squffy_items WHERE squffy_id = $id AND item_id = $itemid";
+		runDBQuery($query);
+		array_splice($this->items, $offset, 1);
+		$this->num_items--;
 	}
 	
 	//Static methods

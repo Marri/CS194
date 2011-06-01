@@ -11,11 +11,11 @@ displayNotices($notices);
 ?>
 <div class="content-header width100p"><b>Public School</b></div>
 <div class='npc'>Teacher squffy</div>
-Some teacher schpiel about how you can learn a trade here and it will take 5 days and costs 1 pecan.<br /><br />
+&nbsp;Some teacher schpiel about how you can learn a trade here and it will take 5 days and costs 1 pecan.<br /><br />
 
 <?php if($loggedin) { ?>
 <form action="school.php" method="post">
-Degree: <select size="1" name="degree_id">
+&nbsp;Degree: <select size="1" name="degree_id">
 
 <?php
 $query = "SELECT * FROM degrees";
@@ -25,7 +25,7 @@ while($d = mysql_fetch_assoc($result)) {
 }
 ?>
 </select><br />
-Squffy: <select size="1" name="squffy_id">
+&nbsp;Squffy: <select size="1" name="squffy_id">
 <?php
 $query = "SELECT * FROM squffies WHERE squffy_owner = $userid";
 $squffies = Squffy::getSquffies($query);

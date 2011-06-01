@@ -5,7 +5,11 @@ class Item{
 	//type 3 makes customs
 	//type 4 are accessories
 	//type 5 are backgrounds
-	//type 6 is recipe based food
+	//type 6 is non-nut non-candy food
+	//type 7 is a candy food
+	//type 8 is an ingredient: wood, metal
+	//type 9 is a toy
+	//type 10 is a farm tool
 	
 	private
 		$id,
@@ -18,6 +22,7 @@ class Item{
 	public function getName(){ return $this->name; }
 	public function getColumnName(){ return $this->column_name; }
 	public function getDescription(){ return $this->description; }
+	public function getImage() { return './images/items/' . strtolower(str_replace(" ","",$this->name)) . '.png'; }
 	
 	public function canMakeCustom() { return $this->type == 3; }
 	public function isFood() { return $this->type == 1; }
