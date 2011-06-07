@@ -187,6 +187,6 @@ class Appearance {
 			$trait_map[$traits['trait_name']] = $traits['trait_id'];
 		}
 		return $trait_map;
-	}
+	}	
 }
 ?>

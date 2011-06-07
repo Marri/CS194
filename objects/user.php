@@ -258,7 +258,6 @@ class User {
 			$squffy_array[$trait] = $value;
 		}
 	}
-	
 	private function insertSquffy(&$squffy, &$squffy_appearance, &$trait_ids){
 		$personality = Personality::RandomTraits();
 		$squffyInsert = 'INSERT INTO squffies 
