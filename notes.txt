@@ -1,8 +1,6 @@
 MISSING IMAGES
 new tree
-new ground mutations
 many items for fey
-all items for new tree and new ground
 holiday tree background for all
 new markings: lihtan/sand/fey
 
@@ -67,30 +65,12 @@ Finish age stuff (egg > hatchling > child/teen > adult, egg tending/nursemaid, m
 Deal with images: leave out anything missing anything.
 Build tournaments
 
-Past two weeks:
-Chromosomes factored into births
-Multiple birth support added
-Outfit support added
-View and edit squffy pages finished
-Added food information to the database
-Added basic error checking to the design saving feature
-Cron to reset hire and breeding rights
-
-Progress this week:
-Imported lots of images (hatchling images, child images, healing tree/market/seymose/olivia)
-Kitchen (batches, display)
-Woodshop, Smithy (duplicates of kitchen)
-Healing tree functionality done
-Adding and removing items to a squffy is now done
-Functionality for overwrite design, edit design, delete design
-Image generators can handle backgrounds
-Age differences implemented (nursery, images, viewing page)
-
 Finish this week:
+Personality picker
+UI/Bugs
 Pantry
 Child images for not-tree
 Seymose and Olivia
-Notifications
 Farms
 
 Finish next week:

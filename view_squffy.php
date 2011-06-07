@@ -193,10 +193,5 @@ function drawBar($percent, $highIsGood = true) {
 	</div>';
 }
 
-function row($cur) {
-	echo ' class="' . $cur . '"';
-	return $cur == "odd" ? "even" : "odd";
-}
-
 include('./includes/footer.php');
 ?>

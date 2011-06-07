@@ -219,6 +219,34 @@ if(!$squffy->hasMate()) {
 		echo '<span class="small-error">You have no squffies available as mates.</span>';
 	}
     echo '</td></tr>';
+	
+	$youRequested = false;
+	$requests = MatingNotification::getRequests($id, $userid);
+	if(sizeof($requests) > 0) {
+		foreach($requests as $request) {
+			echo '<tr';
+			$cur = row($cur);
+			echo '><td></td><td class="text-left">';
+			if($request->getUserID() == $userid) { 
+				$mate = Squffy::getSquffyByID($request->getSentSquffy());
+				if($squffy->getOwnerID() == $userid) {
+					echo $request->getUserLink() . ' sent a mating request from ' . $mate->getLink(); 
+					echo ' <input type="submit" class="submit-input" value="Accept ' . $mate->getName() . '" name="accept-mate" /> 
+					<input type="submit" class="submit-input" value="Reject ' . $mate->getName() . '" name="reject-mate" />
+					<input type="hidden" name="' . $mate->getName() . '" value="' . $mate->getID() . '" />';
+				}
+			} else {
+				if($squffy->getOwnerID() == $userid) {
+					$mate = Squffy::getSquffyByID($request->getRequestedSquffy());
+					echo 'You sent a mating request to ' . $mate->getLink();
+				} else {
+					$mate = Squffy::getSquffyByID($request->getSentSquffy());
+				 	echo 'You sent a mating request from ' . $mate->getLink(); 
+				}
+			}
+			echo '</td></tr>';
+		}
+	}
 }
 ?>
 </form>

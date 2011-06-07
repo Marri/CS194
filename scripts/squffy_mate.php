@@ -1,6 +1,7 @@
 <?php
 $valid = true;
 if(!isset($squffy) || $squffy == NULL) { die(); }
+if(!isset($mate) || $mate == NULL) { die(); }
 
 if($squffy->hasMate()) { 
 	$errors[] = $squffy->getName() . " already has a mate."; 
@@ -12,8 +13,6 @@ if(!$squffy->isAdult()) {
 	$valid = false;
 }
 
-$mate_id = $_POST['mate_id'];
-$mate = Squffy::getSquffyByID($mate_id);
 if($mate == NULL) { 
 	$errors[] = "That mate does not exist.";
 	$valid = false;
@@ -34,9 +33,22 @@ if($mate == NULL) {
 	}
 }
 
-//TODO: require approval from other users
 if($valid) {
-	$mate->setMate($squffy);
-	$squffy->setMate($mate);
+	if($acceptValidRequest || ($squffy->getOwnerID() == $mate->getOwnerID() && $squffy->getOwnerID() == $userid)) {
+		$mate->setMate($squffy);
+		$squffy->setMate($mate);
+	} elseif($mate->getOwnerID() != $userid) {
+		if(MatingNotification::requestExists($squffy, $mate)) {
+			$errors[] = "You have sent this mating request already.";
+		} else {
+			MatingNotification::send($userid, $squffy->getID(), $mate);
+		}
+	} elseif($squffy->getOwnerID() != $userid) {
+		if(MatingNotification::requestExists($squffy, $mate)) {
+			$errors[] = "You have sent this mating request already.";
+		} else {
+			MatingNotification::send($userid, $mate->getID(), $squffy);
+		}
+	}
 }
 ?>

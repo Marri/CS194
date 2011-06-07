@@ -12,6 +12,10 @@ while($breed = @mysql_fetch_assoc($query)) {
 }
 if(!$valid_species) { $species = 'tree'; }
 
+$age = 'adult';
+if(isset($_GET['age'])) { $age = $_GET['age']; }
+if($age != 'child' && $age != 'hatchling') { $age = 'adult'; }
+
 //Get basic info
 $base = getColor('base', Appearance::BASE_DEFAULT);
 $eye = getColor('eye', Appearance::EYE_DEFAULT);
@@ -42,7 +46,7 @@ $markings = array_reverse($markings);
 $mutations = array_reverse($mutations);
 
 include('./generate_image.php');
-$image = makeImage($species, $markings, $mutations, $base, $eye, $foot);
+$image = makeImage($species, $markings, $mutations, $base, $eye, $foot, false, false, 0, 0, array(), '', $age);
 header("Content-type: image/png");
 imagepng($image);
 imagedestroy($image);

@@ -156,15 +156,6 @@ function replace($val, $options) {
 	echo str_replace('value="' . $val . '"','value="' . $val . '" selected', $options);
 }
 
-function row($cur) {
-	echo ' class="' . $cur . '"';
-	return $cur == "odd" ? "even" : "odd";
-}
-
-function lastRow($cur) {
- 	echo ' class="' . ($cur == "odd" ? "even" : "odd") . '"';
-}
-
 function showTrait($num, &$traits, $i, $cur) {
 	echo '<tr';
 	$cur = row($cur);

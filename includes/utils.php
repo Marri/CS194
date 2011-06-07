@@ -30,6 +30,15 @@ function convertBoolean($bool) {
 	return 'false';
 }
 
+function row($cur) {
+	echo ' class="' . $cur . '"';
+	return $cur == "odd" ? "even" : "odd";
+}
+
+function lastRow($cur) {
+ 	echo ' class="' . ($cur == "odd" ? "even" : "odd") . '"';
+}
+
 function getID($varName, $defaultID = 0) {
 	$id = 0;
 	if(isset($_GET[$varName])) { $id = $_GET[$varName]; }

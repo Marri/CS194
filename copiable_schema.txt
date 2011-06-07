@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 	forest_clearing_background smallint unsigned default '0',
 	hearts_background smallint unsigned default '0',
 	pond_background smallint unsigned default '0',
-	winter_nights_background smallint unsigned default '0',
+	winter_night_background smallint unsigned default '0',
 	sunny_wuffy smallint unsigned default '0',
 	clover_patch smallint unsigned default '0',
 	daffodils smallint unsigned default '0',
@@ -238,6 +238,38 @@ CREATE TABLE IF NOT EXISTS inventory (
 	flower_headband smallint unsigned default '0',
 	fuzzy_chick smallint unsigned default '0',
 	red_hibiscus smallint unsigned default '0'
+	,
+	beach_background smallint unsigned default '0',
+	blue_dragonfly smallint unsigned default '0',
+	wedding_bouquet smallint unsigned default '0',
+	camping_background smallint unsigned default '0',
+	cathedral_backgrond smallint unsigned default '0',
+	cupid_skunk smallint unsigned default '0',
+	lit_firepit smallint unsigned default '0',
+	mossy_forest_background smallint unsigned default '0',
+	pumpkin_patch_background smallint unsigned default '0',
+	red_nose smallint unsigned default '0',
+	reindeer_antlers smallint unsigned default '0',
+	songbird smallint unsigned default '0',
+	spooky_wuffy smallint unsigned default '0',
+	sugar_plums smallint unsigned default '0',
+	sun_pendant smallint unsigned default '0',
+	topaz_jewelry smallint unsigned default '0',
+	valentine_wuffy smallint unsigned default '0',
+	wedding_veil smallint unsigned default '0',
+	winter_wonderland_background smallint unsigned default '0',
+	wedding_garter_belt smallint unsigned default '0',
+	gold_sparkles smallint unsigned default '0',
+	hearts smallint unsigned default '0',
+	hero_medal smallint unsigned default '0',
+	holiday_tree_background smallint unsigned default '0',
+	kiss_mark smallint unsigned default '0',
+	falling_leaves smallint unsigned default '0',
+	moon_highlights smallint unsigned default '0',
+	mushrooms smallint unsigned default '0',
+	naked_plushie smallint unsigned default '0',
+	wedding_pearl_earrings smallint unsigned default '0',
+	fuzzy_bunny smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS pantry;
@@ -442,7 +474,8 @@ CREATE TABLE IF NOT EXISTS notifications (
 	unread enum('true', 'false') default 'false',
 	other_id mediumint unsigned,
 	other_squffy int unsigned,
-	your_squffy int unsigned
+	your_squffy int unsigned,
+	date_sent datetime
 );
 
 DROP TABLE IF EXISTS payments;
@@ -664,11 +697,11 @@ VALUES
 	('user1', 3, '4f85334c66baffb440a5b26bbd2e410a787dab03', 'c7h6g9Npv3Rx96j');
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`, `chocolate_covered_strawberry`, `strawberry`, `water_pail`, `iron_ore`, `wooden_dolls`, `oak_planks`, `shovel`, `autumn_hills_background`, `broken_hearts_background`, `camping_at_night_background`, `forest_clearing_background`, `hearts_background`, `pond_background`, `winter_nights_background`, `sunny_wuffy`, `clover_patch`, `daffodils`, `flower_bracelet`, `flower_headband`, `fuzzy_chick`, `red_hibiscus`)
+	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`, `chocolate_covered_strawberry`, `strawberry`, `water_pail`, `iron_ore`, `wooden_dolls`, `oak_planks`, `shovel`, `autumn_hills_background`, `broken_hearts_background`, `camping_at_night_background`, `forest_clearing_background`, `hearts_background`, `pond_background`, `winter_night_background`, `sunny_wuffy`, `clover_patch`, `daffodils`, `flower_bracelet`, `flower_headband`, `fuzzy_chick`, `red_hibiscus`, `beach_background`, `blue_dragonfly`, `wedding_bouquet`, `camping_background`, `cathedral_backgrond`, `cupid_skunk`, `lit_firepit`, `mossy_forest_background`, `pumpkin_patch_background`, `red_nose`, `reindeer_antlers`, `songbird`, `spooky_wuffy`, `sugar_plums`, `sun_pendant`, `topaz_jewelry`, `valentine_wuffy`, `wedding_veil`, `winter_wonderland_background`, `wedding_garter_belt`, `gold_sparkles`, `hearts`, `hero_medal`, `holiday_tree_background`, `kiss_mark`, `falling_leaves`, `moon_highlights`, `mushrooms`, `naked_plushie`, `wedding_pearl_earrings`, `fuzzy_bunny`)
 VALUES
-	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 3, 10, 3, 3, 10, 400, 400, 400, 400, 400, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
-	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
-	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
+	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 3, 10, 3, 3, 10, 400, 400, 400, 400, 400, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+	(3, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
 	
 INSERT INTO `pantry`
 	(`user_id`, `cashew`)
@@ -754,7 +787,38 @@ VALUES
 	(14, 'Triple Spark', 3, 'Make a lihtan squffy with three appearance traits.'),
 	(15, 'Single Wings', 3, 'Make a fey squffy with one appearance trait.'),
 	(16, 'Double Wings', 3, 'Make a fey squffy with two appearance traits.'),
-	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.');
+	(17, 'Triple Wings', 3, 'Make a fey squffy with three appearance traits.'),
+	(47, 'Valentine Wuffy', 4, 'A Valentine\'s Day companion based on the original Wuffy adoptables.'),
+	(48, 'Wedding Veil', 4, 'Something Old! This veil has been handed down from mother to daughter for generations now.'),
+	(49, 'Topaz Jewelry', 4, 'This lovely jewelry will highlight any squffy\'s natural beauty.'),
+	(50, 'Sun Pendant', 4, 'This shiny charm will help light your way on those long, cold nights.'),
+	(51, 'Sugar Plums', 4, 'Watch them dance the night away.'),
+	(52, 'Spooky Wuffy', 4, 'This cute Halloween wuffy is ready to go trick-or-treating. Are you?'),
+	(53, 'Songbird', 4, 'He would be happy to sing for you.'),
+	(54, 'Winter Wonderland Background', 5, 'If you enjoy snow covered forests, you will love this wallpaper.'),
+	(55, 'Wedding Garter Belt', 4, 'Something Blue! They say the man who catches it will be the next to walk down the alter.'),
+	(56, 'Gold Sparkles', 4, 'A little glitter to help you shine.'),
+	(57, 'Hearts', 4, 'These floating hearts will let everyone know exactly how you\'re feeling.'),
+	(58, 'Hero Medal', 4, 'Given to true heroes of the great blizzard of 2008.'),
+	(59, 'Holiday Tree Background', 5, 'You can\'t open the presents yet but you can sit under the tree with them.'),
+	(60, 'Kiss Mark', 4, 'If you can\'t get a real kiss, this one will do in its place.'),
+	(61, 'Falling Leaves', 4, 'Playing in the leaves is a traditional autumn activity.'),
+	(62, 'Moon Highlights', 4, 'Honor Moon\'s hard work to save Sun on the first solstice with these stylish highlights.'),
+	(63, 'Red Nose', 4, 'It\'s so bright, you\'d even say it glows.'),
+	(64, 'Pumpkin Patch Background', 5, 'Take a walk through the pumpkin patch and see if you can find the perfect Halloween pumpkin.'),
+	(65, 'Reindeer Antlers', 4, 'A must for playing all those reindeer games.'),
+	(66, 'Fuzzy Bunny', 4, 'Fuzzy plushie bunnies are super soft.'),
+	(67, 'Mossy Forest Background', 5, 'For the effect of a peaceful woodland setting.'),
+	(68, 'Lit Firepit', 4, 'Remember to keep a bucket of water near by and never leave the fire unattended.'),
+	(69, 'Cupid Skunk', 4, 'What is more romantic than a skunk with wings and love arrows?'),
+	(70, 'Cathedral Background', 5, 'Careful. This tower is quite high up and you don\'t want to fall.'),
+	(71, 'Camping Background', 5, 'Isn\'t exploring the wilderness exciting?'),
+	(72, 'Wedding Bouquet', 4, 'Something new! They say if you catch it, you\'ll be the next to get married.'),
+	(73, 'Blue Dragonfly', 4, 'What a pretty blue dragonfly! I wonder if it\'s lucky...'),
+	(74, 'Beach Background', 5, 'Could your squffy use a vacation? How about a nice trip to the beach.'),
+	(75, 'Mushrooms', 4, 'A fairy ring of mushrooms for your squffy to stand in and make a wish!'),
+	(76, 'April Fools Plushie', 4, 'This poor furless plushie will always remind you of April 2009.'),
+	(77, 'Wedding Pearl Earrings', 4, 'Something Borrowed! Your best friend loaned these to you for the big day.');
 	
 INSERT INTO `items`
 	(`item_id`, `item_name`, `item_type`, `item_description`, `is_seymose`, `seymose_price`, `seymose_item`, `is_olivia`, `olivia_price`)
@@ -764,7 +828,7 @@ VALUES
 	(44, 'Forest Clearing Background', 5, 'What a lovely clearing in the woods. It makes a perfect wallpaper.', 'true', 1, 2, 'false', NULL),
 	(45, 'Hearts Background', 5, 'Celebrate Valentine\'s day with this cheery wallpaper.', 'true', 1, 2, 'false', NULL),
 	(46, 'Pond Background', 5, 'Samson stumbled across a hidden pond one day and painted this lovely picture of it. Shame he can\'t remember how to get back there again.', 'true', 1, 2, 'false', NULL),
-	(41, 'Winter Nights Background', 5, 'It\'s chilly out there. Be sure to take a scarf.', 'true', 1, 2, 'false', NULL),
+	(41, 'Winter Night Background', 5, 'It\'s chilly out there. Be sure to take a scarf.', 'true', 1, 2, 'false', NULL),
 	(40, 'Autumn Hills Background', 5, 'As autumn approaches, the leaves begin to turn. Why not take a walk and enjoy the sight?', 'true', 1, 2, 'false', NULL),
 	(18, 'Sunny Wuffy', 4, 'After saving her from the weeds, she decided to stay with you.', 'true', 1, 2, 'false', NULL),
 	(35, 'Clover Patch', 4, 'If you search long enough, you might find a four leaf clover.', 'true', 1, 3, 'false', NULL),
@@ -827,4 +891,4 @@ INSERT INTO `newbie_packs` (`user_id`) VALUES
 
 INSERT INTO `cache_changed` VALUES (1), (2), (3);
 
-INSERT INTO notifications VALUES (NULL, 1, 1, 'false', 2, 3, 114), (NULL, 1, 1, 'true', 2, 3, 116);
+INSERT INTO notifications VALUES (NULL, 1, 1, 'false', 2, 3, 114, now()), (NULL, 1, 1, 'true', 2, 3, 116, now());

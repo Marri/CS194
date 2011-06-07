@@ -8,6 +8,8 @@ if(isset($_POST['update_squffy'])) {
 
 //Set mate
 if(isset($_POST['set_mate'])) { 
+	$mate_id = getID('mate_id');
+	$mate = Squffy::getSquffyByID($mate_id);
 	include('./scripts/squffy_mate.php'); 
 }
 
@@ -144,5 +146,35 @@ if(isset($_POST['dress'])) {
 			}
 		}
 	}	
+}
+
+//Accept request
+if(isset($_POST['accept-mate'])) {
+	$val = $_POST['accept-mate'];
+	$name = substr($val, 7);
+	$id = getID($name);
+	$mate = Squffy::getSquffyByID($id);
+	$acceptValidRequest = false;
+	$requests = MatingNotification::getRequests($id, $userid);
+	if(sizeof($requests) > 0) {
+		foreach($requests as $request) {
+			if($request->getSentSquffy() == $id) { $acceptValidRequest = true; }
+		}
+	}
+	
+	if(!$acceptValidReqest) {
+		$errors[] = "This request does not seem to exist.";
+	} else {
+		include('./scripts/squffy_mate.php');
+		MatingNotification::deleteNotification($squffy, $mate);	
+	}
+}
+
+if(isset($_POST['reject-mate'])) {
+	$val = $_POST['accept-mate'];
+	$name = substr($val, 7);
+	$id = getID($name);
+	$mate = Squffy::getSquffyByID($id);
+	MatingNotification::deleteNotification($squffy, $mate);	
 }
 ?>

@@ -4,14 +4,50 @@ $objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot'
 foreach($objects as $object) {
 	include('../objects/' . $object . '.php');
 }
+$queryString = "SELECT * FROM species";
+$query = runDBQuery($queryString);
+$species = array();
+while($s = @mysql_fetch_assoc($query)) { 
+	$species[] = strtolower($s['species_name']);
+}
 
-//reset all
+$age = 'adult';
+$queryString = "SELECT * FROM `appearance_traits` ORDER BY `trait_name` ASC;";
+$query = runDBQuery($queryString);
+while($trait = @mysql_fetch_assoc($query)) {
+	$name = $trait['trait_name'];
+	if($trait['trait_type'] == 1) { 
+		checkIfExists($name, $species, $age); 
+	} else {
+		checkIfExists($name . 'c', $species, $age);
+		checkIfExists($name . 'l', $species, $age);
+	}
+}
+
+$ages = array('adult', 'child', 'hatchling');
+foreach($ages as $age) {
+	checkIfExists('base', $species, $age);
+	checkIfExists('eye', $species, $age);
+	checkIfExists('feetear', $species, $age);
+	checkIfExists('standard', $species, $age);
+}
+
+function checkIfExists($name, $species, $age) {
+	foreach($species as $s) {
+		$img = "../images/generate/$s/$s" . $age . "$name.png";
+		if(!file_exists($img)) {
+			echo 'Missing ' . $name . ' for ' . $s . ' ' . $age . '<br>';
+		}
+	}
+}
+
+/*reset all
 function resetAll() {
 	$squffies = Squffy::getSquffies("SELECT * FROM squffies");
 	foreach($squffies as $squffy) {
 		include('./reset_image.php');
 	}
-}
+}*/
 
 /*
 $objects = array('user', 'appearance', 'cost', 'design', 'forums', 'item', 'lot', 'messaging', 'notification', 'personality', 'squffy');
