@@ -1,7 +1,13 @@
 <?php
+$selected = "squffies";
 include("./includes/header.php");
 ?>
-	<h1>Gypsy</h1>
+<div class='content-header width100p'><b>Nadia the Gypsy</b></div>
+
+<div class='text-center'>
+	<img src='./images/npcs/nadia.jpg' />
+</div>
+
 <?php
 include("./includes/footer.php");
 ?>

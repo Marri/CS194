@@ -162,7 +162,7 @@ if(isset($_POST['accept-mate'])) {
 		}
 	}
 	
-	if(!$acceptValidReqest) {
+	if(!$acceptValidRequest) {
 		$errors[] = "This request does not seem to exist.";
 	} else {
 		include('./scripts/squffy_mate.php');

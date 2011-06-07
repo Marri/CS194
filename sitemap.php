@@ -12,14 +12,16 @@ include("./includes/header.php");
 <li><a href="woodshop.php">Woodshop</a><br />
 <li><a href="smithy.php">Smithy</a><br />
 <li><a href="seymose.php">Seymose the Trader</a><br />
-<li><a href="olivia.php">Olivia the Merchant</a><br /><br />
+<li><a href="olivia.php">Olivia the Merchant</a><br />
+<li><a href="gypsy.php">Nadia the Gypsy</a><br /><br />
 
 <b>User Belongings</b><br />
 <li><a href="drey.php">Drey</a><br />
 <li><a href="view_squffy.php?id=112">View squffy</a><br />
 <li><a href="edit_squffy.php?id=112">Edit squffy</a><br />
 <li><a href="hoard.php">Inventory ("Item hoard")</a><br />
-<li><a href="pantry.php">Pantry</a><br /><br />
+<li><a href="pantry.php">Pantry</a><br />
+<li><a href="farms.php">Farms</a><br /><br />
 
 <b>Non-Game Interactions</b><br />
 <li><a href="forums.php">Forums</a><br />

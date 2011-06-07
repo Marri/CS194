@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 	blue_dragonfly smallint unsigned default '0',
 	wedding_bouquet smallint unsigned default '0',
 	camping_background smallint unsigned default '0',
-	cathedral_backgrond smallint unsigned default '0',
+	cathedral_background smallint unsigned default '0',
 	cupid_skunk smallint unsigned default '0',
 	lit_firepit smallint unsigned default '0',
 	mossy_forest_background smallint unsigned default '0',
@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 	falling_leaves smallint unsigned default '0',
 	moon_highlights smallint unsigned default '0',
 	mushrooms smallint unsigned default '0',
-	naked_plushie smallint unsigned default '0',
+	april_fools_plushie smallint unsigned default '0',
 	wedding_pearl_earrings smallint unsigned default '0',
 	fuzzy_bunny smallint unsigned default '0'
 );
@@ -697,7 +697,7 @@ VALUES
 	('user1', 3, '4f85334c66baffb440a5b26bbd2e410a787dab03', 'c7h6g9Npv3Rx96j');
 	
 INSERT INTO `inventory`
-	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`, `chocolate_covered_strawberry`, `strawberry`, `water_pail`, `iron_ore`, `wooden_dolls`, `oak_planks`, `shovel`, `autumn_hills_background`, `broken_hearts_background`, `camping_at_night_background`, `forest_clearing_background`, `hearts_background`, `pond_background`, `winter_night_background`, `sunny_wuffy`, `clover_patch`, `daffodils`, `flower_bracelet`, `flower_headband`, `fuzzy_chick`, `red_hibiscus`, `beach_background`, `blue_dragonfly`, `wedding_bouquet`, `camping_background`, `cathedral_backgrond`, `cupid_skunk`, `lit_firepit`, `mossy_forest_background`, `pumpkin_patch_background`, `red_nose`, `reindeer_antlers`, `songbird`, `spooky_wuffy`, `sugar_plums`, `sun_pendant`, `topaz_jewelry`, `valentine_wuffy`, `wedding_veil`, `winter_wonderland_background`, `wedding_garter_belt`, `gold_sparkles`, `hearts`, `hero_medal`, `holiday_tree_background`, `kiss_mark`, `falling_leaves`, `moon_highlights`, `mushrooms`, `naked_plushie`, `wedding_pearl_earrings`, `fuzzy_bunny`)
+	(`user_id`, `cashew`, `pistachio`, `pecan`, `chestnut`, `walnut`, `almond`, `squffy_dollar`, `single_acorn`, `double_acorn`, `triple_acorn`, `single_seed`, `double_seed`, `triple_seed`, `single_thorn`, `double_thorn`, `triple_thorn`, `single_spark`, `double_spark`, `triple_spark`, `single_wings`, `double_wings`, `triple_wings`, `nutcake`, `chocolate`, `chocolate_almonds`, `chocolate_covered_strawberry`, `strawberry`, `water_pail`, `iron_ore`, `wooden_dolls`, `oak_planks`, `shovel`, `autumn_hills_background`, `broken_hearts_background`, `camping_at_night_background`, `forest_clearing_background`, `hearts_background`, `pond_background`, `winter_night_background`, `sunny_wuffy`, `clover_patch`, `daffodils`, `flower_bracelet`, `flower_headband`, `fuzzy_chick`, `red_hibiscus`, `beach_background`, `blue_dragonfly`, `wedding_bouquet`, `camping_background`, `cathedral_background`, `cupid_skunk`, `lit_firepit`, `mossy_forest_background`, `pumpkin_patch_background`, `red_nose`, `reindeer_antlers`, `songbird`, `spooky_wuffy`, `sugar_plums`, `sun_pendant`, `topaz_jewelry`, `valentine_wuffy`, `wedding_veil`, `winter_wonderland_background`, `wedding_garter_belt`, `gold_sparkles`, `hearts`, `hero_medal`, `holiday_tree_background`, `kiss_mark`, `falling_leaves`, `moon_highlights`, `mushrooms`, `april_fools_plushie`, `wedding_pearl_earrings`, `fuzzy_bunny`)
 VALUES
 	(1, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 3, 10, 3, 3, 10, 400, 400, 400, 400, 400, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
 	(2, 100, 100, 100, 100, 100, 100, 100, 3, 3, 3, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
@@ -717,7 +717,9 @@ VALUES
 	(113, 1, 'Pretend x Jeremy', 'M', '2011-05-30 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 2, 12, 22, 36, 47, 56, 70, 71, 'FBEAA6', '003844', 'AF7A3A', 'false', 'false', 'false', 'false', 'false', 'false', 1, 7, 11, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 	(114, 1, 'Pretend x Jeremy', 'M', '2011-05-25 02:49:46', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 8, 16, 20, 36, 48, 59, 66, 77, 'F8FECA', '00932F', 'DD7F3C', 'false', 'false', 'false', 'false', 'false', 'false', 0, 7, 8, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 	(116, 1, 'Tigra', 'F', '2011-06-01 08:33:44', 0, 2, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'FF8800', '0000BB', '886633', 'true', 'false', 'false', 'false', 'false', 'false', 0, 2, 3, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-	(115, 1, 'Pretend x Jeremy', 'M', '2011-05-20 02:49:46', 0, 1, NULL, NULL, 0, 100, 100, 100, 0, 6, 11, 26, 39, 46, 54, 63, 73, 'F8EEDB', '004330', 'C09D3D', 'false', 'false', 'false', 'false', 'false', 'false', 1, 6, 11, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+	(115, 1, 'Pretend x Jeremy', 'M', '2011-05-20 02:49:46', 0, 1, NULL, NULL, 0, 100, 100, 100, 0, 6, 11, 26, 39, 46, 54, 63, 73, 'F8EEDB', '004330', 'C09D3D', 'false', 'false', 'false', 'false', 'false', 'false', 1, 6, 11, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+	(117, 1, 'Nevyn', 'M', '2011-05-05 00:00:00', 0, 1, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'FACE61', 'AAAAFF', '222222', 'true', 'false', 'false', 'false', 'false', 'false', 6, 8, 9, 10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+	(4, 1, 'Jessica', 'F', '2011-05-05 00:00:00', 20, 1, 1, 'Master', 0, 100, 100, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 'FFFFFF', 'AAAAFF', 'CCCCCC', 'true', 'false', 'false', 'false', 'false', 'false', 1, 2, 3, 4, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 INSERT INTO `squffy_family`
 VALUES 
@@ -732,6 +734,13 @@ VALUES
 	(112, 33, 'S', '907F66', 0),
 	(112, 17, 'S', 'EEE5D4', 2),
 	(112, 15, 'C', 'FFFFFF', 3),
+	(117, 19, 'S', 'FACE61', 2),
+	(117, 21, 'S', 'FFFFFF', 1),
+	(117, 35, 'S', '584C34', 0),
+	(4, 23, 'S', 'BBBBBB', 1),
+	(4, 33, 'S', '666666', 0),
+	(4, 17, 'S', '666666', 2),
+	(4, 15, 'C', 'FFFFFF', 3),
 	(2, 17, 'S', 'FFFFFF', 3),
 	(2, 15, 'S', 'FF0000', 0),
 	(113, 33, 'S', 'EDDADA', 0),
@@ -860,7 +869,8 @@ INSERT INTO `designs` (`design_id`, `design_name`, `user_id`, `species_id`, `bas
 (2, 'Mystic', 1, 4, 'D7C9FF', '886633', 'D4AB6F', 3),
 (3, 'Tiger', 1, 2, 'FF8800', '0000BB', '886633', 2),
 (4, 'Pinky', 1, 3, 'FFBBBB', '009900', 'DD99FF', 3),
-(5, 'Nevyn', 1, 1, 'FACE61', 'AAAAFF', '222222', 3);
+(5, 'Nevyn', 1, 1, 'FACE61', 'AAAAFF', '222222', 3),
+(6, 'Dizzy', 1, 2, '000000', 'DD99FF', '886633', 4);
 
 INSERT INTO `design_traits` (`design_id`, `trait_id`, `trait_color`, `trait_order`) VALUES
 (2, 27, 'FFFFFF', 0),
@@ -873,7 +883,11 @@ INSERT INTO `design_traits` (`design_id`, `trait_id`, `trait_color`, `trait_orde
 (4, 26, 'DD99FF', 2),
 (5, 35, '584C34', 0),
 (5, 21, 'FFFFFF', 1),
-(5, 19, 'FACE61', 2);
+(5, 19, 'FACE61', 2),
+(6, 13, '886633', 0),
+(6, 16, '000000', 1),
+(6, 2, '999999', 2),
+(6, 21, 'FFFFFF', 3);
 
 INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_price_selling_item_id`, `sale_price_selling_amount`, `sale_price_wanted_item_id`, `sale_price_wanted_amount`) VALUES
 ('First Lot', '2', '1', 'false', '1', '10', '2', 20),
@@ -882,7 +896,8 @@ INSERT INTO `lots` (`lot_name`, `user_id`, `lot_type`, `is_finished`, `sale_pric
 
 INSERT INTO squffy_items (squffy_id, item_id, item_name, item_order) 
 VALUES (112, 18, 'Sunny Wuffy', 0),
-(2, 19, 'Red Hibiscus',1);
+(2, 19, 'Red Hibiscus',1),
+(117, 56, 'Gold Sparkles', 0);
 
 INSERT INTO `newbie_packs` (`user_id`) VALUES
 (1),

@@ -26,16 +26,15 @@ $sort = "";
 if(isset($_GET['sort'])) { $sort = $_GET['sort']; }
 if($sort == "name") { $query .= ' ORDER BY squffy_name ASC'; }
 elseif($sort == "species") { $query .= ' ORDER BY squffy_species ASC'; }
-elseif($sort == "age") { $query .= ' ORDER BY (TO_DAYS(squffy_birthday) + age_offset) ASC'; }
+elseif($sort == "age") { $query .= ' ORDER BY (TO_DAYS(squffy_birthday) - age_offset) - CASE WHEN is_custom = "true" THEN 20 ELSE 0 END ASC'; }
 elseif($sort == "gender") { $query .= ' ORDER BY squffy_gender DESC'; }
-
 
 $squffies = Squffy::getSquffies($query);
 
 $i = 0;
 echo '<table class="width100p" cellspacing="0"><tr><th colspan="5" class="content-header">Your Squffies</th></tr>';
 echo '<form action="drey.php" method="get">
-<tr><td colspan="3">Sort by: <select size="1" name="sort">
+<tr><td colspan="3">&nbsp;Sort by: <select size="1" name="sort">
 <option value="name">Name</option>
 <option value="age">Age</option>
 <option value="gender">Gender</option>
