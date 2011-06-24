@@ -35,6 +35,11 @@ function row($cur) {
 	return $cur == "odd" ? "even" : "odd";
 }
 
+function classRow($cur) {
+	echo $cur;
+	return $cur == "odd" ? "even" : "odd";
+}
+
 function lastRow($cur) {
  	echo ' class="' . ($cur == "odd" ? "even" : "odd") . '"';
 }

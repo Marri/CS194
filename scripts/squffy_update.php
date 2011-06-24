@@ -23,8 +23,8 @@ if($newHire && !$newHIA && !$newHSD) {
 		$valid = false;
 	}
 }
-if($newHIA === "0" && !$newHSD) { $newHSD = 'NULL'; }
-if($newHSD === "0" && !$newHIA) { $newHIA = 'NULL'; }
+if($newHire && $newHIA === "0" && !$newHSD) { $newHSD = 'NULL'; }
+if($newHire && $newHSD === "0" && !$newHIA) { $newHIA = 'NULL'; }
 
 if($newBreed && !$newBIA && !$newBSD) {
 	if(!($newBIA === "0" || $newBSD === "0")) {
@@ -32,8 +32,8 @@ if($newBreed && !$newBIA && !$newBSD) {
 		$valid = false;
 	}
 }
-if($newBIA === "0" && !$newBSD) { $newBSD = 'NULL'; }
-if($newBSD === "0" && !$newBIA) { $newBIA = 'NULL'; }
+if($newBreed && $newBIA === "0" && !$newBSD) { $newBSD = 'NULL'; }
+if($newBreed && $newBSD === "0" && !$newBIA) { $newBIA = 'NULL'; }
 
 if(!$newName) {
 	$errors[] = "You must choose a name for your squffy.";

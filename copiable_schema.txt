@@ -237,8 +237,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 	flower_bracelet smallint unsigned default '0',
 	flower_headband smallint unsigned default '0',
 	fuzzy_chick smallint unsigned default '0',
-	red_hibiscus smallint unsigned default '0'
-	,
+	red_hibiscus smallint unsigned default '0',
 	beach_background smallint unsigned default '0',
 	blue_dragonfly smallint unsigned default '0',
 	wedding_bouquet smallint unsigned default '0',
@@ -280,7 +279,12 @@ CREATE TABLE IF NOT EXISTS pantry (
 	chestnut smallint unsigned default '0',
 	pecan smallint unsigned default '0',
 	walnut smallint unsigned default '0',
-	almond smallint unsigned default '0'
+	almond smallint unsigned default '0',
+	nutcake smallint unsigned default '0',
+	chocolate smallint unsigned default '0',
+	chocolate_almonds smallint unsigned default '0',
+	chocolate_covered_strawberry smallint unsigned default '0',
+	strawberry smallint unsigned default '0',
 );
 
 DROP TABLE IF EXISTS messages;

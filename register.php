@@ -1,17 +1,35 @@
 <?php
+$selected = "account";
 include("./includes/header.php");
 
+$cur = "odd";
+$user_name = '';
+$login_name = '';
+$referer = isset($_GET['refer']) ? $_GET['refer'] : '';
 
-$username = "";
-$loginname = "";
-$password = "";
-$email = "";
+if(isset($_POST['register'])){
+	include('./scripts/process_register.php');
+}
 
-$password_error = "";
-$username_error = "";
-$login_error = "";
-$confirm_error = "";
-$email_error = "";
+displayErrors($errors);
+displayNotices($notices);
+?>
+
+<form action="register.php" method="post">
+<table class="width100p" cellspacing="0"><tr><th class="content-header" colspan="2">Register</th></tr>
+		<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="userLabel">Username </label></th><td><input name="username" type="text" value="<?php echo $user_name; ?>"></td></tr>
+		<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="loginLabel">Login Name </label></th><td><input name="login" type="text" value="<?php echo $login_name; ?>"></td></tr>
+		<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="emailLabel">Email Address </label></th><td><input name="email" type="text"></td></tr>
+		<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="passwordLabel">Password </label></th><td><input name="password" type="password"></td></tr>
+		<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="confirmLabel">Confirm Password </label></th><td><input name="confirm" type="password"></td></tr>
+        <tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="referLabel">Referred By* </label></th><td><input name="referer" type="text" value="<?php echo $referer; ?>"></td></tr>
+        <tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"></th><td class="small vertical-top pad-bottom-small"><b>*Optional</b> You may enter either the username or ID of the person who told you about Squffies.</td></tr>
+        <tr<?php $cur = row($cur); ?>><td></td><td><input type="checkbox" name="agree" value="true" <?php echo isset($_POST['agree']) ? 'checked' : ''; ?> /> I understand and agree to abide by the <a href="#">Terms of Service</a> and the <a href="#">Privacy Policy</a>.</td></tr>
+		<tr<?php $cur = row($cur); ?>><th colspan="2"><input class="submit-input" name="register" type="submit" value="Register"></td></tr>
+</table>      
+	</form>
+
+<?php /*
 
 if(isset($_POST['register'])){
 	$username = mysql_real_escape_string($_POST['username']);
@@ -20,17 +38,6 @@ if(isset($_POST['register'])){
 	$confirm_pass = $_POST['confirm'];
 	$email = mysql_real_escape_string($_POST['email']);
 	
-	$canRegister = true;
-	if(User::usernameTaken($username)){ 
-		$canRegister = false;
-		$username_error = "Username already taken.";
-		$username = "";
-	}
-	if(User::loginNameTaken($loginname)){ 
-		$canRegister = false;
-		$login_error = "login_name already taken";
-		$loginname = "";
-	}
 	$password_error = User::passwordValid($password);
 	if($password_error != ""){ 
 		$canRegister = false;
@@ -73,6 +80,6 @@ if(isset($_POST['register'])){
 	</form>
 <?php }
 ?>
-<?php	
+<?php	*/
 include("./includes/footer.php");		
 ?>

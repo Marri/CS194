@@ -727,6 +727,13 @@ class User {
 		return self::getUserByID($id);
 	}
 	
+	public static function GetUserByUsername($username) {
+		$queryString = "SELECT * FROM `users` WHERE `username` = '".$username."';";
+		$query = runDBQuery($queryString);
+		if(@mysql_num_rows($query) < 1) { return NULL; }
+		return (new User($query));
+	}
+	
 	//Private methods
 	private static function secure($password, $salt) {
 		$hash = sha1($password . $salt);

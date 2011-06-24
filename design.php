@@ -94,15 +94,6 @@ if($numTraits < 1) { $numTraits = 1; }
 					echo '>' . $spec['species_name'] . '</option>';
 				}
             echo '</select>
-			<select name="age" size="1" class="width125">
-			<option value="adult">Adult</option>
-			<option value="child"';
-			if($_POST['age'] == 'child') { echo ' selected'; }
-			echo '>Adolescent</option>
-			<option value="hatchling"';
-			if($_POST['age'] == 'hatchling') { echo ' selected'; }
-			echo '>Hatchling</option>
-			</select>
 		</td>
         <td align="center" class="width150">
 		<input type="text" value="';

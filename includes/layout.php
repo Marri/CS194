@@ -27,7 +27,7 @@
             <div id='left-column'>
             	<div id='side-menu'>
                 	<?php if(!$loggedin) { ?>
-                	<form action="index.php" method="post">
+                	<form action="" method="post">
 						<label for="uname">Login Name:</label>
     						<input type="text" name="login_name" size="10" maxlength="50" />
 						<label for="pword">Password: </label>

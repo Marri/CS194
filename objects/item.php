@@ -22,6 +22,7 @@ class Item{
 	public function getName(){ return $this->name; }
 	public function getColumnName(){ return $this->column_name; }
 	public function getDescription(){ return $this->description; }
+	public function getType() { return $this->type; }
 	public function getImage() { return './images/items/' . strtolower(str_replace(" ","",$this->name)) . '.png'; }
 	
 	public function canMakeCustom() { return $this->type == 3; }

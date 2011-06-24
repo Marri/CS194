@@ -1,8 +1,7 @@
 MISSING IMAGES
 new tree
-many items for fey
-holiday tree background for all
 new markings: lihtan/sand/fey
+backgrounds: kitchen, woodshop, smithy
 
 TODO:
 Check header and footer includes in the mysql error

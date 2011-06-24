@@ -37,6 +37,7 @@ body, html {
 
 .hidden { display: none; }
 .invisible { visibility: hidden; }
+.small-bordered { border: 1px black solid; }
 .bordered { border: 2px black solid; }
 .no-border { border: 0px !important; }
 .small { font-size: 11px; }
@@ -80,6 +81,7 @@ body, html {
 .margin-top-small { margin-top: 5px; }
 .margin-bottom-small { margin-bottom: 5px; }
 .pad-left-small { padding-left: 5px; }
+.pad-bottom-small { padding-bottom: 5px; }
 .no-margin { margin: 0px; }
 .padding-10 { padding: 10px; }
 .padding-5 { padding: 5px; }
@@ -439,4 +441,5 @@ a.menu-link:hover {
 .item {
 	width: 50px;
     height: 50px;
+    background-color: #FFFFFF;
 }

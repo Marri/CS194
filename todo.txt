@@ -1,0 +1,53 @@
+FEATURES
+	Pantry
+	Search
+	Admin Tools
+	Farms
+	Drey Construction
+	Reset Password
+	Resend or Fix Email
+	Job Fair
+	Seymose
+	Olivia
+	Tournaments
+	Games
+	Who's Online
+	Bug Reporting
+	News
+	Friends
+	Blocked
+
+FINISH
+	Forums
+	Messages
+	Notifications
+	Trading Circle
+	Logging
+	Recent Posts
+	
+FIXES
+	Registration
+		-Verify email and passwords
+		-Add actual registration code to correct section
+	Header
+		-Make sure if the database is down, the staff gets an email
+		-Log all other MySQL errors
+	Squffy
+		-Pick dominant and recessive traits
+		-Fix all the images to standardize at 375 x 375
+		-Fix design images: should never return generate_image file as url
+		-Fix personality trait picking. Pretty definitely wrong. Must not duplicate traits anywhere.
+
+MAYBE
+	Custom 404 page
+
+OFFICE STUFF
+	Get all images from Tealya
+	Write Terms of Service
+	Write Privacy Policy
+	Write Credits
+	Write/get Help page (Squffies 101, FAQ, etc)
+	Write About Us page
+	Write Contact Us page
+	Find proper hosting and transfer if necessary
+	Transfer Paypal/money to Tealya or Dozie or both
