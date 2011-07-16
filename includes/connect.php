@@ -6,7 +6,7 @@ $password = '853825';*/
 $hostname = "127.0.0.1";
 $database = "cs194";
 $username = "root";
-$password = "squffy";
+$password = '';
 
 //Connect to database
 $con = @mysql_connect($hostname, $username, $password) or throwMySQLError(mysql_error(), 'Could not connect to database.');

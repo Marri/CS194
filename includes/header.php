@@ -8,6 +8,7 @@ array(
 	'appearance', 
 	'cost',
 	'design', 
+	'farm',
 	'item', //Before food 
 	'food',
 	'forums',

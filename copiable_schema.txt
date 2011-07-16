@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS pantry (
 	chocolate smallint unsigned default '0',
 	chocolate_almonds smallint unsigned default '0',
 	chocolate_covered_strawberry smallint unsigned default '0',
-	strawberry smallint unsigned default '0',
+	strawberry smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS messages;
