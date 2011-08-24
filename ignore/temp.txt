@@ -1,0 +1,64 @@
+UNDER ACCOUNT:
+	DONE
+	Create account
+	Activate account
+	Resend activation email
+	Referrals and prizes
+	Login problems fixed
+	Reset email address
+	Purchase squffy dollars
+
+	TODO
+	Edit Account/Migration/Vacation
+	
+UNDER SQUFFIES
+	DONE
+	Drey
+	Nursery
+	Customs
+	
+	TODO
+	Make free squffies non transferrable
+	Update the design images to not show the generating link
+	Fix the customs page to allow free squffies properly
+	Job Fair
+	Gypsy Matchmaker
+	Gypsy trait search
+	
+UNDER WORLD
+	TODO
+	The entire damn trading post
+	Olivia
+	Seymose
+	Games
+	River
+	Tournaments
+	
+INTERACT
+	TODO
+	Everything :(
+	
+HELP & INFO
+	TODO
+	News
+	Code Releases
+	Bugs
+	Staff
+	Credits
+	Help
+	About
+	Staff
+	Contact Us
+	
+ABSOLUTELY NEED
+	Migrate squffies
+	Farms
+	Sd log
+	Seymose: nut trading
+	wearetheadmin
+	Item page
+	
+	Edit profile
+	Fix the design images
+	Matchmaking
+	Monthly items
