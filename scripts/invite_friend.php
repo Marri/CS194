@@ -18,9 +18,7 @@ if($valid) {
 	$message .= "To create an account, please click the following link:\n\n";
 	$message .= "http://www.squffies.com/register.php?refer=$userid\n\nThanks,\n-The Squffies team";
 	$headers="From:support@squffies.com";
-	//mail($email, $subj, $message, $headers);
-	//TODO
-	echo str_replace('\n', "<br>",$message);
+	mail($email, $subj, $message, $headers);
 	
 	$query = "INSERT INTO log_referrals (refer_id, email, date_sent) VALUES ($userid, '$email', now())";
 	runDBQuery($query);

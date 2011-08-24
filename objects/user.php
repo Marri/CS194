@@ -305,9 +305,7 @@ class User {
 		To activate your account and start using the site, please click the following link:\n\n";
 		$message.="http://www.squffies.com/activate.php?key=$key\n\nThanks,\n-The Squffies team";
 		$headers="From:support@squffies.com";
-		//mail($email, $subj, $message, $headers);
-		//TODO
-		echo $message;
+		mail($email, $subj, $message, $headers);
 	}
 	
 	public static function EmailTaken($email) {

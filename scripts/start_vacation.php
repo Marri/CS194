@@ -9,12 +9,7 @@ if(!is_numeric($days)) {
 	$valid = false;
 	$errors[] = 'You must go on vacation for at least three days.';
 }
-/*
-CREATE TABLE IF NOT EXISTS vacations (
-	user_id mediumint unsigned,
-	date_return datetime,
-	old_level tinyint unsigned
-);*/
+
 if($valid) {
 	$date = date("Y-m-d H:i:s");
 	$date = strtotime(date("Y-m-d H:i:s", strtotime($date)) . " +" . $days . " days");
