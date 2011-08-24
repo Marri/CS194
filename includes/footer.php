@@ -5,13 +5,13 @@
         </div>
     </div>
     <div id='footer'>
-        <a href='#'>About Squffies</a>
+        <a href='about.php'>About Squffies</a>
         &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='#'>Privacy Policy</a>
+        <a href='privacy.php'>Privacy Policy</a>
         &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='#'>Terms and Conditions</a>
+        <a href='tos.php'>Terms and Conditions</a>
         &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='#'>Credits</a>
+        <a href='credits.php'>Credits</a>
         &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
         <a href='#'>Contact Us</a>
 	</div>

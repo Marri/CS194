@@ -1,5 +1,6 @@
 <?php
 $selected = "account";
+$forLoggedIn = true;
 include("./includes/header.php");
 
 //Auth tokens for Paypal
@@ -14,7 +15,7 @@ $req .= "&tx=$tx_token&at=$auth_token";
 $header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
-$fp = fsockopen ('www.paypal.com', 80, $errno, $errstr, 30);
+$fp = fsockopen ('www.paypal.com', 80, '', '', 30);
 
 if (!$fp) {
 	// HTTP ERROR
@@ -56,6 +57,22 @@ if (!$fp) {
 if(!$keyarray) {
 	$errors[] = "You must donate to receive Squffy dollars!";
 	$valid = false;
+}
+
+//Check txtoken log
+$query = "SELECT * FROM log_payment WHERE tx_token = '$tx_token'";
+$result = runDBQuery($query);
+if(@mysql_num_rows($result) > 0) {
+	$errors[] = 'That payment has been credited to you already.';
+	$valid = false;
+}
+
+if($valid) {
+	$user->updateInventory('squffy_dollar', $amount * 10, true);
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$query = "INSERT INTO log_payment VALUES (NULL, $userid, $amount, '$tx_token', '$ip', now())";
+	runDBQuery($query);
+	$notices[] = 'Success! You have purchased ' . ($amount * 10) . ' squffy dollars. Thanks!';
 }
 
 displayErrors($errors);

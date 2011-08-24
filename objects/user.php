@@ -9,7 +9,9 @@ class User {
 	const RESET_PASSWORD_USER = 7;
 	const FROZEN_USER = 8;
 	const VACATION_USER = 9;
+	
 	const SALT_LEN = 15;
+	const RESET_LEN = 8;
 	
 	private
     	$id,
@@ -19,7 +21,7 @@ class User {
 		$layout_id,
 		$inventory,
 		$email_addr,
-		$activated;
+		$date_deupgrade;
 		
 	//Constructors
 	public function __construct($result) {
@@ -31,24 +33,69 @@ class User {
 		$this->last_seen = $info['date_last_seen'];
 		$this->layout_id = $info['default_layout_id'];
 		$this->email_addr = $info['email_address'];
-		$this->activated = $info['activated'];
+		$this->date_deupgrade = $info['date_upgrade_ends'];
 		
 		$this->inventory = NULL;
-	}
-	
-	
+	}	
 	
 	//Getters and setters
 	public function getID() { return $this->id; }
-	public function getHash() { return $this->hash; }
 	public function getLayout() { return $this->layout_id; }
 	public function getUsername(){ return $this->username; }
 	public function getEmail(){ return $this->email_addr; }
+	public function getLevel() { return $this->level; }
+	public function getLastSeen() { return $this->last_seen; }
+	public function getDateUpgradeEnds() { return $this->date_deupgrade; }
 	public function getInventory() {
 		if($this->inventory == NULL) { $this->fetchInventory(); }
 		return $this->inventory;
 	}
+	public function getAmount($col) {
+		$inventory = $this->getInventory();
+		if(!isset($inventory[$col])) { return 0; }
+		return $inventory[$col];
+	}
 	public function getLink() { return '<a href="profile.php?id=' . $this->id . '">' . $this->username . '</a>'; }
+	public function getLevelName() {
+		switch($this->level) {
+			case self::ADMIN_USER: return 'Administrator';
+			case self::MOD_USER: return 'Moderator';
+			case self::PERM_UPGRADE_USER: case self::UPGRADE_USER: return 'Upgraded';
+			case self::NORMAL_USER: case self::PRE_ACTIVATED_USER: return 'Standard';
+			case self::FROZEN_USER: return 'Frozen';
+			case self::RESET_PASSWORD_USER:
+				$query = "SELECT * FROM log_password_reset WHERE user_id = " . $this->id . " AND old_level != " . User::RESET_PASSWORD_USER . " ORDER BY date_reset DESC LIMIT 1";
+				$result = runDBQuery($query);
+				$info = @mysql_fetch_assoc($result);
+				$this->level = $info['old_level'];
+				$name = $this->getLevelName();
+				$this->level = self::RESET_PASSWORD_USER;
+				return $name;				
+			default: return 'On vacation';
+		}
+	}
+	
+	public function getHash() {
+		$query = "SELECT hash FROM user_login WHERE user_id = " . $this->id;
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		$info = @mysql_fetch_assoc($result);
+		return $info['hash'];
+	}
+	
+	public function setLevel($level) {
+		$query = 'UPDATE `users` SET `level_id` = ' . $level . ' WHERE `user_id` = ' . $this->id;
+		runDBQuery($query);
+		$this->level = $level;
+	}
+	
+	public function setPassword($newPass) {
+		$newSalt = randomString(self::SALT_LEN);
+		$newHash = self::Secure($newPass, $newSalt);
+		
+		$query = "UPDATE `user_login` SET `hash` = '$newHash', `salt` = '$newSalt' WHERE `user_id` = " . $this->id;
+		runDBQuery($query);
+	}
 	
 	//Predicates
 	public function isActivated(){	return $this->activated; }
@@ -56,39 +103,23 @@ class User {
 	public function isMod() { return $this->level == self::MOD_USER; }
 	public function isPermUpgraded() { return $this->level == self::PERM_UPGRADE_USER; }
 	public function isUpgraded() { return $this->level == self::UPGRADE_USER; }
-	public function isUpgradedPlus() { return $this->isAdmin() || $this->isMod() || $this->isPermUpgraded() || $this->isUpgraded(); }
-	
-	public function canAffordSD($cost) {
-		if($this->inventory['squffy_dollar'] >= $cost->getSDPrice()) { return true; }
-		return false;
-	}
-	
-	public function canAffordItem($cost) {
-		$itemName = $cost->getColumnName();
-		if($this->inventory["$itemName"] >= $cost->getItemPrice()) { return true; }
-		return false;
-	}
-	
-	//Public methods
+	public function hasUpgrade() { return $this->isAdmin() || $this->isMod() || $this->isPermUpgraded() || $this->isUpgraded(); }
+		
+	//Public methods	
 	public function checkCacheUpdate() {
 		$queryString = 'SELECT * FROM `cache_changed` WHERE `user_id` = ' . $this->id;
         $query = runDBQuery($queryString);
 		if(@mysql_num_rows($query) > 0) {
 			$this->fetchInventory();
 		}
-	}
+	}	
 	
 	public function fetchInventory() {
 		$queryString = 'SELECT * FROM `inventory` WHERE `user_id` = ' . $this->id;
         $query = runDBQuery($queryString);
-        if(@mysql_num_rows($query) <= 0){
-        	self::createEmptyInventory($this->id);
-        	self::fetchInventory();
-        }else{
-			$this->inventory = @mysql_fetch_assoc($query);
-			$queryString = 'DELETE FROM `cache_changed` WHERE `user_id` = ' . $this->id;
-        	runDBQuery($queryString);
-		}
+		$this->inventory = @mysql_fetch_assoc($query);
+		$queryString = 'DELETE FROM `cache_changed` WHERE `user_id` = ' . $this->id;
+		runDBQuery($queryString);
 	}
 	
 	public function updateInventory($col, $change, $changeDB = false) {
@@ -96,17 +127,247 @@ class User {
 			$this->inventory[$col] = $this->inventory[$col] + $change;
 		}
 		
-		if($changeDB == true) {
+		if($changeDB) {
 			$query = "UPDATE inventory SET $col = $col + $change WHERE user_id = " . $this->id;
 			runDBQuery($query);
 		}
 	}	
-		
+	
     public function seenNow() {
 		$queryString = 'UPDATE `users` SET `date_last_seen` = now() where `user_id` = ' . $this->id;
         runDBQuery($queryString);
-    }	
+    }
 	
+	public function resetPassword() {
+		$newPass = randomString(self::RESET_LEN);
+		$newSalt = randomString(self::SALT_LEN);
+		$newHash = self::Secure($newPass, $newSalt);
+		
+		$query = "UPDATE `user_login` SET `hash` = '$newHash', `salt` = '$newSalt' WHERE `user_id` = " . $this->id;
+		runDBQuery($query);
+		
+		$this->setLevel(User::RESET_PASSWORD_USER);
+		
+		$subj="Your Squffies.com password has been reset.";
+		$message="Dear ". stripslashes($this->username) . ",\n\nYour Squffies password has been temporarily changed to $newPass. Please log in and pick a new password as soon as you can.\n\nThanks,\n-The Squffies team";
+		$headers="From:support@squffies.com";
+		//mail($email,$subj,$message,$headers);
+		echo $message;
+	}
+	
+	public function addSixMonths() {
+		if($this->getLevel() != self::UPGRADE_USER) { return; }
+		
+		$date = strtotime($this->date_deupgrade);
+		if($this->date_deupgrade == NULL) { 
+			$date = time();
+		}
+		
+		$year = (int) date("Y", $date);
+		$month = (int) date("m", $date);
+		$month += 6;
+		if($month > 12) { $month -= 12; $year++; }
+		$six = $year . '-';
+		if($month < 10) { $six .= '0'; }
+		$six .= $month . '-' . date("d H:i:s", $date);
+		
+		$query = "UPDATE users SET date_upgrade_ends = '$six' WHERE user_id = " . $this->id;
+		runDBQuery($query);
+		$this->date_deupgrade = $six;
+	}
+	
+	public function addDaysToUpgrade($days) {
+		if($this->getLevel() != self::UPGRADE_USER) { return; }
+		$date = date("Y-m-d H:i:s", strtotime($this->date_deupgrade));
+		$date = strtotime(date("Y-m-d H:i:s", strtotime($date)) . " +" . $days . " days");
+		$date = date("Y-m-d H:i:s", $date);
+		
+		$query = "UPDATE users SET date_upgrade_ends = '$date' WHERE user_id = " . $this->id;
+		runDBQuery($query);
+		$this->date_deupgrade = $date;
+	}
+	
+	public function securePassword($password) {
+		$query = "SELECT salt FROM user_login WHERE user_id = " . $this->id;
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		$info = @mysql_fetch_assoc($result);
+		$salt = $info['salt'];
+		return self::Secure($password, $salt);
+	}
+	
+	//Private functions
+	private static function Secure($password, $salt) {
+		$hash = sha1($password . $salt);
+		for($i = 0; $i < self::SALT_LEN; $i++) {
+			$hash = sha1($hash);
+		}
+		return $hash;
+	}
+	
+	private static function InsertUser($username, $email) {
+		$query = "INSERT INTO users (username, level_id, default_layout_id, email_address) 
+						VALUES ('" . $username . "', '" . self::PRE_ACTIVATED_USER . "', NULL, '".$email."');";
+		runDBQuery($query);
+		return @mysql_insert_id();
+	}
+	
+	private static function InsertLogin($user_id, $login_name, $salt, $hash) {
+		$query = "INSERT INTO user_login (login_name, user_id, hash, salt)
+					VALUES ('$login_name', '$user_id', '$hash', '$salt')";
+		runDBQuery($query);
+	}
+	
+	private static function InsertNewbiePack($user_id) {
+		$query = "INSERT INTO newbie_packs (user_id) VALUES ($user_id)";
+		runDBQuery($query);
+		$user = self::getUserByID($user_id);
+		$user->updateInventory("cashew", 50, true);
+		$user->updateInventory("walnut", 5, true);
+		$user->updateInventory("hoe", 1, true);
+		$user->updateInventory("shovel", 1, true);
+		$user->updateInventory("water_pail", 3, true);
+	}
+	
+	private static function InsertInventory($user_id) {
+		$query = "INSERT INTO inventory (user_id) VALUES ($user_id)";
+		runDBQuery($query);
+		$query = "INSERT INTO pantry (user_id) VALUES ($user_id)";
+		runDBQuery($query);
+	}
+	
+	private static function SendActivationKey($user_id, $email, $user_name){
+		$key = randomString(self::SALT_LEN);
+		$key = sha1($key);
+		
+		$query = "INSERT INTO user_activation (user_id, activate) VALUES ('".$user_id."', '".$key."')";
+		runDBQuery($query);
+		self::SendActivationEmail($email, $user_name, $key);
+	}
+	
+	//Static functions	
+	public static function getUserByID($id) {
+		$queryString = "SELECT * FROM `users` WHERE `user_id` = '".$id."';";
+		$query = runDBQuery($queryString);
+		if(@mysql_num_rows($query) < 1) { return NULL; }
+		return (new User($query));
+	}
+	
+	public static function getUserByLogin($login_name, $password, $skip = false) {
+		$query = "SELECT * FROM `user_login` WHERE `login_name` = '$login_name'";
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		$info = @mysql_fetch_assoc($result);
+		if($skip) { return self::getUserByID($info['user_id']); }
+		$hashed = self::Secure($password, $info['salt']);
+		if($info['hash'] != $hashed) { return NULL; }
+		$id = $info['user_id'];
+		return self::getUserByID($id);
+	}
+	
+	public static function GetUserByUsername($username) {
+		$queryString = "SELECT * FROM `users` WHERE `username` = '".$username."';";
+		$query = runDBQuery($queryString);
+		if(@mysql_num_rows($query) < 1) { return NULL; }
+		return (new User($query));
+	}
+	
+	public static function GetUserByActivation($key) {
+		$query = "SELECT * FROM `user_activation` WHERE `activate` = '$key'";
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		$info = @mysql_fetch_assoc($result);
+		$id = $info['user_id'];
+		return self::getUserByID($id);
+	}
+	
+	public static function GetUserByEmail($email) {
+		$query = "SELECT * FROM `users` WHERE `email_address` = '$email'";
+		$result = runDBQuery($query);
+		if(@mysql_num_rows($result) < 1) { return NULL; }
+		return (new User($result));
+	}
+	
+	public static function CreateUser($user_name, $password, $login_name, $email) {
+		$salt = randomString(self::SALT_LEN);
+		$hash = self::Secure($password, $salt);
+		$user_id = self::InsertUser($user_name, $email);
+		self::InsertLogin($user_id, $login_name, $salt, $hash);
+		self::InsertInventory($user_id);
+		self::InsertNewbiePack($user_id);
+		self::SendActivationKey($user_id, $email, $user_name);
+		return $user_id;
+	}
+	
+	public static function SendActivationEmail($email, $user_name, $key) {
+		$subj="Activate your Squffies.com account";
+		$message="Welcome to Squffies, ". stripslashes($user_name) . "!  We're thrilled to have you.\n\n
+		To activate your account and start using the site, please click the following link:\n\n";
+		$message.="http://www.squffies.com/activate.php?key=$key\n\nThanks,\n-The Squffies team";
+		$headers="From:support@squffies.com";
+		//mail($email, $subj, $message, $headers);
+		//TODO
+		echo $message;
+	}
+	
+	public static function EmailTaken($email) {
+		$query = "SELECT 1 FROM `users` WHERE `email_address` = '$email'";
+		$result = runDBQuery($query);
+		return @mysql_num_rows($result) > 0;
+	}
+	
+	public static function UsernameTaken($username){
+		$queryString = "SELECT 1 FROM users WHERE username='".$username."';";
+		$result = runDBQuery($queryString);
+		return @mysql_num_rows($result) > 0;
+	}
+	
+	public static function LoginNameTaken($login_name){
+		$queryString = "SELECT 1 FROM user_login WHERE login_name='".$login_name."';";
+		$result = runDBQuery($queryString);
+		return @mysql_num_rows($result) > 0;
+	}
+	
+	public static function CacheChanged($user_id){
+		$queryString = "INSERT INTO cache_changed VALUES('".$user_id."');";
+		runDBQuery($queryString);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//TODO!!!!!!
+	
+			
+	
+	//TODO
 	public function getNotifications(){
 		$notification_list = array();		
 		$queryString = "SELECT * FROM notifications WHERE user_id = '".$this->id."';";
@@ -118,30 +379,35 @@ class User {
 		return $notification_list;
 	}
 	
+	//TODO
 	private function getNoobPack(){
 		$queryString = "SELECT squffy_made FROM newbie_packs WHERE user_id='".$this->id."'";
 		$results = runDBQuery($queryString);
 		return (@mysql_fetch_assoc($results));
 	}
 	
+	//TODO
 	public function canMakeFreeGroundSquffy(){
 		$squffy_made = $this->getNoobPack();
 		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'tree')){ return true; }
 		return false;
 	}
 	
+	//TODO
 	public function canMakeFreeTreeSquffy(){
 		$squffy_made = $this->getNoobPack();
 		if(($squffy_made['squffy_made'] == 'none') || ($squffy_made['squffy_made'] == 'ground')){ return true; }
 		return false;
 	}
 	
+	//TODO
 	private function updateNoobPack($squffy_type){
 		$queryString = "UPDATE newbie_packs SET squffy_made='".$squffy_type."' WHERE user_id = '".$this->id."';";
 		runDBQuery($queryString);
 	}
 	
 	/* returns true if free squffy is used */
+	//TODO
 	public function  useFreeSquffy($squffy_type){
 		$squffy_made = $this->getNoobPack();
 		$squffy_just_made = "";
@@ -160,6 +426,7 @@ class User {
 	* function to determine if item in specified amount is owned by the user
 	* and NOT on sale in a current lots
 	*/
+	//TODO
 	private function haveItemAmount($item_id, $item_name, $item_amount){
 		$inventory = $this->getInventory();
 		$item_name = str_ireplace(" ", "_", strtolower($item_name));
@@ -172,15 +439,18 @@ class User {
 	 * takes in an item name and item amount to determine if the user
 	 * can buy it
 	 */
+	//TODO
 	public function canSellItem($item_id, $item_name, $item_amount){
 		return $this->haveItemAmount($item_id, $item_name, $item_amount);
 	}
+	//TODO
 	public function canSellSquffy($squffy_id){
 		if($this->ownsSquffy($squffy_id) && Lot::SquffyNotOnSale($squffy_id)){
 			return true;
 		}
 		return false;
 	}
+	//TODO
 	public function ownsSquffy($squffy_id){
 		$queryString = "SELECT squffy_owner FROM squffies WHERE squffy_id='".$squffy_id."'";
 		$query = runDBQuery($queryString);
@@ -192,6 +462,7 @@ class User {
 	/*
 	* returns an error message when buying fails
 	*/
+	//TODO
 	public function buyItem($lot_id, $sale_id, $sale_name, $sale_amount, $want_id, $want_name, $want_amount, $seller_id){
 		//check if user can buy possibly check to see if lot is already finished
 		$finished = Lot::LotFinished($lot_id);//keep users from buying using a finished lot
@@ -202,14 +473,15 @@ class User {
 			// and transfer items
 			self::updateInventoryTable($this->getID(), str_ireplace(" ", "_", strtolower($sale_name)), $sale_amount, str_ireplace(" ", "_", strtolower($want_name)), -$want_amount);
 			self::updateInventoryTable($seller_id, str_ireplace(" ", "_", strtolower($sale_name)), -$sale_amount, str_ireplace(" ", "_", strtolower($want_name)), $want_amount);
-			self::cacheChanged($this->id);
-			self::cacheChanged($seller_id);
+			self::CacheChanged($this->id);
+			self::CacheChanged($seller_id);
 			// return empty string for error
 			return "";
 		}
 		//otherwise return that the user can't buy the item
 		return "Insufficient funds to buy";
 	}
+	//TODO
 	public function buySquffy($lot_id, $squffy_id, $want_id, $want_name, $want_amount, $seller_id){
 		//check if user can buy possibly check to see if lot is already finished
 		$finished = Lot::LotFinished($lot_id);//keep users from buying using a finished lot
@@ -221,14 +493,15 @@ class User {
 			self::updateInventoryTable($this->getID(), str_ireplace(" ", "_", strtolower($want_name)), -$want_amount, "", 0);
 			self::updateInventoryTable($seller_id, str_ireplace(" ", "_", strtolower($want_name)), $want_amount, "", 0);
 			Squffy::ChangeSquffyOwner($squffy_id, $this->getID());
-			self::cacheChanged($this->id);
-			self::cacheChanged($seller_id);
+			self::CacheChanged($this->id);
+			self::CacheChanged($seller_id);
 			// return empty string for error
 			return "";
 		}
 		//otherwise return that the user can't buy the item
 		return "Insufficient funds to buy";
 	}
+	//TODO
 	public static function getOldUserID($login_name, $password){
 		$hashword = sha1($password);
 		$queryString = "SELECT userid WHERE loginname='".$login_name."' AND hashword='".$hashword."'";
@@ -239,14 +512,17 @@ class User {
 		}
 		return NULL;
 	}
+	//TODO
 	private function calcBirthday($age, $today_date){
 		$birthday = strtotime ( '-'.$age.' day' , strtotime ( $today_date ) ) ;
 		$birthday = date ( "Y-m-d H:i:s" , $birthday );
 		return $birthday;
 	}
+	//TODO
 	private function setTraitColor(&$squffy_array, $trait, $color){
 		if($color != NULL) { $squffy_array[$trait] = $color; }
 	}
+	//TODO
 	private function setTraitStrength(&$squffy_array, $trait, $strength){
 		if($strength > 0){
 			$value = "";
@@ -258,6 +534,7 @@ class User {
 			$squffy_array[$trait] = $value;
 		}
 	}
+	//TODO
 	private function insertSquffy(&$squffy, &$squffy_appearance, &$trait_ids){
 		$personality = Personality::RandomTraits();
 		$squffyInsert = 'INSERT INTO squffies 
@@ -269,13 +546,14 @@ class User {
 		$squffy_id = @mysql_insert_id();
 		$trait_order = 0;
 		foreach ($squffy_appearance as $col=>$val){
-			switch(substr($col,-2))
+			switch(substr($col,-1))
 			{
 				case "s":
 					$trait_name = substr($col,0,strlen($col)-1);
 					$id = $trait_ids[$trait_name];
 					$trait_order++;
-					$trait_color = $squffy_appearance[$trait_name.'c'];
+					$trait_color = 'FFFFFF';
+					if(isset($squffy_appearance[$trait_name.'c'])) { $trait_color = $squffy_appearance[$trait_name.'c']; }
 					$appearanceInsert = "INSERT INTO squffy_appearance VALUES ('".$squffy_id."', '".$id."', '".$val."', '".$trait_color."', ".$trait_order.");";
 					runDBQuery($appearanceInsert);
 					break;
@@ -284,7 +562,8 @@ class User {
 			}
 		}
 	}
-	private function migrateOldSquffies($old_user_id){
+	//TODO
+	public function migrateOldSquffies($old_user_id){
 		$queryString = "SELECT * FROM old_squffies WHERE ownerid = '".$old_user_id."'";
 		$result = runDBQuery($queryString);
 		$today_date = date("Y-m-d H:i:s");
@@ -294,7 +573,7 @@ class User {
 			$squffy = array();
 			$squffy_appearance = array();
 			foreach($old_squffies as $col=>$val){
-				switch(col)
+				switch($col)
 				{
 					case "age":
 						$squffy['squffy_birthday'] = $this->calcBirthday($val, $today_date);
@@ -306,7 +585,11 @@ class User {
 						$squffy['squffy_gender'] = $val;
 						break;
 					case "species":
-						$squffy['squffy_species'] = $val;
+						if($val == 'tree') { $squffy['squffy_species'] = 1; }
+						if($val == 'ground') { $squffy['squffy_species'] = 2; }
+						if($val == 'sand') { $squffy['squffy_species'] = 3; }
+						if($val == 'lihtan') { $squffy['squffy_species'] = 4; }
+						if($val == 'fey') { $squffy['squffy_species'] = 5; }
 						break;
 					case "generation":
 						if($val == 1) $squffy['is_custom'] = true;
@@ -598,6 +881,7 @@ class User {
 			$this->insertSquffy($squffy, $squffy_appearance, $trait_ids);
 		}
 	}
+	//TODO
 	private function getOldItems($user_id){
 		$old_items = array();
 		$queryString = "SELECT itemname FROM old_items WHERE ownerid='".$user_id."'";
@@ -611,6 +895,7 @@ class User {
 		}
 		return $old_items;
 	}
+	//TODO
 	private function getOldNuts($user_id){
 		$old_nuts = array();
 		$queryString = "SELECT * FROM old_nutpile WHERE userid='".$user_id."'";
@@ -628,12 +913,14 @@ class User {
 		}
 		return $old_nuts;
 	}
+	//TODO
 	private function migrateItemsAndNuts($user_id){
 		$inventory = $this->getInventory();
 		$old_items = $this->getOldItems($user_id);//get items
 		$old_nuts = $this->getOldNuts($user_id);//get nuts
 		//add nuts and items to inventory in massive update string
 	}
+	//TODO
 	public function migrateAccount($old_loginname, $old_password){
 		$old_user_id = self::getOldUserID($old_loginname, $old_password);
 		$this->migrateOldSquffies($old_user_id);//migrate squffies
@@ -641,107 +928,20 @@ class User {
 		//migrate farms
 		//mark user account as migrated
 	}
-	public static function loginNameTaken($login_name){
-		if($login_name == "") return true;
-		$queryString = "SELECT login_name FROM user_login WHERE login_name='".$login_name."';";
-		$result = runDBQuery($queryString);
-		if(@mysql_num_rows($result) > 0) {
-			return true;
-		}
-		return false;
-	}
-	/*
-	* returns an error message depending on what's wrong with the password.
-	*/
+	//TODO
 	public static function passwordValid($password){
 		if($password == "") return "password field empty";
 		return "";
 	}
-	public static function usernameTaken($username){
-		if($username == "") return true;
-		$queryString = "SELECT username FROM users WHERE username='".$username."';";
-		$result = runDBQuery($queryString);
-		if(@mysql_num_rows($result) > 0) {
-			return true;
-		}
-		return false;
-	}
+	//TODO
 	private static function AddNewbieItems($user_id){
 		$user = self::getUserByID($user_id);
 		$user->getInventory(); //this will create inventory if not already created elsewhere
 		self::updateInventoryTable($user->getID(), "cashew", 100, "walnuts", 100);
 	}
-	public static function createNewUser($username, $password, $login_name, $email){
-		$salt =  randomString(self::SALT_LEN);
-		$hash = self::secure($password, $salt);
-		$user_id = self::InsertIntoUserTable($username, $email);
-		self::InsertIntoUserLoginTable($user_id, $login_name, $salt, $hash);
-		self::AddNewbieItems($user_id);
-		self::InsertIntoNewbieTable($user_id);
-		return $user_id;
-	}
-	/*
-	* code copy/paste from http://www.totallyphp.co.uk/code/validate_an_email_address_using_regular_expressions.htmhttp://www.totallyphp.co.uk/code/validate_an_email_address_using_regular_expressions.htm"
-	*/
-	public static function emailAddressInvalid($email){
-		return !eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email); //needs to be upgrade to preg_match(), but I don't get regexes
-	}
-	public static function sendActivationKey($user_id, $email){
-		$act_key = self::generateActivationKey($user_id);
-		$to = $email;
-		$subject = "Squffy Activation Key";
-		$message = "Hi Welcome to Squffies! Here's your activation link: http://squffies.com/activate?act_key=".$act_key;
-		$from = "Marri@squffy.com";
-		$headers = "From:" . $from;
-		mail($to,$subject,$message,$headers);
-	}
-	public static function activateUser($given_key){
-		$curr_id = self::getUserIDFromActivationKey($given_key);
-		if($curr_id != NULL){
-			$queryString = "UPDATE users SET activated='true' WHERE user_id = '".$curr_id."';";
-			runDBQuery($queryString);
-			return "";
-		}else{
-			return "Wrong activation key";
-		}
-	}
-	public static function cacheChanged($user_id){
-		$queryString = "INSERT INTO cache_changed VALUES('".$user_id."');";
-		runDBQuery($queryString);
-	}
-	public static function getUserByID($id) {
-		$queryString = "SELECT * FROM `users` WHERE `user_id` = '".$id."';";
-		$query = runDBQuery($queryString);
-		if(@mysql_num_rows($query) < 1) { return NULL; }
-		return (new User($query));
-	}
 	
-	public static function getUserByLogin($login_name, $password) {
-		$query = "SELECT * FROM `user_login` WHERE `login_name` = '$login_name'";
-		$result = runDBQuery($query);
-		if(@mysql_num_rows($result) < 1) { return NULL; }
-		$info = @mysql_fetch_assoc($result);
-		$hashed = self::secure($password, $info['salt']);
-		if($info['hash'] != $hashed) { return NULL; }
-		$id = $info['user_id'];
-		return self::getUserByID($id);
-	}
-	
-	public static function GetUserByUsername($username) {
-		$queryString = "SELECT * FROM `users` WHERE `username` = '".$username."';";
-		$query = runDBQuery($queryString);
-		if(@mysql_num_rows($query) < 1) { return NULL; }
-		return (new User($query));
-	}
 	
 	//Private methods
-	private static function secure($password, $salt) {
-		$hash = sha1($password . $salt);
-		for($i = 0; $i < self::SALT_LEN; $i++) {
-			$hash = sha1($hash);
-		}
-		return $hash;
-	}
 	/*
 	* function to insert new user into newbie_pack table
 	* returns pack_id.
@@ -767,29 +967,7 @@ class User {
 		$result = runDBQuery($queryString);
 		return $result;
 	}
-	private static function generateActivationKey($user_id){
-		$rand_num = rand(1000000,999999);
-		$act_key =  sha1($rand_num);
-		
-		$queryString = "INSERT INTO user_activation (user_id, activate) VALUES ('".$user_id."', '".$act_key."')";
-		runDBQuery($queryString);
-		
-		return $act_key;
-	}
-	private static function getUserIDFromActivationKey($given_key){
-		$queryString = "SELECT user_id FROM user_activation WHERE activate = '".$given_key."';";
-		$query = runDBQuery($queryString);
-		if(@mysql_num_rows($query) == 1){
-			$info = @mysql_fetch_assoc($query);
-			return $info['user_id'];
-		}else{
-			return NULL;
-		}
-	}
-	private static function createEmptyInventory($user_id){
-		$queryString = "INSERT INTO inventory (user_id) VALUES ('".$user_id."');";
-		$query = runDBQuery($queryString);
-	}
+	//TODO
 	public static function updateInventoryTable($user_id, $item1_col, $item1_change, $item2_col, $item2_change){
 		$updateString = "";
 		if($item2_change != 0){

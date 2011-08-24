@@ -38,7 +38,7 @@
 						<input type="submit" class="submit-input" value="Register" />
 					</form>
                     <?php } else { ?>
-                    <a href="#"><b><?php echo $user->getUsername(); ?></b></a> (#<?php echo $user->getID(); ?>)<br />
+                    <a href="profile.php?id=<?php echo $user->getID(); ?>"><b><?php echo $user->getUsername(); ?></b></a> (#<?php echo $user->getID(); ?>)<br />
 					<?php
                     $inventory = $user->getInventory();
                     $nuts = $inventory['cashew'] + $inventory['pistachio'] + $inventory['chestnut'] + $inventory['pecan'] + $inventory['walnut'] + $inventory['almond'];
@@ -47,12 +47,12 @@
                     <span class="float-left">&nbsp;<b><?php echo $nuts; ?></b> Nuts </span><a href="#"><img src="./images/icons/add.png" alt="+" id="nut-toggle" /></a><br />
                     <div id="nut-holder" class="hidden">
                     	<?php
-						echo '<b>' . $inventory['cashew'] . '</b> cashews<br />';
-						echo '<b>' . $inventory['pistachio'] . '</b> pistachios<br />';
-						echo '<b>' . $inventory['chestnut'] . '</b> chestnuts<br />';
-						echo '<b>' . $inventory['pecan'] . '</b> pecans<br />';
-						echo '<b>' . $inventory['walnut'] . '</b> walnuts<br />';
-						echo '<b>' . $inventory['almond'] . '</b> almonds<br />';
+						if($inventory['cashew'] > 0) { echo '<b>' . $inventory['cashew'] . '</b> cashews<br />'; }
+						if($inventory['pistachio'] > 0) { echo '<b>' . $inventory['pistachio'] . '</b> pistachios<br />'; }
+						if($inventory['chestnut'] > 0) { echo '<b>' . $inventory['chestnut'] . '</b> chestnuts<br />'; }
+						if($inventory['pecan'] > 0) { echo '<b>' . $inventory['pecan'] . '</b> pecans<br />'; }
+						if($inventory['walnut'] > 0) { echo '<b>' . $inventory['walnut'] . '</b> walnuts<br />'; }
+						if($inventory['almond'] > 0) { echo '<b>' . $inventory['almond'] . '</b> almonds<br />'; }
 						?>
                     </div>
                     &nbsp;<b><?php echo $sd; ?></b> SD<br /><br />
@@ -97,15 +97,17 @@
                     <span id='youraccount' class='submenu-span'>
                     <?php
                     if($loggedin) {
-						echo '<a href="./profile.php?userid=' . $userid . '" class="fivesmall">Your Profile</a>' .
-							 '<a href="./edit_account.php" class="fivewide">Edit Account Settings</a>' .
-							 '<a href="./buy.php" class="fivewide">Purchase Squffy Dollars</a>' .
-							 '<a href="./refer.php" class="fivesmall">Refer Players</a>' .
-							 '<a href="./referred.php" class="fivelast">Referral History</a>';
+						echo '<a href="./profile.php?id=' . $userid . '" class="fivesmall">Your Profile</a>' .
+							 '<a href="./edit_account.php" class="fivelarge">Edit Account Settings</a>' .
+							 '<a href="./buy.php" class="fivelarge">Purchase Squffy Dollars</a>' .
+							 '<a href="./refer.php" class="fivesmall">Refer Friends</a>' .
+							 '<a href="./referrals.php" class="fivelast">Your Referrals</a>';
                     } else {
-						echo '<a href="./register.php" class="three">Create Account</a>' .
-						 	 '<a href="./activate.php" class="three">Activate Account</a>' .
-						 	 '<a href="./reset.php" class="threelast">Reset Password</a>';
+						echo '<a href="./register.php" class="five">Create Account</a>' .
+						 	 '<a href="./activate.php" class="five">Activate Account</a>' .
+						 	 '<a href="./resend.php" class="five">Resend Activation</a>' .
+						 	 '<a href="./fix_email.php" class="five">Fix Email Address</a>' .
+						 	 '<a href="./reset.php" class="fivelast">Reset Password</a>';
                     }
                     ?>
                     </span>
@@ -154,10 +156,53 @@
                 <div id='content'>
                 
                 <?php
-				if(!isset($forLoggedIn)) { $forLoggedIn = false; }
-				if($forLoggedIn && !$loggedin) {
-					displayErrors(array("You must be logged in to see this page."));
+				if(isset($_POST['resetPass'])) {
+					include('./scripts/finish_reset.php');
+				}
+				
+				if($loggedin && $user->getLevel() == User::RESET_PASSWORD_USER) {
+					$cur = 'odd';
+					$errors[] = 'You have recently reset your password. Please change your temporary password now.';
+					displayErrors($errors);
+					echo '<form action="" method="post"><table cellspacing="0" class="width100p">
+					<tr';
+					$cur = row($cur);
+					echo '><td class="content-miniheader width200">New password</td><td><input type="password" class="width200" name="pass" /></td></tr>
+					<tr';
+					$cur = row($cur);
+					echo '><td class="content-miniheader width200">Confirm password</td><td><input type="password" class="width200" name="confirm" /></td></tr>
+					<tr';
+					$cur = row($cur);
+					echo '><td class="text-center" colspan="2"><input type="submit" name="resetPass" value="Change password" class="submit-input" /></td></tr>
+					</table>';
 					include('./includes/footer.php');
 					die();
+				}
+				
+				if(sizeof($errors) > 0) { 
+					displayErrors($errors); 
+					$errors = array();
+				}
+				
+				if(!isset($forLoggedIn)) { $forLoggedIn = false; }
+				if($forLoggedIn && !$loggedin) {
+					displayErrors(array('You must be logged in to see this page.'));
+					include('./includes/footer.php');
+					die();
+				}
+				
+				if(!isset($forNewbies)) { $forNewbies = false; }
+				if($forNewbies && $loggedin) {
+					displayErrors(array("You are already logged in."));
+					include('./includes/footer.php');
+					die();
+				}
+				
+				if($loggedin) {
+					$rand = mt_rand(100, 10000);
+					if($rand == 274) {
+						displayNotices(array('You have found some iron ore lying on the ground! How useful.'));
+						$user->updateInventory('iron_ore', 2, true);
+					}
 				}
 				?>

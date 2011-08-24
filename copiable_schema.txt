@@ -99,7 +99,8 @@ CREATE TABLE IF NOT EXISTS squffies (
 	breeding_rights_revert datetime,
 	hire_rights mediumint unsigned,
 	hire_rights_revert datetime,
-	num_items tinyint unsigned default '0'
+	num_items tinyint unsigned default '0',
+	is_restricted enum('true', 'false') default 'false'
 );	
 
 DROP TABLE IF EXISTS squffy_items;
@@ -186,7 +187,7 @@ CREATE TABLE IF NOT EXISTS users (
 	date_last_seen datetime,
 	default_layout_id tinyint unsigned,
 	email_address varchar(100),
-	activated enum('true','false') default 'false'
+	date_upgrade_ends datetime
 );
 
 DROP TABLE IF EXISTS inventory;
@@ -268,13 +269,23 @@ CREATE TABLE IF NOT EXISTS inventory (
 	mushrooms smallint unsigned default '0',
 	april_fools_plushie smallint unsigned default '0',
 	wedding_pearl_earrings smallint unsigned default '0',
-	fuzzy_bunny smallint unsigned default '0'
+	fuzzy_bunny smallint unsigned default '0',
+	bag_of_oak_seeds smallint unsigned default '0',
+	bag_of_cashew_seeds smallint unsigned default '0',
+	bag_of_pistachio_seeds smallint unsigned default '0',
+	bag_of_chestnut_seeds smallint unsigned default '0',
+	bag_of_pecan_seeds smallint unsigned default '0',
+	bag_of_walnut_seeds smallint unsigned default '0',
+	bag_of_almond_seeds smallint unsigned default '0',
+	bag_of_strawberry_seeds smallint unsigned default '0',
+	hoe smallint unsigned default '0',
+	fertilizer smallint unsigned default '0'
 );
 
 DROP TABLE IF EXISTS pantry;
 CREATE TABLE IF NOT EXISTS pantry (
 	user_id mediumint unsigned,
-	cashew smallint unsigned,
+	cashew smallint unsigned default '0',
 	pistachio smallint unsigned default '0',
 	chestnut smallint unsigned default '0',
 	pecan smallint unsigned default '0',
@@ -372,20 +383,54 @@ CREATE TABLE IF NOT EXISTS vacations (
 	old_level tinyint unsigned
 );
 
-DROP TABLE IF EXISTS referrals;
-CREATE TABLE IF NOT EXISTS referrals (
-	referral_id int unsigned primary key auto_increment,
-	refer_id mediumint unsigned,
-	email varchar(255),
-	date_sent datetime
+DROP TABLE IF EXISTS log_payment;
+CREATE TABLE IF NOT EXISTS log_payment (
+	log_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	amount mediumint unsigned,
+	tx_token varchar(100),
+	ip_address varchar(15),
+	date_bought datetime
 );
 
-DROP TABLE IF EXISTS accepted_referrals;
-CREATE TABLE IF NOT EXISTS accepted_referrals (
-	accepted_id int unsigned primary key auto_increment,
-	referral_id int unsigned,
-	accept_id mediumint unsigned,
+DROP TABLE IF EXISTS log_migrated;
+CREATE TABLE IF NOT EXISTS log_migrated (
+	log_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	old_id mediumint unsigned,
+	ip_address varchar(15),
+	date_migrated datetime
+);
+
+DROP TABLE IF EXISTS log_password_reset;
+CREATE TABLE IF NOT EXISTS log_password_reset (
+	log_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	old_level tinyint unsigned,
+	ip_address varchar(15),
+	date_reset datetime
+);
+
+DROP TABLE IF EXISTS log_register;
+CREATE TABLE IF NOT EXISTS log_register (
+	log_id int unsigned primary key auto_increment,
+	user_id mediumint unsigned,
+	ip_address varchar(15),
 	date_joined datetime
+);
+
+DROP TABLE IF EXISTS referral_rewards;
+CREATE TABLE IF NOT EXISTS referral_rewards (
+	prize_id tinyint unsigned primary key auto_increment,
+	item_id smallint unsigned,
+	quantity tinyint unsigned,
+	num_referred tinyint unsigned
+);
+
+DROP TABLE IF EXISTS referral_reward_claims;
+CREATE TABLE IF NOT EXISTS referral_reward_claims (
+	user_id mediumint unsigned,
+	num_claimed tinyint unsigned
 );
 
 DROP TABLE IF EXISTS newbie_packs;
@@ -402,13 +447,6 @@ CREATE TABLE IF NOT EXISTS degree_progress (
 	date_finished datetime
 );
 
-DROP TABLE IF EXISTS jobs_doctor;
-CREATE TABLE IF NOT EXISTS jobs_doctor (
-	patient_id int unsigned,
-	doctor_id int unsigned,
-	date_finished datetime
-);
-
 DROP TABLE IF EXISTS jobs_farming;
 CREATE TABLE IF NOT EXISTS jobs_farming (
 	farmer_id int unsigned,
@@ -421,17 +459,22 @@ DROP TABLE IF EXISTS farms;
 CREATE TABLE IF NOT EXISTS farms (
 	farm_id int unsigned primary key auto_increment,
 	farm_name varchar(50),
+	farm_type tinyint unsigned default '1',
 	user_id mediumint unsigned,
 	food_id smallint unsigned,
-	cur_state enum('Empty', 'Plowed', 'Fertilized', 'Planted', 'Grown', 'Dead'),
+	num_crops tinyint unsigned,
+	cur_state enum('Empty', 'Plowed', 'Planted', 'Grown', 'Dead'),
 	dryness tinyint unsigned default '0',
-	weeds tinyint unsigned default '0'
+	weeds tinyint unsigned default '0',
+	is_fertilized enum('true', 'false') default 'false',
+	num_workers tinyint unsigned default '0',
+	date_ripe datetime
 );
 
 DROP TABLE IF EXISTS user_activation;
 CREATE TABLE IF NOT EXISTS user_activation (
 	user_id mediumint unsigned,
-	activate varchar(30)
+	activate varchar(40)
 );
 
 DROP TABLE IF EXISTS design_traits;
@@ -467,7 +510,8 @@ CREATE TABLE IF NOT EXISTS items (
 	seymose_price tinyint unsigned,
 	seymose_item smallint unsigned,
 	is_olivia enum('true', 'false') default 'false',
-	olivia_price tinyint unsigned
+	olivia_price tinyint unsigned,
+	is_growable enum('true', 'false') default 'false'
 );
 
 DROP TABLE IF EXISTS notifications;
@@ -590,6 +634,15 @@ CREATE TABLE IF NOT EXISTS jobs_cooking (
 	amount tinyint unsigned default '1'
 );
 
+DROP TABLE IF EXISTS log_accepted_referrals;
+CREATE TABLE IF NOT EXISTS log_accepted_referrals (
+	log_id int unsigned primary key auto_increment,
+	referer_id mediumint unsigned,
+	referred_id mediumint unsigned,
+	referred_username varchar(50),
+	date_joined datetime
+);
+
 INSERT INTO recipes VALUES
 (NULL, 'Shovel', 31, 2, 32, 1, NULL, NULL, NULL, NULL, 34, 4, 15, 'smithy'),
 (NULL, 'Water Pail', 31, 4, NULL, NULL, NULL, NULL, NULL, NULL, 30, 5, 20, 'smithy'),
@@ -686,11 +739,11 @@ VALUES
 	(5, 'Fey', 'true', 'true');
 
 INSERT INTO `users` 
-	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `activated`) 
+	(`user_id`, `username`, `level_id`, `date_last_seen`, `default_layout_id`, `date_upgrade_ends`) 
 VALUES
-	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL, 'true'),
-	(2, 'dagclo', 1, '2011-04-26 20:57:38', NULL, 'true'),
-	(3, 'user1', 1, '2011-04-26 20:57:38', NULL, 'true');
+	(1, 'Marri', 1, '2011-04-26 20:57:38', NULL, NULL),
+	(2, 'dagclo', 1, '2011-04-26 20:57:38', NULL, NULL),
+	(3, 'Mariana', 1, '2011-04-26 20:57:38', NULL, NULL);
 
 
 INSERT INTO `user_login` 
@@ -911,3 +964,50 @@ INSERT INTO `newbie_packs` (`user_id`) VALUES
 INSERT INTO `cache_changed` VALUES (1), (2), (3);
 
 INSERT INTO notifications VALUES (NULL, 1, 1, 'false', 2, 3, 114, now()), (NULL, 1, 1, 'true', 2, 3, 116, now());
+
+INSERT INTO referral_rewards VALUES (NULL, 2, 1, 2), (NULL, 2, 3, 5), (NULL, 2, 8, 10);
+
+INSERT INTO log_register VALUES (NULL, 1, '127.0.0.1', '2011-08-10 12:13:14'),(NULL, 2, '127.0.0.1', '2011-08-11 12:13:14'),(NULL, 3, '127.0.0.1', '2011-08-12 12:13:14');
+
+INSERT INTO badges VALUES
+(NULL, 'First Birthday', 'I was a member when Squffies turned one!', 0),
+(NULL, 'Ground Squffy', 'I own a ground squffy!', 0),
+(NULL, 'Tree Squffy', 'I own a tree squffy!', 0),
+(NULL, 'Lihtan Squffy', 'I own a lihtan squffy!', 0),
+(NULL, 'Fey Squffy', 'I own a fey squffy!', 0),
+(NULL, 'Sand Squffy', 'I own a sand squffy!', 0),
+(NULL, 'Chatterfluff', 'I have posted more than 500 times on the forum!', 0),
+(NULL, 'Master Paperer', 'I pranked more than 50 dreys!', 0),
+(NULL, 'Amazing Friend', 'One of my friends nominated me for this badge!', 0),
+(NULL, 'Top Notch Bragger', 'I bragged so well, I got this badge as a prize!', 0),
+(NULL, 'Shoveling Hero', 'I rescued dreys from the snow!', 0);
+
+INSERT INTO user_badges VALUES (1, 2), (1, 3), (2, 2), (4, 3);
+
+INSERT INTO items (item_name, item_type, item_description)
+VALUES 
+('Bag of Oak Seeds', 11, 'They should really be acorns, we know, but wouldn\'t that be awfully confusing?'),
+('Bag of Cashew Seeds', 11, 'Use these to grow cashews.'),
+('Bag of Pistachio Seeds', 11, 'Use these to grow pistachios.'),
+('Bag of Chestnut Seeds', 11, 'Use these to grow chestnuts.'),
+('Bag of Pecan Seeds', 11, 'Use these to grow pecans.'),
+('Bag of Walnut Seeds', 11, 'Use these to grow walnuts.'),
+('Bag of Almond Seeds', 11, 'Use these to grow almonds.'),
+('Bag of Strawberry Seeds', 11, 'Use these to grow strawberries.'),
+('Hoe', 10, 'Useful when plowing fields.'),
+('Fertilizer', 10, 'Useful when fertilizing fields.');
+
+UPDATE items SET is_seymose = 'false', is_olivia = 'false', seymose_item = NULL, seymose_price = NULL, olivia_price = NULL;
+UPDATE items SET is_seymose = 'true', seymose_item = 20, seymose_price = 2 WHERE item_id = 31;
+UPDATE items SET is_seymose = 'true', seymose_item = 20, seymose_price = 1 WHERE item_id = 78;
+UPDATE items SET is_olivia = 'true' WHERE item_type = 3;
+UPDATE items SET olivia_price = 100 WHERE is_olivia = 'true' AND item_name LIKE 'Single%';
+UPDATE items SET olivia_price = 150 WHERE is_olivia = 'true' AND item_name LIKE 'Double%';
+UPDATE items SET olivia_price = 200 WHERE is_olivia = 'true' AND item_name LIKE 'Triple%';
+UPDATE items SET is_growable = 'true' WHERE item_type = 1;
+UPDATE items SET is_growable = 'true' WHERE item_id = 29;
+
+INSERT INTO farms (farm_name, farm_type, user_id, cur_state) VALUES 
+('Farm Plot', 1, 1, 'Empty'), ('Orchard Plot', 2, 1, 'Empty');
+
+UPDATE inventory SET fertilizer = 5, bag_of_cashew_seeds = 10, hoe = 3, water_pail = 3, shovel = 3 WHERE user_id = 1;

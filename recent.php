@@ -1,4 +1,5 @@
 <?php
+$selected = 'interact';
 	include("./includes/header.php");
 ?>
 

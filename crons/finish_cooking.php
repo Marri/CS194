@@ -1,4 +1,5 @@
 <?php
+//Every fifteen minutes
 include('../includes/connect.php');
 include('../objects/personality.php');
 include('../objects/appearance.php');
@@ -10,10 +11,12 @@ include('../objects/squffy.php');
 $query = 'SELECT * FROM `jobs_cooking` WHERE UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(date_finished) >= 0';
 $result = runDBQuery($query);
 
+$query = 'DELETE FROM `jobs_cooking` WHERE UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(date_finished) >= 0';
+runDBQuery($query);
+
 $workers = '';
 while($info = @mysql_fetch_assoc($result)) {
 	$id = $info['squffy_id'];
-	$squffy = Squffy::getSquffyByID($id);	
 	$workers .= ', ' . $id;
 	
 	$r_id = $info['recipe_id'];
@@ -26,11 +29,8 @@ while($info = @mysql_fetch_assoc($result)) {
 	$userid = $info['user_id'];
 	$user = User::getUserByID($userid);
 	$user->updateInventory($col, $batches, true);
-	User::cacheChanged($userid);
+	User::CacheChanged($userid);
 }
-
-$query = 'DELETE FROM `jobs_cooking` WHERE UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(date_finished) >= 0';
-runDBQuery($query);
 
 //Set cooks to not be cooking
 if(strlen($workers) > 0) {

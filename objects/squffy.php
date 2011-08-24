@@ -303,7 +303,7 @@ class Squffy {
 		while($info = @mysql_fetch_assoc($result)) {
 			$time = strtotime($info['date_sent']);
 			$mate = Squffy::getSquffyByID($info[$o.'_id']);
-			$map[$time] = $this->name . ' was mated to ' . $mate->getLink() . '.';
+			$map[$time] = $this->name . ' and ' . $mate->getLink() . ' became mates.';
 			$times[] = $time;
 		}
 		
@@ -739,18 +739,21 @@ class Squffy {
 		runDBQuery($query);
 	}
 	
-	public static function CreateCustom($name, $gender, $design, $owner) {
+	public static function CreateCustom($name, $gender, $design, $owner, $isLocked) {
 		$personality = Personality::RandomTraits();
 		$species = $design->getSpecies();
 		$base = $design->getBase();
 		$eye = $design->getEye();
 		$foot = $design->getFoot();
 		
+		if($isLocked) { $isLocked = 'true'; }
+		else { $isLocked = 'false'; }
+		
 		$query = "
 		INSERT INTO `squffies` 
-			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`) 
+			(`squffy_owner`, `squffy_name`, `squffy_gender`, `squffy_birthday`, `squffy_species`, `squffy_degree`, `degree_type`, `hunger`, `health`, `energy`, `happiness`, `luck`, `c1`, `c2`, `c3`, `c4`, `c5`, `c6`, `c7`, `c8`, `base_color`, `eye_color`, `foot_color`, `is_custom`, `is_pregnant`, `is_breedable`, `is_working`, `is_hireable`, `is_in_market`, `strength1_id`, `strength2_id`, `weakness1_id`, `weakness2_id`, `mate_id`, `breeding_rights`, `breeding_rights_revert`, `num_items`, `is_restricted`) 
 		VALUES
-			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'true', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0);";
+			($owner, '$name', '$gender', now(), $species, NULL, NULL, 0, 100, 100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, '$base', '$eye', '$foot', 'true', 'false', 'false', 'false', 'false', 'false', " . $personality['strength1'] . ", " . $personality['strength2'] . ", " . $personality['weakness1'] . ", " . $personality['weakness2'] . ", NULL, NULL, NULL, 0, '$isLocked');";
 		runDBQuery($query);
 		$id = mysql_insert_id();
 		

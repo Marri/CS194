@@ -12,6 +12,16 @@ function possessive($string) {
 	return $string . "'s";
 }
 
+function myucfirst($string) {
+	if(!strpos($string, " ")) { return ucfirst($string); }
+	$array = explode(" ", $string);
+	$result = '';
+	foreach($array as $str) {
+		$result .= ' ' . ucfirst($str);
+	}
+	return substr($result, 1);	
+}
+
 function inventoryItem($item) {
 	$name = ucfirst(str_replace("_", " ", $item));
 	return $name;
@@ -72,14 +82,14 @@ function randomString($len) {
 
 function displayErrors($errors) {
 	if(sizeof($errors) < 1) { return; }
-	echo '<div class="errors">';
+	echo '<div class="errors text-left">';
 	foreach($errors as $error) { echo $error . '<br />'; }
 	echo '</div>';
 }
 
 function displayNotices($notices) {
 	if(sizeof($notices) < 1) { return; }
-	echo '<div class="success">';
+	echo '<div class="success text-left">';
 	foreach($notices as $notice) { echo $notice . '<br />'; }
 	echo '</div>';
 }

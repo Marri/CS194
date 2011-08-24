@@ -40,7 +40,7 @@ if($valid) {
 	$user->updateInventory($col, -1 * $change, true);
 	$owner = User::getUserByID($squffy->getOwnerID());
 	$owner->updateInventory($col, $change, true);
-	User::cacheChanged($owner->getID());
+	User::CacheChanged($owner->getID());
 	
 	$notices[] = 'You have purchased the right to breed to ' . $squffy->getName() . '.';
 }	

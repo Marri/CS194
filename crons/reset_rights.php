@@ -1,4 +1,5 @@
 <?php
+//Every fifteen minutes
 include('../includes/connect.php');
 include('../objects/squffy.php');
 include('../objects/personality.php');

@@ -27,5 +27,7 @@ class Food extends Item {
 	public function getDescription(){ return $this->description; }
 	public function getChromosomeIncrease() { return $this->c_increase; }	
 	public function getHungerDecrease() { return $this->h_decrease; }
+	
+	public function isFood() { return true; }
 }
 ?>

@@ -3,8 +3,15 @@ $selected = 'squffies';
 include("./includes/header.php");
 
 $id = getID('id', $userid);
-if($id < 1) {
+if(!Verify::VerifyID($id)) {
 	echo '<div class="errors">You must be logged in to view your nursery.</div>';
+	include('./includes/footer.php');
+	die();
+}
+
+$owner = User::getUserByID($id);
+if($owner == NULL) {
+	echo '<div class="errors">That user does not exist.</div>';
 	include('./includes/footer.php');
 	die();
 }
@@ -13,7 +20,11 @@ $query = "SELECT * FROM `squffies` WHERE `squffy_owner` = $id AND is_custom = 'f
 $squffies = Squffy::getSquffies($query);
 ?>
 <table class="width100p" cellspacing="0">
-<tr><th class="content-header">Your Nursery</th></tr>
+<tr><th class="content-header"><?php
+if($loggedin && $id == $userid) { echo 'Your'; }
+else { echo possessive($owner->getUsername()); } ?>
+ Nursery</th></tr>
+<tr><th colspan="5"><a href="profile.php?id=<?php echo $id; ?>">Go to owner's profile</a></th></tr>
 <tr><td>
 
 <table class="width100p">
@@ -34,6 +45,7 @@ if($i%5 > 0) {
 	while($i%5 > 0) { echo '<td class="width150"></td>'; $i++; }
 	echo '</tr>'; 
 }
+if(sizeof($squffies) < 1) { echo '<tr><td colspan="4" class="text-center italic">No squffies here!</td></tr>'; }
 ?>
 </table>
 

@@ -74,7 +74,6 @@ if(isset($_POST['learn'])) {
 }
 
 if($valid) {
-	$days = -1; //TODO change to actual values but testing is cool
 	$squffy->startDegree($degree, $days);
 	$notices[] = $squffy->getName() . " has been sent to school.";
 	if($teacher != NULL) {		

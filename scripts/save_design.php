@@ -61,7 +61,7 @@ if($numTraits > 0) {
 }
 
 $max = Design::MAX_NORMAL;
-if($user->isUpgradedPlus()) { $max = Design::MAX_UPGRADE; }
+if($user->hasUpgrade()) { $max = Design::MAX_UPGRADE; }
 $designs = Design::GetUserDesigns($userid);
 if(sizeof($designs) == $max) {
 	$errors[] = "You are only allowed $max saved designs. Please delete or overwrite unwanted designs instead.";

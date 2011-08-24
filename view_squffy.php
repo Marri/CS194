@@ -1,9 +1,15 @@
 <?php
 $selected = "squffies";
 $css[] = "squffy";
+$cur = 'odd';
 include("./includes/header.php");
 
-$id = $_GET['id'];
+$id = getID('id');
+if(!Verify::VerifyID($id)) {
+	displayErrors(array("This squffy does not exist."));
+	die();
+}
+
 $squffy = Squffy::getSquffyByIDExtended
 	($id, 
 	array(
@@ -15,6 +21,11 @@ $squffy = Squffy::getSquffyByIDExtended
 		Squffy::FETCH_DEGREE
 	)
 );
+
+if($squffy == NULL) {
+	displayErrors(array("This squffy does not exist."));
+	die();
+}
 
 include('./scripts/squffy_actions.php');
 displayErrors($errors);
@@ -36,7 +47,6 @@ if($loggedin) {
 	}
 }
 
-$cur = "odd";
 drawMenuTop($title, $links);
 
 $view = 'home';
@@ -69,15 +79,28 @@ if($view != 'home') { die(); }
 ?>
 <table class="width100p squffy-table" cellspacing="0" cellpadding="0">
 <tr><th colspan="4" class="content-subheader">General Information</th></tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Name</th>
 <td class="text-left pad-left-small"><?php echo $squffy->getName(); ?></td>
 </tr>
-<tr class="even">
+<?php 
+if(!$loggedin || ($squffy->getOwnerID() != $userid)) { 
+	$owner = User::getUserByID($squffy->getOwnerID());
+} else {
+	$owner = $user;
+}
+?>
+<tr<?php $cur = row($cur); ?>>
+<th class="content-miniheader">Drey</th>
+<td class="text-left pad-left-small"><a href="drey.php?id=<?php echo $owner->getID(); ?>">Go to drey</a> - Owned by <?php echo $owner->getLink(); ?></td>
+</tr>
+<?php if(!$squffy->isEgg()) { ?>
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Gender</th>
 <td class="text-left pad-left-small"><?php echo $squffy->getGenderDisplay(); ?></td>
 </tr>
-<tr class="odd">
+<?php } ?>
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Age</th>
 <td class="text-left pad-left-small"><?php
 if(!$squffy->isEgg()) {
@@ -86,18 +109,19 @@ if(!$squffy->isEgg()) {
 ?>
 </td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Birthday</th>
 <td class="text-left pad-left-small"><?php 
 $date = strtotime($squffy->getBirthday());
 if(!$squffy->isCustom()) { $date += 60 * 60 * 24 * 5; }
 echo date("F j, Y",  $date); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Species</th>
 <td class="text-left pad-left-small"><?php echo $squffy->getSpecies(); ?></td>
 </tr>
-<tr class="even">
+<?php if(!$squffy->isEgg()) { ?>
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Degree</th>
 <td class="text-left pad-left-small">
 <?php 
@@ -106,7 +130,7 @@ else {echo $squffy->getDegreeType() . ' ' . $squffy->getDegreeName(); }
 ?>
 </td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader">Mate</th>
 <td class="text-left pad-left-small">
 <?php 
@@ -116,59 +140,60 @@ if($squffy->getMateID()) {
 } else { echo 'None'; }
 ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Health</th>
 <td colspan="3"><?php echo drawBar($squffy->getHealth()); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Hunger</th>
 <td colspan="3"><?php echo drawBar($squffy->getHunger(), false); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Energy</th>
 <td colspan="3"><?php echo drawBar($squffy->getEnergy()); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Happiness</th>
 <td colspan="3"><?php echo drawBar($squffy->getHappiness()); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Luck</th>
 <td colspan="3"><?php echo drawBar($squffy->getLuck()); ?></td>
 </tr>
 <tr><th colspan="4" class="content-subheader">Genetic Information</th></tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Strength</th>
 <td colspan="3"><?php echo drawBar($squffy->getC1()); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Speed</th>
 <td colspan="3"><?php echo drawBar($squffy->getC2()); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Agility</th>
 <td colspan="3"><?php echo drawBar($squffy->getC3()); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Endurance</th>
 <td colspan="3"><?php echo drawBar($squffy->getC4()); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Fertility</th>
 <td colspan="3"><?php echo drawBar($squffy->getC5()); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Heritability</th>
 <td colspan="3"><?php echo drawBar($squffy->getC6()); ?></td>
 </tr>
-<tr class="odd">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">Gene Dominance</th>
 <td colspan="3"><?php echo drawBar($squffy->getC7()); ?></td>
 </tr>
-<tr class="even">
+<tr<?php $cur = row($cur); ?>>
 <th class="content-miniheader width150">XX Dominance</th>
 <td colspan="3"><?php echo drawBar($squffy->getC8()); ?></td>
 </tr>
+<?php } ?>
 </table>
 
 </td>

@@ -42,6 +42,7 @@ body, html {
 .no-border { border: 0px !important; }
 .small { font-size: 11px; }
 .large { font-size: 15px; }
+.italic { font-style: italic; }
 
 .width25p { width: 25%; }
 .width33p { width: 33%; }
@@ -121,9 +122,10 @@ input.submit-input-disabled {
 	height: 30px;
     text-transform: uppercase;
     color: #FFCCCC;
-    font-weight: normal;
+    font-weight: bold;
     background-image: url(../images/layouts/<?php echo $layout['folder']; ?>/buttonbackhover.png); 
     background-repeat: repeat-x;
+	border: 2px #000000 solid;
 }
 
 .errors {
@@ -161,6 +163,13 @@ input.submit-input-disabled {
 	font-size: 15px;
 	padding: 5px;
 	background-color: #000077;
+}
+
+.autocomplete {
+	position:absolute; 
+	border:1px #000000 solid; 
+	padding: 5px;
+	background-color: #F0F0F0; 
 }
 
 /* MAIN BACKGROUND CONTAINER */
@@ -295,9 +304,15 @@ body > #left-column {
     border-right: 0px;
 }
 
+#submenu a.four { width: 215px; }
+#submenu a.fourlast { 
+	width: 216px; 
+    border-right: 0px;
+}
+
 #submenu a.fivesmall { width: 130px; }
+#submenu a.fivelarge { width: 220px; }
 #submenu a.five { width: 175px; }
-#submenu a.fivewide { width: 220px; }
 #submenu a.fivelast { 
 	width: 159px;
     border-right: 0px;
@@ -419,9 +434,15 @@ body > #left-column {
     text-align: center;
 }
 
-.odd { background-color: #FFF8CF; }
+.odd { 
+	background-color: #FFF8CF; 
+	height: 25px;
+}
 
-.even { background-color: #FFFFEE; }
+.even { 
+	background-color: #FFFFEE; 
+	height: 25px;
+}
 
 a.menu-link {
     display: block;

@@ -1,5 +1,5 @@
 <?php
-$selected = "home";
+$selected = 'help';
 include("./includes/header.php");
 ?>
 

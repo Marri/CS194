@@ -86,9 +86,9 @@ class Appearance {
 		$mom_rgb = self::html2rgb($mom_color);
 		$dad_rgb = self::html2rgb($dad_color);
 		
-		$kid_r = $mom_rgb[0] + mt_rand(0, $dad_rgb[0] - $mom_rgb[0]);
-		$kid_g = $mom_rgb[1] + mt_rand(0, $dad_rgb[1] - $mom_rgb[1]);
-		$kid_b = $mom_rgb[2] + mt_rand(0, $dad_rgb[2] - $mom_rgb[2]);
+		$kid_r = $mom_rgb[0] + mt_rand(0, abs($dad_rgb[0] - $mom_rgb[0]));
+		$kid_g = $mom_rgb[1] + mt_rand(0, abs($dad_rgb[1] - $mom_rgb[1]));
+		$kid_b = $mom_rgb[2] + mt_rand(0, abs($dad_rgb[2] - $mom_rgb[2]));
 		
 		return strtoupper(self::rgb2html($kid_r, $kid_g, $kid_b));
 	}

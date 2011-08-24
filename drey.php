@@ -4,8 +4,15 @@ $css[] = 'squffy';
 include("./includes/header.php");
 
 $id = getID("id", $userid);
-if($id < 1) {
+if(!Verify::VerifyID($id)) {
 	echo '<div class="errors">You must be logged in to view your drey.</div>';
+	include('./includes/footer.php');
+	die();
+}
+
+$owner = User::getUserByID($id);
+if($owner == NULL) {
+	echo '<div class="errors">That user does not exist.</div>';
 	include('./includes/footer.php');
 	die();
 }
@@ -32,25 +39,50 @@ elseif($sort == "gender") { $query .= ' ORDER BY squffy_gender DESC'; }
 $squffies = Squffy::getSquffies($query);
 
 $i = 0;
-echo '<table class="width100p" cellspacing="0"><tr><th colspan="5" class="content-header">Your Squffies</th></tr>';
-echo '<form action="drey.php" method="get">
-<tr><td colspan="3">&nbsp;Sort by: <select size="1" name="sort">
+echo '<table class="width100p" cellspacing="0"><tr><th colspan="4" class="content-header">';
+if($id == $userid) { echo 'Your Squffies'; }
+else { echo possessive($owner->getUsername()) . ' squffies'; }
+echo '</th></tr><form action="drey.php" method="get">
+<tr><td class="width33p">&nbsp;Sort by: <select size="1" name="sort">
 <option value="name">Name</option>
-<option value="age">Age</option>
-<option value="gender">Gender</option>
-<option value="species">Species</option></select></td>
-<td colspan="2" class="text-right">Filter by: 
+<option value="age"';
+if($sort == "age") { echo ' selected'; }
+echo '>Age</option>
+<option value="gender"';
+if($sort == "gender") { echo ' selected'; }
+echo '>Gender</option>
+<option value="species"';
+if($sort == "species") { echo ' selected'; }
+echo '>Species</option></select></td>
+<td colspan="2" class="text-center">
+<a href="profile.php?id=' . $owner->getID() . '">Go to owner\'s profile</a>
+</td><td class="text-right width33p">
+Filter by: 
 <select size="1" name="filter">
 <option value="all">View all</option>
-<option value="hungry">Hungry</option>
-<option value="sick">Sick</option>
-<option value="working">Working</option>
-<option value="pregnant">Pregnant</option>
-<option value="market">Available in the market</option>
-<option value="breedable">Available for breeding</option>
-<option value="hireable">Available for hire</option>
+<option value="hungry"';
+if($filter == "hungry") { echo ' selected'; }
+echo '>Hungry</option>
+<option value="sick"';
+if($filter == "sick") { echo ' selected'; }
+echo '>Sick</option>
+<option value="working"';
+if($filter == "working") { echo ' selected'; }
+echo '>Working</option>
+<option value="pregnant"';
+if($filter == "pregnant") { echo ' selected'; }
+echo '>Pregnant</option>
+<option value="market"';
+if($filter == "market") { echo ' selected'; }
+echo '>Available in the market</option>
+<option value="breedable"';
+if($filter == "breedable") { echo ' selected'; }
+echo '>Available for breeding</option>
+<option value="hireable"';
+if($filter == "hireable") { echo ' selected'; }
+echo '>Available for hire</option>
 </select>
-<input type="submit" value="Go" /></form></td></tr>
+<input type="submit" value="Go" class="submit-input" /></form></td></tr>
 <tr><td colspan="4"><table class="width100p">
 ';
 foreach($squffies as $squffy) {
@@ -78,6 +110,7 @@ if($i%4 > 0) {
 	while($i%4 > 0) { echo '<td class="width150"></td>'; $i++; }
 	echo '</tr>'; 
 }
+if(sizeof($squffies) < 1) { echo '<tr><td colspan="4" class="text-center italic">No squffies here!</td></tr>'; }
 echo '</table></td></tr></table>';
 
 include('./includes/footer.php');

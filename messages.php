@@ -1,4 +1,5 @@
 <?php
+$selected = 'interact';
 $js[] = "messages";
 include("./includes/header.php");
 ?>

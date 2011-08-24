@@ -55,13 +55,12 @@ if($numTraits < 1) { $numTraits = 1; }
 ?>
 <form action="./design.php" method="post" name="design_form">
 <table cellspacing="0" class="content-table" id="contentTable">
-	<tr><td class="width150"></td><td class="width150"></td><td class="width150"></td><td class="width150"></td></tr>
 	<tr>
     	<th class="content-header" colspan="4">Design Custom Squffy</th>
 	</tr>
 	<tr>
-    	<th colspan="3" class="content-subheader width450">Preview Design</th>
-        <th class="content-subheader width150">Instructions</th>
+    	<th colspan="3" class="content-subheader width450 odd">Preview Design</th>
+        <th class="content-subheader width150 odd">Instructions</th>
 	</tr>
     <tr>
     	<td colspan="3" class="width450 text-center">
@@ -128,8 +127,8 @@ if($numTraits < 1) { $numTraits = 1; }
 		<th class="content-subheader">Options</th>
 	</tr>
 	<tr>
-    	<th class="content-subheader" colspan="1">Appearance Trait</th>
-        <th class="content-subheader" colspan="2">Appearance Trait Color</th>
+    	<th class="content-subheader odd" colspan="1">Appearance Trait</th>
+        <th class="content-subheader odd" colspan="2">Appearance Trait Color</th>
 		<td rowspan="' . ($numTraits + 1) . '" class="vertical-top" id="buttons">
 		<input id="add-trait" type="button" class="submit-input" value="Add another trait" /><br /><br />
 		<input type="submit" class="submit-input" value="Generate Preview" name="preview" /><br /><br />';
@@ -176,6 +175,7 @@ if($numTraits < 1) { $numTraits = 1; }
 			echo '</td>
 		</tr>';
 	}
+	echo '<tr><td class="width150"></td><td class="width150"></td><td class="width150"></td><td class="width150"></td></tr>';
 	echo '</table></form><br />';
 
 function trait_dropdown($fieldname, $optionlist, $design = NULL, $index = 0){

@@ -1,38 +1,26 @@
 <?php
-$selected = "home";
-include("./includes/header.php");
-$login = "";
-$act_key = "";
-$password = "";
-if(isset($_GET['act_key'])){
-	$act_key =  mysql_real_escape_string($_GET['act_key']);
-	$act_error = User::activateUser($act_key);
-	if($act_error == ""){
-		?>
-		<h2>Activation Completed!</h2>
-		<?php
-	}else{
-		?> 
-		
-		<h2><?php echo $act_error; ?></h2>
-		<form class='text-center width100p' action="activate.php" method="get">
-			<br><label id="activateLabel">Activation Key: </label><input name="act_key" type="text" value="<?php echo $act_key; ?>"></br>
-			<br><input name="activate" type="submit" value="Activate Account"></br>
-		</form>
-		<?php
-	}
+$selected = 'account';
+$forNewbies = true;
+$cur = 'odd';
+include('./includes/header.php');
 
-}else{
+$key = '';
+if(isset($_GET['key']) || isset($_POST['key'])) {
+	include('./scripts/activate_account.php');
+}
+
+displayErrors($errors);
+displayNotices($notices);
 ?>
 
-<div class='text-center width100p'><h1>Activate Your Squffy Account!</h1></div>
+<form action="activate.php" method="post">
+<table class="width100p" cellspacing="0">
+<tr><th class="content-header" colspan="2">Activate your squffies account</th></tr>
+<tr<?php $cur = row($cur); ?>><th class="content-miniheader width200"><label id="userLabel">Activation key </label></th>
+<td><input class="width200" autocomplete="off" name="key" type="text" value="<?php echo $key; ?>"></td></tr>
+<tr<?php $cur = row($cur); ?>><td></td><td><input class="submit-input" name="activate" type="submit" value="Activate account"></td></tr>
+</table>
 
-<form class='text-center width100p' action="activate.php" method="get">
-	<br><label id="activateLabel">Activation Key: </label><input name="act_key" type="text"></br>
-	<br><input name="activate" type="submit" value="Activate Account"></br>
-</form>
-
-<?php
-}
+<?php 
 include('./includes/footer.php');
 ?>
