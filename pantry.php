@@ -84,7 +84,7 @@ foreach($item_list as $item) {
 	<td class="width100 text-center"><img class="item " src="' . $img . '" alt="' . $item->getName() . '" /></td>
 	<td class="width300 text-center">' . $item->getName() . '<input type="hidden" name="burying[]" value="' . $item->getColumnName() . '" /></td>
 	<td class="width200 text-center">' . $inventory[$item->getColumnName()] . ' in inventory</td>
-	<td>Remove <select name="' . $item->getColumnName() . '" size="1">';
+	<td>Add <select name="' . $item->getColumnName() . '" size="1">';
 	for($i = 0; $i <= $inventory[$item->getColumnName()]; $i++) { echo "<option value='$i'>$i</option>"; }
 	echo '</select></td></tr>';
 }

@@ -3,6 +3,10 @@
 include('../includes/connect.php');
 include('../objects/squffy.php');
 
+//Set farms to harvest
+$query = "UPDATE `farms` SET date_ripe = NULL, cur_state = 'Grown', dryness = NULL, weeds=NULL WHERE UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(date_ripe) >= 0";
+runDBQuery($query);
+
 //Queue current jobs
 $query = 'SELECT * FROM `jobs_farming` WHERE UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(date_finished) >= 0';
 $result = runDBQuery($query);

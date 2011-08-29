@@ -50,19 +50,5 @@ while(true) {
 	
 	$pantries[$owner] = $pantry;
 }
-/*
-foreach($squffies as $squffy) {
-	$owner = $squffy->getOwnerID();	
-	$query = "SELECT * FROM pantry WHERE user_id = $owner";
-	$result = runDBQuery($query);
-	$info = @mysql_fetch_assoc($result);
-	echo $squffy->getName();
-	foreach($info as $key=>$val) {
-		if($key == 'user_id') { continue; }
-		if($val < 1) { continue; }
-		echo 'Can be fed '. $key;
-	}
-	echo '<br>';
-}*/
-
+echo 'hi';
 ?>

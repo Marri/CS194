@@ -7,6 +7,33 @@ include("./includes/header.php");
 
 <?php
 if($loggedin){
+	if(isset($_GET['id'])) {
+		$id = getID('id');
+		if(!Verify::VerifyID($id)) {
+			displayErrors(array("That message does not exist."));
+			include('./includes/footer.php');
+			die();
+		}
+		$message = Message::GetMessageFromID($id);
+		if($message->GetToID() != $userid && $message->GetFromID() != $userid) {
+			displayErrors(array("That message was not sent to or by you."));
+			include('./includes/footer.php');
+			die();
+		}
+
+		echo '<b>Subject</b> '.$message->GetSubject();
+		$sender = User::getUserByID($message->GetFromID());
+		echo '<br /><b>Sent by</b>: ' . $sender->getLink();
+		echo '<br /><b>Sent at</b>: ' . date("g:i a n/j/Y", strtotime($message->GetTimeSent()));
+		echo '<br /><br />' . $message->GetText(); 
+
+		$query = "UPDATE messages SET is_read = 'true' WHERE message_id = $id AND to_id = $userid";
+		runDBQuery($query);
+
+		include('./includes/footer.php');
+		die();
+	}
+
 	if(isset($_POST['send'])){
 		
 		$to_username = mysql_real_escape_string($_POST['to_username']);
@@ -24,9 +51,17 @@ if($loggedin){
 		?>
 		
 		<tr>
-			<td><?php echo $curr_message->GetSubject();?></td>
-			<td><?php echo $sender->getUsername()?></td>
+			<td><a href="messages.php?id=<?php echo $curr_message->GetID()?>"><?php echo $curr_message->GetSubject();?></a></td>
+			<td><?php echo $sender->getLink()?></td>
 			<td><?php echo $curr_message->GetTimeSent()?></td>
+<td>
+				<form action="reply.php" method="post">
+					<input type="hidden" name="to_id" value="<?php echo $sender->getID(); ?>">
+					<input type="hidden" name="to_username" value="<?php echo $sender->getUsername(); ?>">
+					<input name="subject" type="hidden" value="<?php echo $curr_message->GetSubject(); ?>">
+					<input name="reply" type="submit" value="Reply">
+				</form>
+			</td>
 		</tr>
 
 		

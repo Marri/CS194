@@ -223,7 +223,12 @@ class User {
 		runDBQuery($query);
 		$user = self::getUserByID($user_id);
 		$user->updateInventory("cashew", 50, true);
+		$user->updateInventory("pistachio", 3, true);
+		$user->updateInventory("chestnut", 3, true);
+		$user->updateInventory("pecan", 3, true);
 		$user->updateInventory("walnut", 5, true);
+		$user->updateInventory("almond", 3, true);
+		$user->updateInventory("strawberry", 3, true);
 		$user->updateInventory("hoe", 1, true);
 		$user->updateInventory("shovel", 1, true);
 		$user->updateInventory("water_pail", 3, true);

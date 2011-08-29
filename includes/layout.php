@@ -204,5 +204,9 @@
 						displayNotices(array('You have found some iron ore lying on the ground! How useful.'));
 						$user->updateInventory('iron_ore', 2, true);
 					}
+
+					$query = "select is_read as num from messages where to_id = $userid and is_read = 'false'";
+					$result = runDBQuery($query);
+					if(@mysql_num_rows($result) > 0) { displayNotices(array('You have unread messages! <a href="messages.php">Go to your inbox to read them</a>.')); }
 				}
 				?>

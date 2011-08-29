@@ -21,6 +21,8 @@ class Message {
 	public function GetTimeSent(){
 		return $this->time_sent;
 	}
+public function GetText() { return $this->message; }
+
 	public static function GetMessage($id, $to_id, $from_id, $subject, $message, $time_sent, $is_read,$in_inbox, $in_outbox){
 		$curr_message = new Message();
 		$curr_message->id = $id;
@@ -38,7 +40,7 @@ class Message {
 		$query = "SELECT * FROM messages WHERE message_id='".$id."';";
 		$results = runDBQuery($query);
 		while($messages = mysql_fetch_assoc($results)) {
-			return Message::CreateMessage($id, $messages['to_id'],$messages['from_id'], $messages['message_type'], $messages['subject'], $message['message'], $message['time_sent'],  $message['is_read'], $message['in_inbox'],  $message['in_outbox']);
+			return Message::GetMessage($id, $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
 		}
 	}
 	
@@ -61,11 +63,11 @@ class Message {
 	}
 	public static function GetUserMessages($userid){
 		$message_list = array();
-		$query = "SELECT * FROM messages WHERE to_id = '".$userid."';";
+		$query = "SELECT * FROM messages WHERE to_id = '".$userid."' ORDER BY time_sent desc;";
 		$results = runDBQuery($query);
 		
 		while($messages = mysql_fetch_assoc($results)) {
-			$curr_message = self::GetMessage($userid, $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
+			$curr_message = self::GetMessage($messages['message_id'], $messages['to_id'],$messages['from_id'], $messages['subject'], $messages['message'], $messages['time_sent'],  $messages['is_read'], $messages['in_inbox'],  $messages['in_outbox']);
 			array_push($message_list, $curr_message);
 		}
 		return $message_list;

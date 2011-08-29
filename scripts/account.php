@@ -4,10 +4,13 @@ $activated = false;
 $user = NULL;
 $userid = NULL;
 $global_error = "";
+
+session_save_path("/home/users/web/b395/nf.spstrade/cgi-bin/tmp");
 session_start();
 
 //Log out
 if(isset($_POST['logging_out'])) {
+	$_SESSION['user'] = NULL;
 	unset($_SESSION['user']);
 }
 

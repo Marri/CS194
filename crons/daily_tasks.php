@@ -1,6 +1,7 @@
 <?php
 //Every day
 include('../includes/connect.php');
+include('../objects/user.php');
 
 //Daily tasks for squffies
 $query = "UPDATE `squffies` 

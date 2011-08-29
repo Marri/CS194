@@ -14,7 +14,6 @@ you can set your account to Vacation mode.  You must enable it for a minimum of 
 <li>You will not be able to log into Squffies.
 <li>Your squffies will not get hungrier or sicker.
 <li>Your pregnant squffies will lay their eggs later.
-<li>Your farms will not get drier, sprout more weeds, or die.
 <li>If applicable, your account upgrade will be extended.
 </div>
 

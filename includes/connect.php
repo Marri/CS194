@@ -1,12 +1,12 @@
 <?php
-/*$hostname = 'MYSQLHOST';
-$database = 'd60766977';
-$username = 'u70837264';
-$password = '853825';*/
-$hostname = "127.0.0.1";
+$hostname = 'spstrade.netfirmsmysql.com';
+$database = 'squffies_v2';
+$username = 'u274928';
+$password = 'wearetheadmin';
+/*$hostname = "127.0.0.1";
 $database = "cs194";
 $username = "root";
-$password = 'squffies';
+$password = 'squffies';*/
 
 //Connect to database
 $con = @mysql_connect($hostname, $username, $password) or throwMySQLError(mysql_error(), 'Could not connect to database.');
@@ -32,9 +32,10 @@ function throwMySQLError($errorMessage, $queryString) {
 			</div>';
 
 	
-//	$id = $loggedin ? $userid : NULL;
-//	$queryString = "INSERT INTO `log_mysql_errors` (user_id, error_time, error_text, query_string) VALUES ($id, now(), '$errorMessage', '$queryString');";
-//	@mysql_query($queryString); //Don't use runDBQuery cause could cause looping
+	$id = $loggedin ? $userid : NULL;
+$ip = $_SERVER['REMOTE_ADDR'];
+	$queryString = "INSERT INTO `log_mysql_errors` (user_id, error_time, error_text, query_string) VALUES ($id, now(), '$ip', '$errorMessage', '$queryString');";
+	@mysql_query($queryString); //Don't use runDBQuery cause could cause looping
 	
 	//Email staff email account
 	
